@@ -156,7 +156,8 @@ database_entry_T::dump(std::ostream &stream)
     std::map<std::string, std::string >::iterator i;
     for (i = keys.begin() ; i != keys.end() ; ++i)
     {
-        stream << mynode->indent() << i->first << "=" << i->second << std::endl;
+        stream << mynode->indent() << "  " << i->first
+            << "=" << i->second << std::endl;
     }
 
     /* end */
