@@ -22,6 +22,7 @@
 #include "config.h"
 #include <errno.h>
 #include <cstdlib>
+#include <cstring>
 #include <memory>
 #include <fstream>
 
@@ -31,6 +32,26 @@
 #include "src/action_add_handler.hh"
 #include "src/database_note_entry.hh"
 #include "src/database_link_entry.hh"
+#include "src/input.hh"
+
+    database_entry_T *
+make_new_entry(const char *type)
+{
+    if (0 == strcasecmp(type, "prompt"))
+    {
+        char *in = get_user_input("Item Type");
+        if (in)
+            return make_new_entry(in);
+        else
+            return NULL;
+    }
+    else if (0 == strcasecmp(type, "note"))
+        return new database_note_entry_T;
+    else if (0 == strcasecmp(type, "link"))
+        return new database_link_entry_T;
+    else /* fallback */
+        return new database_entry_T; 
+}
 
     int
 action_add_handler_T::operator() (void)
@@ -55,13 +76,11 @@ action_add_handler_T::operator() (void)
         }
 
         /* add a new entry */
-        database_entry_T *entry;
-        if (options.get_type() == "note")
-            entry = new database_note_entry_T;
-        else if (options.get_type() == "link")
-            entry = new database_link_entry_T;
-        else /* fallback */
-            entry = new database_entry_T; 
+        database_entry_T *entry = make_new_entry(
+                options.get_type().c_str());
+
+        if (!entry)
+            return EXIT_FAILURE;
 
         entry->set_new_object_defaults();
         if (entry->prompt_user_for_values())
