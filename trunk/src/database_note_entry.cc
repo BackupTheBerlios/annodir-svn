@@ -1,6 +1,7 @@
 /*
  * annodir -- src/database_note_entry.cc
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
+ * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
  *
  * This file is part of annodir.
  *
