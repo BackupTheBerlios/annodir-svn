@@ -30,6 +30,7 @@
 #include <cstdarg>
 
 #include "src/util.hh"
+#include "src/options.hh"
 
     char *
 util::basename(char *path)
@@ -55,13 +56,20 @@ util::format_datestr(std::string& epoch)
     return (date_str.empty() ? "(no date)" : date_str);
 }
 
+/*
+ * I hate to bring in options_T just for this, but it's either here
+ * or make the caller declare an options_T instance and pass a bool value
+ */
     void
 util::debug_msg(const char *msg, ...)
 {
-#ifdef DEBUG
+    options_T options;
+
+    if (! options.debug())
+	return;
+
     char buf[4096];
     va_list v;
-
     va_start(v, msg);
 
 #ifdef HAVE_VSNPRINTF
@@ -72,5 +80,4 @@ util::debug_msg(const char *msg, ...)
 
     std::cout << buf << std::endl;
     va_end(v);
-#endif /* DEBUG */
 }

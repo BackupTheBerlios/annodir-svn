@@ -28,6 +28,7 @@ bool options_T::_verbose = false;
 bool options_T::_compact = false;
 bool options_T::_summarise = false;
 bool options_T::_recursive = false;
+bool options_T::_debug = false;
 options_action_T options_T::_action = action_unspecified;
 std::string options_T::_file = ".annodir";
 std::string options_T::_user = "anonymous";

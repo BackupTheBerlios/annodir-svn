@@ -49,6 +49,7 @@ class options_T
         static bool _compact;
         static bool _summarise;
         static bool _recursive;
+        static bool _debug;
         static options_action_T _action;
 
     public:
@@ -63,6 +64,9 @@ class options_T
 
         void set_recursive(bool value) { options_T::_recursive = value; }
         bool recursive() { return options_T::_recursive; }
+
+        void set_debug(bool value) { options_T::_debug = value; }
+        bool debug() { return options_T::_debug; }
 
         void set_action(options_action_T value) { options_T::_action = value; }
         options_action_T action() { return options_T::_action; }
