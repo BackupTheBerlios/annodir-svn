@@ -23,10 +23,14 @@
 #define HAVE_EXCEPTIONS_HH 1
 
 #include "config.h"
+#include <exception>
+
+/* base exception type */
+class annodir_base_E              : public std::exception { };
 
 /* commandline handling exceptions. some of these aren't exactly exceptions as
  * such, but it's easier to treat them that way. */
-class args_E { };
+class args_E                      : public annodir_base_E { };
 class args_usage_E                : public args_E { };
 class args_one_action_only_E      : public args_usage_E { };
 class args_help_E                 : public args_E { };
@@ -34,13 +38,13 @@ class args_version_E              : public args_E { };
 class args_unimplemented_E        : public args_E { };
 
 /* annodir file exceptions */
-class annodir_file_E { };
+class annodir_file_E              : public annodir_base_E { };
 class annodir_file_unreadable_E   : public annodir_file_E { };
 class annodir_file_unwriteable_E  : public annodir_file_E { };
 class annodir_file_notthere_E     : public annodir_file_E { };
 
 /* item exceptions */
-class item_E { };
+class item_E                      : public annodir_base_E { };
 class item_not_recognised_E       : public item_E { };
 class item_not_parsable_E         : public item_E { };
 

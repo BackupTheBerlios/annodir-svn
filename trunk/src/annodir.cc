@@ -303,6 +303,11 @@ main(int argc, char *argv[])
         usage();
         return EXIT_FAILURE;
     }
+    catch (annodir_base_E &e)
+    {
+        std::cerr << "Unhandled exception: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 }
 
 /* vim: set tw=80 sw=4 et : */
