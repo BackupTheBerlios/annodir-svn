@@ -31,11 +31,12 @@
 
 class node_entry_T : public std::vector<node_entry_T * >
 {
-    protected:
+    private:
         std::vector<int > _index;
         std::string index_str;
         std::string indent_str;
 
+    protected:
         node_entry_T *parent;   /* parent */
         node_entry_T *prev;     /* previous sibling */
         node_entry_T *next;     /* next sibling */
