@@ -21,8 +21,6 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include <algorithm>
-#include <functional>
 #include <iostream>
 #include <string>
 #include <cstdio>
@@ -124,8 +122,6 @@ node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
     std::vector<node_entry_T * >::iterator i;
     for (i = children.begin() ; i != children.end() ; ++i)
         ((*i)->entry->*fp)(stream);
-
-    //std::for_each(children.begin(), children.end(), ... );
 }
 
 /*
