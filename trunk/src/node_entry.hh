@@ -37,31 +37,32 @@ class node_entry_T : public std::vector<node_entry_T * >
         std::string indent_str;
 
     protected:
+        std::vector<database_entry_T * > _entries;
         node_entry_T *_parent;   /* parent */
         node_entry_T *_prev;     /* previous sibling */
         node_entry_T *_next;     /* next sibling */
 
     public:
-	node_entry_T(const node_entry_T *parent_node = NULL);
+	node_entry_T(node_entry_T *parent_node = NULL);
 	virtual ~node_entry_T();
-        
-        database_entry_T *entry;
 
         /* public interfaces to private members */
         node_entry_T *parent() const { return _parent; }
         node_entry_T *next() const { return _next; }
         node_entry_T *prev() const { return _prev; }
         std::string const &indent() const { return indent_str; }
+        void set_indent(std::string const &value) { indent_str = value; }
+        database_entry_T *entry(std::string id = "");
 
         /* actions */
         std::string const &index();
         node_entry_T *find_index(std::string const &index);
-
+        void insert_entry(database_entry_T *e, bool front = false);
         virtual void recurse(void (database_entry_T::*fp)(std::ostream&),
             std::ostream &stream);
-        virtual void dump(std::ostream &stream) { entry->dump(stream); }
-        virtual void display(std::ostream &stream) { entry->display(stream); }
-        virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
+        virtual void dump(std::ostream &stream) { entry()->dump(stream); }
+        virtual void display(std::ostream &stream) { entry()->display(stream); }
+        virtual void do_export(std::ostream &stream) { entry()->do_export(stream); }
 };
 
 #endif

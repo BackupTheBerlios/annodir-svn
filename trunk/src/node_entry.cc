@@ -25,6 +25,8 @@
 #include <string>
 #include <cstdio>
 #include <cstdlib>
+#include <algorithm>
+#include <functional>
 
 #include "src/node_entry.hh"
 #include "src/database_entry.hh"
@@ -36,10 +38,10 @@
  *  - Construct the index and it's string representation
  *  - Construct indentation string of the appropriate width
  */
-node_entry_T::node_entry_T(const node_entry_T *parent_node)
+node_entry_T::node_entry_T(node_entry_T *parent_node)
     : _prev(NULL), _next(NULL)
 {
-    _parent = const_cast<node_entry_T * > (parent_node);
+    _parent = parent_node;
 
     /* child with siblings */
     if (_parent and not _parent->empty())
@@ -121,7 +123,35 @@ node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
     std::ostream &stream)
 {
     for (node_entry_T::iterator i = begin() ; i != end() ; ++i)
-        ((*i)->entry->*fp)(stream);
+        ((*i)->entry()->*fp)(stream);
+}
+
+/*
+ * Insert entry ; if front is true insert at front (defaults to false)
+ */
+    void
+node_entry_T::insert_entry(database_entry_T *e, bool front)
+{
+    if (front)
+        _entries.insert(_entries.begin(), e);
+    else
+        _entries.push_back(e);
+}
+
+/*
+ * Move the entry with the specified id to the front and return it
+ */
+    bool
+entry_is(database_entry_T *e, std::string id) { return e->is(id); }
+
+    database_entry_T *
+node_entry_T::entry(std::string id)
+{
+    if (_entries.empty())
+        return NULL;
+    std::stable_partition(_entries.begin(), _entries.end(),
+            std::bind2nd(ptr_fun(entry_is), id));
+    return _entries.front();
 }
 
 /*
