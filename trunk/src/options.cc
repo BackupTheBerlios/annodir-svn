@@ -23,6 +23,7 @@
 #include "src/options.hh"
 
 bool options_T::_verbose = false;
+bool options_T::_compact = false;
 bool options_T::_recursive = false;
 options_action_T options_T::_action = action_unspecified;
 

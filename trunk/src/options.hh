@@ -37,12 +37,16 @@ class options_T
 {
     protected:
         static bool _verbose;
+        static bool _compact;
         static bool _recursive;
         static options_action_T _action;
 
     public:
         void set_verbose(bool value) { options_T::_verbose = value; }
         bool verbose() { return options_T::_verbose; }
+
+        void set_compact(bool value) { options_T::_compact = value; }
+        bool compact() { return options_T::_compact; }
 
         void set_recursive(bool value) { options_T::_recursive = value; }
         bool recursive() { return options_T::_recursive; }

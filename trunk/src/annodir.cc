@@ -41,6 +41,7 @@ static struct option options[] =
     /* general options */
     {"recursive",         no_argument,         0,   'R'},
     {"verbose",           no_argument,         0,   'v'},
+    {"compact",           no_argument,         0,   'c'},
 
     /* actions */
     {"list",              optional_argument,   0,   'l'},
@@ -71,7 +72,7 @@ usage()
     void
 help()
 {
-    /* TODO: finish */
+   /* TODO: finish */
     std::cerr
         << "TODO" << std::endl;
 }
@@ -95,7 +96,7 @@ handle_options(int argc, char *argv[], options_T *opts)
 
     while (1)
     {
-        key = getopt_long(argc, argv, "vRh\3a::e::l::d::",
+        key = getopt_long(argc, argv, "vcRh\3a::e::l::d::",
                 options, &option_index);
         if (key == -1)
             break;
@@ -104,6 +105,10 @@ handle_options(int argc, char *argv[], options_T *opts)
         {
             case 'v': /* verbose */
                 opts->set_verbose(true);
+                break;
+
+            case 'c': /* compact */
+                opts->set_compact(true);
                 break;
 
             case 'R': /* recursive */

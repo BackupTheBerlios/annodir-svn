@@ -20,6 +20,7 @@
  */
 
 #include "src/anno_db_note_entry.hh"
+#include "src/options.hh"
 
 /*
  * Create a new item read from the supplied stream.
@@ -45,6 +46,25 @@ anno_db_note_entry_T::anno_db_note_entry_T()
 anno_db_note_entry_T::default_id()
 {
     return "note";
+}
+
+/*
+ * Display pretty output
+ */
+    void
+anno_db_note_entry_T::display(std::ostream &stream)
+{
+    options_T options;
+    if (options.compact())
+    {
+        stream << "[note] " << keys["title"] << ": "
+            << keys["text"] << std::endl;
+    }
+    else
+    {
+        stream << "[note] " << keys["title"] << ": " << std::endl
+            << "  " << keys["text"] << std::endl;
+    }
 }
 
 /*
