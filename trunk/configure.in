@@ -1,4 +1,4 @@
-dnl configure.in for uhinv. run this through autoconf to produce
+dnl configure.in for annodir. run this through autoconf to produce
 dnl a ./configure script (it's best to use autogen.sh)
 
 dnl -- STANDARD THINGS --
@@ -6,6 +6,9 @@ dnl -- STANDARD THINGS --
 AC_INIT(src/annodir.cc)
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(annodir, 0.1)
+
+test x$sysconfdir = "xNONE" && sysconfdir="$ac_default_sysconfdir"
+AC_DEFINE_UNQUOTED(SYSCONFDIR, "$sysconfdir", [System configuration directory])
 
 dnl check for required programs
 AC_PROG_CXX
