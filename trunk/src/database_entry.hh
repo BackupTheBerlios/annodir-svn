@@ -26,23 +26,23 @@
 #include <string>
 #include <iostream>
 
-class anno_db_entry_keys_T : public std::map<std::string, std::string >
+class database_entry_keys_T : public std::map<std::string, std::string >
 {
     public:
         std::string& get_with_default(std::string key,
                 std::string default_value);
 };
 
-class anno_db_entry_T
+class database_entry_T
 {
     public:
-        anno_db_entry_T(std::istream *stream = NULL);
+        database_entry_T(std::istream *stream = NULL);
 
         virtual bool dump(std::ostream &stream);
         virtual void load(std::istream &stream);
         virtual void display(std::ostream &stream);
 
-        anno_db_entry_keys_T keys;
+        database_entry_keys_T keys;
 
         static bool recognise_item(std::string item);
 

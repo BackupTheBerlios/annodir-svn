@@ -24,10 +24,10 @@
 #include <time.h>
 
     std::string&
-anno_db_entry_keys_T::get_with_default(std::string key,
+database_entry_keys_T::get_with_default(std::string key,
         std::string default_value)
 {
-    anno_db_entry_keys_T::iterator pos;
+    database_entry_keys_T::iterator pos;
     pos = this->find(key);
     if (pos != this->end())
         return pos->second;
@@ -39,7 +39,7 @@ anno_db_entry_keys_T::get_with_default(std::string key,
  * Load from stream
  */
     void
-anno_db_entry_T::load(std::istream &stream)
+database_entry_T::load(std::istream &stream)
 {
     std::string s;
     while ((std::getline(stream, s)) && (s != "end"))
@@ -61,7 +61,7 @@ anno_db_entry_T::load(std::istream &stream)
 /*
  * Create a new item read from the supplied stream.
  */
-anno_db_entry_T::anno_db_entry_T(std::istream *stream)
+database_entry_T::database_entry_T(std::istream *stream)
 {
     id = default_id();
     if (stream)
@@ -74,7 +74,7 @@ anno_db_entry_T::anno_db_entry_T(std::istream *stream)
  * Create nice default settings if an item is newly created.
  */
         void
-anno_db_entry_T::set_new_object_defaults()
+database_entry_T::set_new_object_defaults()
 {
     options_T options;
 
@@ -95,7 +95,7 @@ anno_db_entry_T::set_new_object_defaults()
 }
 
     void
-anno_db_entry_T::prompt_user_for_values()
+database_entry_T::prompt_user_for_values()
 {
 
 }
@@ -104,7 +104,7 @@ anno_db_entry_T::prompt_user_for_values()
  * Dump our data to the supplied stream.
  */
     bool
-anno_db_entry_T::dump(std::ostream &stream)
+database_entry_T::dump(std::ostream &stream)
 {
     /* block header */
     stream << id << ":" << std::endl;
@@ -126,13 +126,13 @@ anno_db_entry_T::dump(std::ostream &stream)
  * Display our data
  */
     void
-anno_db_entry_T::display(std::ostream &stream)
+database_entry_T::display(std::ostream &stream)
 {
     /* block header */
     stream << id << ":" << std::endl;
 
     /* entries */
-    anno_db_entry_keys_T::iterator i;
+    database_entry_keys_T::iterator i;
     for (i = keys.begin() ; i != keys.end() ; ++i)
     {
         stream << "  " << i->first << "=" << i->second << std::endl;
@@ -143,7 +143,7 @@ anno_db_entry_T::display(std::ostream &stream)
  * Get the default id for an object of our kind
  */
     std::string
-anno_db_entry_T::default_id()
+database_entry_T::default_id()
 {
     return "item";
 }
@@ -153,7 +153,7 @@ anno_db_entry_T::default_id()
  * fallback if necessary.
  */
     bool
-anno_db_entry_T::recognise_item(std::string item)
+database_entry_T::recognise_item(std::string item)
 {
     return true;
 }

@@ -25,24 +25,24 @@
 #include "src/exceptions.hh"
 
 /*
- * Create a new anno_db_T instance
+ * Create a new database_T instance
  */
-anno_db_T::anno_db_T()
+database_T::database_T()
 {
 
 }
 
 /*
- * Create a new anno_db_T instance, and populate it with items read from the
+ * Create a new database_T instance, and populate it with items read from the
  * stream supplied.
  */
-anno_db_T::anno_db_T(std::istream &stream)
+database_T::database_T(std::istream &stream)
 {
     load(stream);
 }
 
     void
-anno_db_T::load(std::istream &stream)
+database_T::load(std::istream &stream)
 {
     while (! stream.eof())
     {
@@ -50,7 +50,7 @@ anno_db_T::load(std::istream &stream)
         std::string s;
         if (std::getline(stream, s))
         {
-            anno_db_entry_T *entry;
+            database_entry_T *entry;
 
             /* strip trailing colon */
             if (s[s.length() - 1] != ':')
@@ -58,10 +58,10 @@ anno_db_T::load(std::istream &stream)
             s.erase(s.length() - 1);
 
             /* try to find a relevant class */
-            if (anno_db_note_entry_T::recognise_item(s))
-                entry = new anno_db_note_entry_T(&stream);
-            else if (anno_db_entry_T::recognise_item(s))
-                entry = new anno_db_entry_T(&stream);
+            if (database_note_entry_T::recognise_item(s))
+                entry = new database_note_entry_T(&stream);
+            else if (database_entry_T::recognise_item(s))
+                entry = new database_entry_T(&stream);
             else
                 throw item_not_recognised_E();
 
@@ -74,9 +74,9 @@ anno_db_T::load(std::istream &stream)
  * Dump our data (including our entries) to the supplied output stream
  */
     bool
-anno_db_T::dump(std::ostream &stream)
+database_T::dump(std::ostream &stream)
 {
-    std::vector<anno_db_entry_T * >::iterator i;
+    std::vector<database_entry_T * >::iterator i;
     for (i = entries.begin() ; i != entries.end() ; ++i)
     {
         if (! (*i)->dump(stream))
@@ -89,9 +89,9 @@ anno_db_T::dump(std::ostream &stream)
  * Display our data (including our entries) to the supplied output stream
  */
     void
-anno_db_T::display(std::ostream &stream)
+database_T::display(std::ostream &stream)
 {
-    std::vector<anno_db_entry_T * >::iterator i;
+    std::vector<database_entry_T * >::iterator i;
     for (i = entries.begin() ; i != entries.end() ; ++i)
         (*i)->display(stream);
 }
@@ -99,9 +99,9 @@ anno_db_T::display(std::ostream &stream)
 /*
  * Tidy up. Delete all of our entries.
  */
-anno_db_T::~anno_db_T()
+database_T::~database_T()
 {
-    std::vector<anno_db_entry_T * >::iterator i;
+    std::vector<database_entry_T * >::iterator i;
     for (i = entries.begin() ; i != entries.end() ; ++i)
         delete *i;
 }

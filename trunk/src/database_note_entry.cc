@@ -27,8 +27,8 @@
 /*
  * Create a new item read from the supplied stream.
  */
-anno_db_note_entry_T::anno_db_note_entry_T(std::istream *stream)
-    : anno_db_entry_T(stream)
+database_note_entry_T::database_note_entry_T(std::istream *stream)
+    : database_entry_T(stream)
 {
 }
 
@@ -36,7 +36,7 @@ anno_db_note_entry_T::anno_db_note_entry_T(std::istream *stream)
  * Get the default id for an object of our kind
  */
     std::string
-anno_db_note_entry_T::default_id()
+database_note_entry_T::default_id()
 {
     return "note";
 }
@@ -45,7 +45,7 @@ anno_db_note_entry_T::default_id()
  * Display pretty output
  */
     void
-anno_db_note_entry_T::display(std::ostream &stream)
+database_note_entry_T::display(std::ostream &stream)
 {
     options_T options;
 
@@ -66,7 +66,7 @@ anno_db_note_entry_T::display(std::ostream &stream)
         {
             std::string date_str = "(no date)";
             {
-                anno_db_entry_keys_T::iterator pos = keys.find("created_at");
+                database_entry_keys_T::iterator pos = keys.find("created_at");
                 if (keys.end() != pos)
                 {
                     time_t date_time_t = strtol(pos->second.c_str(), NULL, 10);
@@ -102,21 +102,21 @@ anno_db_note_entry_T::display(std::ostream &stream)
  * Do we recognise this item?
  */
     bool
-anno_db_note_entry_T::recognise_item(std::string item)
+database_note_entry_T::recognise_item(std::string item)
 {
     return (item == "note");
 }
 
     void
-anno_db_note_entry_T::set_new_object_defaults()
+database_note_entry_T::set_new_object_defaults()
 {
-    anno_db_entry_T::set_new_object_defaults();
+    database_entry_T::set_new_object_defaults();
 }
 
     void
-anno_db_note_entry_T::prompt_user_for_values()
+database_note_entry_T::prompt_user_for_values()
 {
-    anno_db_entry_T::prompt_user_for_values();
+    database_entry_T::prompt_user_for_values();
 
     char *input = NULL;
     input = get_user_input("Title > ");

@@ -46,7 +46,7 @@ action_list_handler_T::operator() (void)
             else
                 throw annodir_file_unreadable_E();
         }
-        std::auto_ptr<anno_db_T > db(new anno_db_T(*f));
+        std::auto_ptr<database_T > db(new database_T(*f));
 
         /* display the db */
         db->display(std::cout);

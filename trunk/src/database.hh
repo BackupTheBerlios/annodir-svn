@@ -26,15 +26,15 @@
 #include <vector>
 #include <iostream>
 
-class anno_db_T
+class database_T
 {
     public:
-        anno_db_T();
-        anno_db_T(std::istream &stream);
+        database_T();
+        database_T(std::istream &stream);
 
-        ~anno_db_T();
+        ~database_T();
 
-        std::vector<anno_db_entry_T * > entries;
+        std::vector<database_entry_T * > entries;
         virtual void load(std::istream &stream);
         virtual bool dump(std::ostream &stream);
         virtual void display(std::ostream &stream);

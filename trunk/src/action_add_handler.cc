@@ -39,7 +39,7 @@ action_add_handler_T::operator() (void)
     try
     {
         /* load database */
-        std::auto_ptr<anno_db_T > db(new anno_db_T());
+        std::auto_ptr<database_T > db(new database_T());
 
         std::auto_ptr<std::istream > f(new 
                 std::ifstream(options.get_filename().c_str()));
@@ -52,7 +52,7 @@ action_add_handler_T::operator() (void)
         }
 
         /* add a new entry */
-        anno_db_entry_T *entry = new anno_db_note_entry_T;
+        database_entry_T *entry = new database_note_entry_T;
         entry->set_new_object_defaults();
         entry->prompt_user_for_values();
         db->entries.push_back(entry);
