@@ -49,7 +49,10 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     {
         _index = parent->_index;
         _index.push_back(1);
-        indent_str = parent->indent_str + "  ";
+        indent_str = parent->indent_str;
+        /* top-level children nodes shouldn't be indented */
+        if (parent->parent)
+            indent_str.append("  ");
     }
     /* root */
     else
@@ -58,22 +61,6 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
         return;
     }
 
-    /* perhaps an index class is needed... */
-
-    /* construct index string */
-    std::vector<int >::iterator i;
-    for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
-    {
-        /* is there a C++ way of doing this? */
-        char buf[8];
-        snprintf(buf, sizeof(buf), "%d.", *i);
-        index_str.append(buf);
-    }
-
-    /* chop trailing '.' */
-    if (index_str[index_str.length() - 1] == '.')
-        index_str.erase(index_str.length() - 1);
-    
     util::debug_msg("initialized new node with index %s", index_str.c_str());
 }
 
@@ -81,6 +68,27 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
 node_entry_T::~node_entry_T()
 {
     delete entry;
+}
+
+/*
+ * Construct index string representation 
+ */
+    std::string const&
+node_entry_T::index()
+{
+    std::vector<int >::iterator i;
+    for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
+    {
+        char buf[8];
+        std::snprintf(buf, sizeof(buf), "%d.", *i);
+        index_str.append(buf);
+    }
+
+    /* chop trailing '.' */
+    if (index_str[index_str.length() - 1] == '.')
+        index_str.erase(index_str.length() - 1);
+
+    return index_str;
 }
 
 /* vim: set tw=80 sw=4 et : */

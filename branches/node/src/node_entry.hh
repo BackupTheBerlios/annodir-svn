@@ -39,11 +39,7 @@ class node_entry_T
 	std::vector<node_entry_T * > children;
         database_entry_T *entry;
 
-        /* next sibling node -- this needs to be public,
-         * because it's assigned by the next node */
-        node_entry_T *next;
-
-        std::string const &index() { return node_entry_T::index_str; }
+        std::string const &index();
         std::string const &indent() { return node_entry_T::indent_str; }
 
     private:
@@ -53,6 +49,7 @@ class node_entry_T
 
         node_entry_T *parent;   /* parent */
         node_entry_T *prev;     /* previous sibling */
+        node_entry_T *next;     /* next sibling */
 };
 
 #endif
