@@ -34,8 +34,6 @@ AC_CHECK_FUNCS(asprintf,,
     [AC_MSG_ERROR([either asprintf or snprintf is required])])])
 
 echo "--- checking for optional things ---"
-AC_CHECK_HEADERS(readline/readline.h)
-AC_CHECK_LIB([readline], [readline])
 AC_CHECK_HEADERS(getopt.h)
 AC_CHECK_FUNCS(getopt_long)
 
