@@ -66,9 +66,6 @@ static struct option long_options[] =
       /* enable debugging code */
     {"debug",             no_argument,         0,   'D'},
 
-      /* index */
-    {"index",             required_argument,   0,   'i'},
-
     /* actions */
     {"list",              optional_argument,   0,   'l'},
     {"add",               optional_argument,   0,   'a'},
@@ -83,7 +80,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRhD\3i:f:t:u:E::a::e::l::d::";
+static const char *short_options = "vcsRhD\3f:t:u:E::a::e::l::d::";
 
 /*
  * Display usage.
@@ -173,10 +170,6 @@ handle_options(int argc, char *argv[], options_T *opts)
                 opts->set_type(optarg);
                 break;
 
-            case 'i': /* index */
-                opts->set_index(optarg);
-                break;
-
             case 'D': /* debug */
                 opts->set_debug(true);
                 break;
@@ -185,12 +178,26 @@ handle_options(int argc, char *argv[], options_T *opts)
                 if (opts->action() != action_unspecified)
                     throw args_one_action_only_E();
                 opts->set_action(action_add);
+                if (optarg)
+                {
+                    /* chop '=' in case user does -a=N */
+                    if (optarg[0] == '=')
+                        optarg++;
+                    opts->set_index(optarg);
+                }
                 break;
 
             case 'e': /* action edit */
                 if (opts->action() != action_unspecified)
                     throw args_one_action_only_E();
                 opts->set_action(action_edit);
+                if (optarg)
+                {
+                    /* chop '=' in case user does -a=N */
+                    if (optarg[0] == '=')
+                        optarg++;
+                    opts->set_index(optarg);
+                }
                 break;
 
             case 'l': /* action list */
@@ -203,6 +210,13 @@ handle_options(int argc, char *argv[], options_T *opts)
                 if (opts->action() != action_unspecified)
                     throw args_one_action_only_E();
                 opts->set_action(action_delete);
+                if (optarg)
+                {
+                    /* chop '=' in case user does -a=N */
+                    if (optarg[0] == '=')
+                        optarg++;
+                    opts->set_index(optarg);
+                }
                 break;
 
             case 'E': /* action export */
