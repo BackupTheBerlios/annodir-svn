@@ -43,13 +43,13 @@ class node_entry_T
          * because it's assigned by the next node */
         node_entry_T *next;
 
-        std::string indent;
-
         std::string const &index() { return node_entry_T::index_str; }
+        std::string const &indent() { return node_entry_T::indent_str; }
 
     private:
         std::vector<int > _index;
         std::string index_str;
+        std::string indent_str;
 
         node_entry_T *parent;   /* parent */
         node_entry_T *prev;     /* previous sibling */

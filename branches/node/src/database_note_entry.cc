@@ -64,7 +64,7 @@ database_note_entry_T::display(std::ostream &stream)
 {
     options_T options;
 
-    stream << mynode->indent << mynode->index() << ". "
+    stream << mynode->indent() << mynode->index() << ". "
         << keys.get_with_default("title", "Untitled");
 
     if (!options.summarise())
@@ -72,7 +72,7 @@ database_note_entry_T::display(std::ostream &stream)
         if (options.compact() and !keys["body"].empty())
             stream << ": ";
         else if (!options.compact())
-            stream << std::endl << mynode->indent << mynode->indent << " ";
+            stream << std::endl << mynode->indent() << mynode->indent() << " ";
 
         stream
             << keys.get_with_default("body", "(no text)");
@@ -95,7 +95,7 @@ database_note_entry_T::display(std::ostream &stream)
             else /* !compact */
             {
                 stream << std::endl;
-                stream << mynode->indent
+                stream << mynode->indent()
                     << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
                 stream << ", " << date_str;
             } /* if !compact */
