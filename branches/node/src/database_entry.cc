@@ -21,6 +21,8 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#include <cstdio>
+
 #include "src/database_entry.hh"
 #include "src/node_entry.hh"
 #include "src/database_note_entry.hh"
@@ -126,14 +128,14 @@ database_entry_T::set_new_object_defaults()
     asprintf(&str, "%lu", (unsigned long) time(NULL));
 #else
     char str[255] = { 0 };
-    snprintf(str, sizeof(str) - 1, "%lu", (unsigned long) time(NULL));
+    std::snprintf(str, sizeof(str) - 1, "%lu", (unsigned long) time(NULL));
 #endif
 
     keys["created_by"].assign(options.get_user());
     keys["created_at"].assign(str);
 
 #ifdef HAVE_ASPRINTF
-    free(str);
+    std::free(str);
 #endif
 }
 
@@ -155,10 +157,8 @@ database_entry_T::dump(std::ostream &stream)
     /* entries */
     std::map<std::string, std::string >::iterator i;
     for (i = keys.begin() ; i != keys.end() ; ++i)
-    {
         stream << mynode->indent() << "  " << i->first
             << "=" << i->second << std::endl;
-    }
 
     /* end */
     stream << mynode->indent() << "end" << std::endl;

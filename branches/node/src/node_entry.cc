@@ -37,7 +37,7 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     prev = next = 0;
 
     /* child with siblings */
-    if (parent and !(parent->children.empty()))
+    if (parent and not (parent->children.empty()))
     {
         prev = parent->children.back();
         prev->next = this;

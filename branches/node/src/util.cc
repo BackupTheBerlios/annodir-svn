@@ -24,6 +24,7 @@
 #include "config.h"
 #include <string>
 #include <iostream>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
