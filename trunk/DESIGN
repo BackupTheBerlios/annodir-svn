@@ -34,6 +34,14 @@ for notes, todo items and so on. Common fields such as created_by (multi user is
 good, once we figure out locking) can be handled automagically by the base entry
 class maybe?
 
+Maybe a --title option for setting a title for a certain annodir file.  Could 
+possibly inherit from database_entry_T and use the following format at the top
+of the file:
+
+    title:
+	title=The Title of this Directory Annotation
+    end
+
 == Internal Workings
 
 We've got a number of key components:
@@ -53,7 +61,9 @@ should still be implemented, since any POSIX.2-compliant OS should support it.
 -- action handlers
 
 Different handlers for different actions. We have a list handler, an add handler
-and so on.
+and so on.  Also, an action for creating TODO files (nicely formatted with
+dates, time, user, etc).  Maybe a link action for linking in annodir files from
+other directories.
 
 -- extra input
 
