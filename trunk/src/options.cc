@@ -1,5 +1,6 @@
 /*
  * annodir -- src/options,cc
+ * $Id$
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
  *
