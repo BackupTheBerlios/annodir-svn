@@ -64,7 +64,7 @@ database_note_entry_T::display(std::ostream &stream)
 {
     options_T options;
 
-    stream << "[note] "
+    stream << mynode->indent << mynode->index() << ". "
         << keys.get_with_default("title", "Untitled");
 
     if (!options.summarise())
@@ -72,7 +72,7 @@ database_note_entry_T::display(std::ostream &stream)
         if (options.compact() and !keys["body"].empty())
             stream << ": ";
         else if (!options.compact())
-            stream << std::endl << "  ";
+            stream << std::endl << mynode->indent << mynode->indent << " ";
 
         stream
             << keys.get_with_default("body", "(no text)");
@@ -95,19 +95,23 @@ database_note_entry_T::display(std::ostream &stream)
             else /* !compact */
             {
                 stream << std::endl;
-                stream << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
+                stream << mynode->indent
+                    << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
                 stream << ", " << date_str;
             } /* if !compact */
 
         } /* if !verbose */
+
+        stream << std::endl;
+
+        /* loop through children */
+        std::vector<node_entry_T * >::iterator i;
+        for (i = mynode->children.begin() ; i != mynode->children.end() ; ++i)
+            (*i)->entry->display(stream);
+
     } /* if !summarise */
-
-    stream << std::endl;
-
-    /* loop through children */
-    std::vector<node_entry_T * >::iterator i;
-    for (i = mynode->children.begin() ; i != mynode->children.end() ; ++i)
-        (*i)->entry->display(stream);
+    else
+        stream << std::endl;
 }
 
 /*

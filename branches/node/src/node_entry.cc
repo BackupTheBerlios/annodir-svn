@@ -42,12 +42,14 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
         prev->next = this;
         _index = prev->_index;
         _index.back()++;
+        indent = prev->indent;
     }
     /* only child */
     else if (parent)
     {
         _index = parent->_index;
         _index.push_back(1);
+        indent = parent->indent + "  ";
     }
     /* root */
     else

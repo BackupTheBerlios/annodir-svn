@@ -150,17 +150,17 @@ database_entry_T::prompt_user_for_values()
 database_entry_T::dump(std::ostream &stream)
 {
     /* block header */
-    stream << id << ":" << std::endl;
+    stream << mynode->indent << id << ":" << std::endl;
 
     /* entries */
     std::map<std::string, std::string >::iterator i;
     for (i = keys.begin() ; i != keys.end() ; ++i)
     {
-        stream << "  " << i->first << "=" << i->second << std::endl;
+        stream << mynode->indent << i->first << "=" << i->second << std::endl;
     }
 
     /* end */
-    stream << "end" << std::endl;
+    stream << mynode->indent << "end" << std::endl;
 
     /* loop through children */
     std::vector<node_entry_T * >::iterator x;
@@ -181,13 +181,14 @@ database_entry_T::display(std::ostream &stream)
     if (id != "metadata")
     {
         /* block header */
-        stream << id << ":" << std::endl;
+        stream << mynode->indent << id << ":" << std::endl;
 
         /* entries */
         database_entry_keys_T::iterator i;
         for (i = keys.begin() ; i != keys.end() ; ++i)
         {
-            stream << "  " << i->first << "=" << i->second << std::endl;
+            stream << mynode->indent << i->first << "=" << i->second
+                << std::endl;
         }
     }
 
@@ -206,14 +207,15 @@ database_entry_T::do_export(std::ostream &stream)
     if (id == "metadata")
         stream << "[" << keys["title"] << "] " << std::endl; 
     else
-        stream << "[" << id << "] " 
+        stream << mynode->indent << "[" << id << "] " 
             << keys.get_with_default("title", "Untitled") << std::endl;
 
     if (!keys["body"].empty())
-        stream << keys.get_with_default("body", "(no text)") << std::endl;
+        stream << mynode->indent
+            << keys.get_with_default("body", "(no text)") << std::endl;
 
-    stream << "created by: " << keys.get_with_default("created_by",
-            "(anonymous)");
+    stream << mynode->indent << "created by: "
+        << keys.get_with_default("created_by", "(anonymous)");
     
     std::string date_str = "(no date)";
     {
