@@ -76,12 +76,12 @@ static struct option long_options[] =
 
     /* standard stuff */
     {"help",              no_argument,         0,   'h'},
-    {"version",           no_argument,         0,   '\3'},
+    {"version",           no_argument,         0,   'V'},
     { 0, 0, 0, 0 }
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRhD\3f:t:u:E::a::e::l::d::";
+static const char *short_options = "vcsRhDVf:t:u:E::a::e::l::d::";
 
 /*
  * Display usage.
@@ -90,7 +90,7 @@ static const char *short_options = "vcsRhD\3f:t:u:E::a::e::l::d::";
 usage()
 {
     std::cerr
-        << "Usage: annodir [options]" << std::endl
+        << "Usage: annodir [options] [action]" << std::endl
         << "Try annodir "
 #ifdef HAVE_GETOPT_LONG
         << "--help"
@@ -106,9 +106,37 @@ usage()
     void
 help()
 {
-   /* TODO: finish */
-    std::cerr
-        << "TODO" << std::endl;
+    std::cout
+        << "Usage: annodir [options] [action]" << std::endl
+        << "-h, --help      Display this help message." << std::endl
+        << "-V, --version   Display version information." << std::endl
+        << std::endl
+        << "Where [options] can be any of the following:" << std::endl
+        << "-v, --verbose   Display extra information (dates, creator, etc)."
+            << std::endl
+        << "-c, --compact   Display entries in a compact form." << std::endl
+        << "-s, --summarise, --summarize" << std::endl
+        << "                Display only entry titles (and no sub-entries)."
+            << std::endl
+        << "-R, --recursive Recursively do specified action." << std::endl
+        << "-f, --file      Use the specified file rather than ./.annodir."
+            << std::endl
+        << "-u, --user      Use the specified user rather than the one you are"
+            << " logged in as." << std::endl
+        << "-t, --type      Specify entry type (defaults to 'note')."
+            << std::endl
+        << "-D, --debug     Display verbose messages meant to aid in debugging."
+            << std::endl
+        << std::endl
+        << "Where [action] can be one of the following (defaults to --list)."
+            << std::endl
+        << "-a, --add       Add a new entry." << std::endl
+        << "-d, --delete    Delete an entry." << std::endl
+        << "-e, --edit      Edit an entry." << std::endl
+        << "-l, --list      List entries (default action)." << std::endl
+        << "-E, --export    Export entries to specified file (defaults to "
+            << "./annotations)." << std::endl
+        ;        
 }
 
 /*
@@ -232,7 +260,7 @@ handle_options(int argc, char *argv[], options_T *opts)
                 throw args_help_E();
                 break;
 
-            case '\3': /* version */
+            case 'V': /* version */
                 throw args_version_E();
                 break;
 
