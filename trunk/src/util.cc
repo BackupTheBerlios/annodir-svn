@@ -34,17 +34,47 @@
 #include "src/options.hh"
 
     char *
-util::basename(char *path)
+util::basename(const char *path)
 {
-    char *s = std::strrchr(path, '/');
-    return (s ? s + 1 : path);
+    std::string s = path;
+
+    /* chop any trailing /'s */
+    while (s[s.length() - 1] == '/' and s.length() > 1)
+	s.erase(s.length() - 1);
+
+    char *p = std::strrchr(s.c_str(), '/');
+    return (p ? (*(p + 1) != '\0' ? p + 1 : p) : const_cast<char * >(path));
+}
+
+    char *
+util::basename(std::string const &path)
+{
+    return util::basename(path.c_str());
+}
+
+    const char *
+util::dirname(const char *path)
+{
+    std::string s = path;
+    size_t path_len = std::strlen(path);
+    size_t base_len = std::strlen(util::basename(path));
+    size_t len = (path[path_len - 1] == '/' ? 2 : 1);
+    len = path_len - base_len - (path_len - base_len - len == 0 ? len - 1 : len);
+
+    return s.substr(0, len).c_str();
+}
+
+    const char *
+util::dirname(std::string const &path)
+{
+    return util::dirname(path.c_str());
 }
 
     std::string
 util::format_datestr(std::string& epoch)
 {
     std::string date_str;
-    std::time_t date_time_t = std::strtol(epoch.c_str(), NULL, 10);
+    time_t date_time_t = std::strtol(epoch.c_str(), NULL, 10);
 
     if (0 != date_time_t)
     {
