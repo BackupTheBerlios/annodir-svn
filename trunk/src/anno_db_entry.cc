@@ -21,6 +21,18 @@
 
 #include "anno_db_entry.hh"
 
+    std::string&
+anno_db_entry_keys_T::get_with_default(std::string key,
+        std::string default_value)
+{
+    anno_db_entry_keys_T::iterator pos;
+    pos = this->find(key);
+    if (pos != this->end())
+        return pos->second;
+    else
+        return default_value;
+}
+
 /*
  * Load from stream
  */
@@ -93,7 +105,7 @@ anno_db_entry_T::display(std::ostream &stream)
     stream << id << ":" << std::endl;
 
     /* entries */
-    std::map<std::string, std::string >::iterator i;
+    anno_db_entry_keys_T::iterator i;
     for (i = keys.begin() ; i != keys.end() ; ++i)
     {
         stream << "  " << i->first << "=" << i->second << std::endl;

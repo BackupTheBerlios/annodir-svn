@@ -26,6 +26,13 @@
 #include <string>
 #include <iostream>
 
+class anno_db_entry_keys_T : public std::map<std::string, std::string >
+{
+    public:
+        std::string& get_with_default(std::string key,
+                std::string default_value);
+};
+
 class anno_db_entry_T
 {
     public:
@@ -36,7 +43,7 @@ class anno_db_entry_T
         virtual void load(std::istream &stream);
         virtual void display(std::ostream &stream);
 
-        std::map<std::string, std::string > keys;
+        anno_db_entry_keys_T keys;
 
         static bool recognise_item(std::string item);
 
