@@ -21,6 +21,7 @@
 
 #include "src/anno_db_note_entry.hh"
 #include "src/options.hh"
+#include <cstdlib>
 
 /*
  * Create a new item read from the supplied stream.
@@ -69,17 +70,32 @@ anno_db_note_entry_T::display(std::ostream &stream)
 
     if (options.verbose())
     {
+        std::string date_str = "(no date)";
+        {
+            anno_db_entry_keys_T::iterator pos = keys.find("created_at");
+            if (keys.end() != pos)
+            {
+                time_t date_time_t = strtol(pos->second.c_str(), NULL, 10);
+                if (0 != date_time_t)
+                {
+                    char buf[255] = { 0 };
+                    strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
+                    date_str.assign(buf);
+                }
+            }
+        }
+
         if (options.compact())
         {
             stream << " [" << keys.get_with_default("created_by", "(anonymous)");
-            stream << ", " << keys.get_with_default("created_at", "(no date)");
+            stream << ", " << date_str;
             stream << "]";
         }
         else
         {
             stream << std::endl;
             stream << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
-            stream << " on " << keys.get_with_default("created_at", "(no date)");
+            stream << ", " << date_str;
         }
     }
 
