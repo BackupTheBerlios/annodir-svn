@@ -31,7 +31,7 @@
 #include "src/input.hh"
 #include "src/util.hh"
 
-database_note_entry_T::database_note_entry_T(node_entry_T *node)
+database_note_entry_T::database_note_entry_T(const node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
@@ -41,7 +41,7 @@ database_note_entry_T::database_note_entry_T(node_entry_T *node)
  * Create a new item read from the supplied stream.
  */
 database_note_entry_T::database_note_entry_T(std::istream *stream,
-    node_entry_T *node) : database_entry_T(stream, node)
+    const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }
@@ -104,11 +104,9 @@ database_note_entry_T::display(std::ostream &stream)
 
         stream << std::endl;
 
-        /* loop through children */
-        std::vector<node_entry_T * >::iterator i;
-        for (i = mynode->children.begin() ; i != mynode->children.end() ; ++i)
-            (*i)->entry->display(stream);
-        
+        /* recurse through child nodes */
+        mynode->recurse(&database_entry_T::display, stream);
+
     } /* if !summarise */
     else
         stream << std::endl;

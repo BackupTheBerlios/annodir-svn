@@ -42,7 +42,7 @@ class node_entry_T
 
     public:
         node_entry_T();
-	node_entry_T(node_entry_T *parent_node = NULL);
+	node_entry_T(const node_entry_T *parent_node = NULL);
 	virtual ~node_entry_T();
         
         database_entry_T *entry;
@@ -51,7 +51,9 @@ class node_entry_T
         std::string const &index();
         std::string const &indent() { return node_entry_T::indent_str; }
 
-        virtual bool dump(std::ostream &stream) { return entry->dump(stream); }
+        virtual void recurse(void (database_entry_T::*fp)(std::ostream&),
+            std::ostream &stream);
+        virtual void dump(std::ostream &stream) { entry->dump(stream); }
         virtual void display(std::ostream &stream) { entry->display(stream); }
         virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
 };

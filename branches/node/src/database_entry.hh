@@ -39,12 +39,12 @@ class database_entry_keys_T : public std::map<std::string, std::string >
 class database_entry_T
 {
     public:
-        database_entry_T(node_entry_T *node = NULL);
+        database_entry_T(const node_entry_T *node = NULL);
         database_entry_T(std::istream *stream = NULL, 
-            node_entry_T *node = NULL);
+            const node_entry_T *node = NULL);
         virtual ~database_entry_T() { };
 
-        virtual bool dump(std::ostream &stream);
+        virtual void dump(std::ostream &stream);
         virtual void load(std::istream &stream);
         virtual void display(std::ostream &stream);
         virtual void do_export(std::ostream &stream);

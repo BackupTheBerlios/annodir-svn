@@ -34,9 +34,9 @@ class database_link_entry_T : public database_entry_T
 	virtual std::string default_id();
 
     public:
-        database_link_entry_T(node_entry_T *node = NULL);
+        database_link_entry_T(const node_entry_T *node = NULL);
 	database_link_entry_T(std::istream *stream = NULL,
-            node_entry_T *node = NULL);
+            const node_entry_T *node = NULL);
 
 	virtual void display(std::ostream &stream);
 

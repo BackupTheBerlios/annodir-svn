@@ -47,20 +47,21 @@ database_entry_keys_T::get_with_default(std::string key,
 /*
  * Create a new entry (belonging to the specified node)
  */
-database_entry_T::database_entry_T(node_entry_T *node)
+database_entry_T::database_entry_T(const node_entry_T *node)
 {
     id = default_id();
-    mynode = node;
+    mynode = const_cast<node_entry_T * > (node);
 }
 
 /*
  * Create a new entry (belonging to the specified node)
  * read from the supplied stream.
  */
-database_entry_T::database_entry_T(std::istream *stream, node_entry_T *node)
+database_entry_T::database_entry_T(std::istream *stream,
+    const node_entry_T *node)
 {
     id = default_id();
-    mynode = node;
+    mynode = const_cast<node_entry_T * > (node);
 
     if (stream)
         load(*stream);
@@ -88,7 +89,7 @@ database_entry_T::load(std::istream &stream)
         if (s[s.length() - 1] == ':')
         {
             s.erase(s.length() - 1);
-            database_T *node = new database_T(mynode);
+            node_entry_T *node = new node_entry_T(mynode);
             
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
@@ -148,7 +149,7 @@ database_entry_T::prompt_user_for_values()
 /*
  * Dump our data to the supplied stream.
  */
-    bool
+    void
 database_entry_T::dump(std::ostream &stream)
 {
     /* block header */
@@ -160,18 +161,11 @@ database_entry_T::dump(std::ostream &stream)
         stream << mynode->indent() << "  " << i->first
             << "=" << i->second << std::endl;
 
-    /* loop through children */
-    std::vector<node_entry_T * >::iterator x;
-    for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
-    {
-        if (! (*x)->entry->dump(stream))
-            return false;
-    }
+    /* recurse through child node entries */
+    mynode->recurse(&database_entry_T::dump, stream);
 
     /* end */
     stream << mynode->indent() << "end" << std::endl;
-
-    return true;
 }
 
 /*
@@ -188,16 +182,12 @@ database_entry_T::display(std::ostream &stream)
         /* entries */
         database_entry_keys_T::iterator i;
         for (i = keys.begin() ; i != keys.end() ; ++i)
-        {
             stream << mynode->indent() << i->first << "=" << i->second
                 << std::endl;
-        }
     }
 
-    /* loop through children */
-    std::vector<node_entry_T * >::iterator x;
-    for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
-        (*x)->entry->display(stream);
+    /* recurse through child node entries */
+    mynode->recurse(&database_entry_T::display, stream);
 }
 
 /*
@@ -234,10 +224,8 @@ database_entry_T::do_export(std::ostream &stream)
 
     stream << std::endl << std::endl;
 
-    /* loop through children */
-    std::vector<node_entry_T * >::iterator i;
-    for (i = mynode->children.begin() ; i != mynode->children.end() ; ++i)
-        (*i)->entry->do_export(stream);
+    /* recurse through child nodes */
+    mynode->recurse(&database_entry_T::do_export, stream);
 }
 
 /*

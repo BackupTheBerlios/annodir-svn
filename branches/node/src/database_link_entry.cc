@@ -36,7 +36,7 @@
 /*
  * Create a new entry (belong to the specified node)
  */
-database_link_entry_T::database_link_entry_T(node_entry_T *node)
+database_link_entry_T::database_link_entry_T(const node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
@@ -46,7 +46,7 @@ database_link_entry_T::database_link_entry_T(node_entry_T *node)
  * Create a new item read from the supplied stream.
  */
 database_link_entry_T::database_link_entry_T(std::istream *stream,
-    node_entry_T *node) : database_entry_T(stream, node)
+    const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }

@@ -21,10 +21,15 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#include <algorithm>
+#include <functional>
+#include <iostream>
 #include <string>
 #include <cstdio>
 #include <cstdlib>
+
 #include "src/node_entry.hh"
+#include "src/database_entry.hh"
 #include "src/util.hh"
 
 node_entry_T::node_entry_T()
@@ -38,9 +43,9 @@ node_entry_T::node_entry_T()
  *  - Construct the index and it's string representation
  *  - Construct indentation string of the appropriate width
  */
-node_entry_T::node_entry_T(node_entry_T *parent_node)
+node_entry_T::node_entry_T(const node_entry_T *parent_node)
 {
-    parent = parent_node;
+    parent = const_cast<node_entry_T * > (parent_node);
     prev = next = 0;
 
     /* child with siblings */
@@ -109,6 +114,19 @@ node_entry_T::index()
     return index_str;
 }
 
+/*
+ * recurse through child nodes running the specified function for each
+ */
+    void
+node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
+    std::ostream &stream)
+{
+    std::vector<node_entry_T * >::iterator i;
+    for (i = children.begin() ; i != children.end() ; ++i)
+        ((*i)->entry->*fp)(stream);
+
+    //std::for_each(children.begin(), children.end(), ... );
+}
 
 /*
  * Tidy up

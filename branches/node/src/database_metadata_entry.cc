@@ -34,7 +34,7 @@
 #include "src/options.hh"
 #include "src/util.hh"
 
-database_metadata_entry_T::database_metadata_entry_T(node_entry_T *node)
+database_metadata_entry_T::database_metadata_entry_T(const node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
@@ -44,7 +44,7 @@ database_metadata_entry_T::database_metadata_entry_T(node_entry_T *node)
  * Create a new item read from the supplied stream.
  */
 database_metadata_entry_T::database_metadata_entry_T(std::istream *stream,
-    node_entry_T *node) : database_entry_T(stream, node)
+    const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }
@@ -80,7 +80,7 @@ database_metadata_entry_T::set_new_object_defaults()
  * NOTE: this is identical to database_entry_T::dump() with the 
  * exception that "end" needs to be printed BEFORE child entries.
  */
-    bool
+    void
 database_metadata_entry_T::dump(std::ostream &stream)
 {
     /* block header */
@@ -95,14 +95,8 @@ database_metadata_entry_T::dump(std::ostream &stream)
     /* end */
     stream << mynode->indent() << "end" << std::endl;
     
-    /* loop through children */
-    std::vector<node_entry_T * >::iterator x;
-    for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
-    {
-        if (! (*x)->entry->dump(stream))
-            return false;
-    }
-    return true;
+    /* recurse through child nodes */
+    mynode->recurse(&database_entry_T::dump, stream);
 }
 
 

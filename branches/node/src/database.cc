@@ -32,7 +32,7 @@
 #include "src/exceptions.hh"
 #include "src/util.hh"
 
-database_T::database_T(node_entry_T *parent_node)
+database_T::database_T(const node_entry_T *parent_node)
     : node_entry_T(parent_node)
 {
 
@@ -42,7 +42,7 @@ database_T::database_T(node_entry_T *parent_node)
  * Create a new database_T instance, and populate it with items read from the
  * stream supplied.
  */
-database_T::database_T(std::istream &stream, node_entry_T *parent_node)
+database_T::database_T(std::istream &stream, const node_entry_T *parent_node)
     : node_entry_T(parent_node)
 {
     load(stream);
@@ -74,7 +74,7 @@ database_T::load(std::istream &stream)
                 continue;
             }
 
-            database_T *node = new database_T(this);
+            node_entry_T *node = new node_entry_T(this);
 
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
