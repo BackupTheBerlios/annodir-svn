@@ -15,5 +15,5 @@ annodir_SOURCES = \
 
 LIBS = @READLINE_LIBS@
 
-AM_CFLAGS = -Wall
+AM_CXXFLAGS = -Wall
 MAINTAINERCLEANFILES = Makefile.in *~
