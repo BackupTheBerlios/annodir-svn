@@ -150,7 +150,7 @@ database_link_entry_T::display(std::ostream &stream)
     try
     {
         std::auto_ptr<std::ifstream > f(new
-                std::ifstream(keys["location"].c_str()));
+            std::ifstream(keys["location"].c_str()));
         if (not (*f))
         {
             if (ENOENT == errno)
@@ -158,21 +158,53 @@ database_link_entry_T::display(std::ostream &stream)
             else
                 throw annodir_file_unreadable_E();
         }
-        util::debug_msg("Loading link at '%s'", keys["location"].c_str());
-        std::auto_ptr<database_T > db(new database_T(*f, mynode->parent()));
 
-        db->display(std::cout);
+        util::debug_msg("Loading link at '%s'", keys["location"].c_str());
+        
+        std::auto_ptr<database_T > db(new database_T(*f, mynode));
+    
+        stream << mynode->indent() << mynode->index() << ". " << keys["title"];
+
+        if (not options.summarise())
+        {
+            if (options.verbose())
+            {
+                std::string date_str = "(no date)";
+                {
+                    database_entry_keys_T::iterator pos = keys.find("created_at");
+                    if (keys.end() != pos)
+                        date_str = util::format_datestr(pos->second);
+                }
+
+                if (options.compact())
+                {
+                    stream << " [" << keys.get_with_default("created_by", "(anonymous)");
+                    stream << ", " << date_str << "]";
+                }
+                else /* not compact */
+                {
+                    stream << std::endl << mynode->indent() << mynode->indent();
+                    stream << padding << "Created by "
+                        << keys.get_with_default("created_by", "(anonymous)");
+                    stream << ", " << date_str;
+                }
+            }
+        }
+        stream << std::endl;
+
+        /* finally, display the link db */
+        db->display(stream);
     }
     catch (annodir_file_notthere_E)
     {
         if (options.verbose())
-            std::cout << "Warning: couldn't open " << keys["location"]
+            std::cerr << "Warning: couldn't open " << keys["location"]
                 << " for read(" << errno << "): " << strerror(errno)
                 << std::endl;
     }
     catch (annodir_file_unreadable_E)
     {
-        std::cout << "Error: couldn't open " << keys["location"]
+        std::cerr << "Error: couldn't open " << keys["location"]
             << " for read (" << errno << "): " << strerror(errno) << std::endl;
     }
 }
