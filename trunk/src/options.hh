@@ -38,6 +38,7 @@ class options_T
     protected:
         static bool _verbose;
         static bool _compact;
+        static bool _summarise;
         static bool _recursive;
         static options_action_T _action;
 
@@ -47,6 +48,9 @@ class options_T
 
         void set_compact(bool value) { options_T::_compact = value; }
         bool compact() { return options_T::_compact; }
+
+        void set_summarise(bool value) { options_T::_summarise = value; }
+        bool summarise() { return options_T::_summarise; }
 
         void set_recursive(bool value) { options_T::_recursive = value; }
         bool recursive() { return options_T::_recursive; }

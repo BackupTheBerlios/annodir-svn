@@ -60,44 +60,48 @@ anno_db_note_entry_T::display(std::ostream &stream)
     stream << "[note] "
         << keys.get_with_default("title", "Untitled");
 
-    if (options.compact())
-        stream << ": ";
-    else
-        stream << std::endl << "  ";
-
-    stream
-        << keys.get_with_default("body", "(no text)");
-
-    if (options.verbose())
+    if (!options.summarise())
     {
-        std::string date_str = "(no date)";
+        if (options.compact())
+            stream << ": ";
+        else
+            stream << std::endl << "  ";
+
+        stream
+            << keys.get_with_default("body", "(no text)");
+
+        if (options.verbose())
         {
-            anno_db_entry_keys_T::iterator pos = keys.find("created_at");
-            if (keys.end() != pos)
+            std::string date_str = "(no date)";
             {
-                time_t date_time_t = strtol(pos->second.c_str(), NULL, 10);
-                if (0 != date_time_t)
+                anno_db_entry_keys_T::iterator pos = keys.find("created_at");
+                if (keys.end() != pos)
                 {
-                    char buf[255] = { 0 };
-                    strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
-                    date_str.assign(buf);
+                    time_t date_time_t = strtol(pos->second.c_str(), NULL, 10);
+                    if (0 != date_time_t)
+                    {
+                        char buf[255] = { 0 };
+                        strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
+                        date_str.assign(buf);
+                    }
                 }
             }
-        }
 
-        if (options.compact())
-        {
-            stream << " [" << keys.get_with_default("created_by", "(anonymous)");
-            stream << ", " << date_str;
-            stream << "]";
-        }
-        else
-        {
-            stream << std::endl;
-            stream << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
-            stream << ", " << date_str;
-        }
-    }
+            if (options.compact())
+            {
+                stream << " [" << keys.get_with_default("created_by", "(anonymous)");
+                stream << ", " << date_str;
+                stream << "]";
+            }
+            else /* !compact */
+            {
+                stream << std::endl;
+                stream << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
+                stream << ", " << date_str;
+            } /* if !compact */
+
+        } /* if !verbose */
+    } /* if !summarise */
 
     stream << std::endl;
 }

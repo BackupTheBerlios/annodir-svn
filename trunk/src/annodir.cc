@@ -44,8 +44,14 @@ static struct option long_options[] =
 {
     /* general options */
     {"recursive",         no_argument,         0,   'R'},
+      /* verbose is for extra information (dates, creator etc) and more
+       * verbose error reporting */
     {"verbose",           no_argument,         0,   'v'},
+      /* compact tries to fit each entry on one line */
     {"compact",           no_argument,         0,   'c'},
+      /* summarise displays only the titles */
+    {"summarise",         no_argument,         0,   's'},
+    {"summarize",         no_argument,         0,   's'}, /* silly usians */
 
     /* actions */
     {"list",              optional_argument,   0,   'l'},
@@ -60,7 +66,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcRh\3a::e::l::d::";
+static const char *short_options = "vcsRh\3a::e::l::d::";
 
 /*
  * Display usage.
@@ -122,6 +128,10 @@ handle_options(int argc, char *argv[], options_T *opts)
 
             case 'c': /* compact */
                 opts->set_compact(true);
+                break;
+
+            case 's': /* summarise */
+                opts->set_summarise(true);
                 break;
 
             case 'R': /* recursive */
