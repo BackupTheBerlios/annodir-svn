@@ -77,10 +77,21 @@ anno_db_entry_T::anno_db_entry_T(std::istream *stream)
 anno_db_entry_T::set_new_object_defaults()
 {
     options_T options;
-    char buf[255] = { 0 };
-    snprintf(buf, sizeof(buf) - 1, "%d", time(NULL));
+
+#ifdef HAVE_ASPRINTF
+    char *str;
+    asprintf(&str, "%d", time(NULL));
+#else
+    char str[255] = { 0 };
+    snprintf(str, sizeof(str) - 1, "%d", time(NULL));
+#endif
+
     keys["created_by"].assign(options.get_user());
-    keys["created_at"].assign(buf);
+    keys["created_at"].assign(str);
+
+#ifdef HAVE_ASPRINTF
+    free(str);
+#endif
 }
 
 /*
