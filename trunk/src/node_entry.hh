@@ -46,9 +46,15 @@ class node_entry_T : public std::vector<node_entry_T * >
 	virtual ~node_entry_T();
         
         database_entry_T *entry;
- 
-        std::string const &index();
+
+        /* public interfaces to private members */
+        node_entry_T *parent() const { return _parent; }
+        node_entry_T *next() const { return _next; }
+        node_entry_T *prev() const { return _prev; }
         std::string const &indent() const { return indent_str; }
+
+        /* actions */
+        std::string const &index();
         node_entry_T *find_index(std::string const &index);
 
         virtual void recurse(void (database_entry_T::*fp)(std::ostream&),

@@ -28,6 +28,7 @@
 #include "src/action_handler.hh"
 #include "src/action_list_handler.hh"
 #include "src/action_add_handler.hh"
+#include "src/action_delete_handler.hh"
 #include "src/action_export_handler.hh"
 #include "src/rcfile.hh"
 
@@ -322,8 +323,9 @@ main(int argc, char *argv[])
 
         std::map<options_action_T, action_handler_T * > handlers;
         handlers.insert(std::make_pair(action_add,  new action_add_handler_T) );
+        handlers.insert(std::make_pair(action_delete, new action_delete_handler_T) );
         handlers.insert(std::make_pair(action_list, new action_list_handler_T) );
-        handlers.insert(std::make_pair(action_export, new action_export_handler_T));
+        handlers.insert(std::make_pair(action_export, new action_export_handler_T) );
 
         action_handler_T *handler = handlers[options.action()];
         if (handler)
