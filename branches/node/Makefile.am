@@ -12,3 +12,4 @@ MAINTAINERCLEANFILES = aclocal.m4 \
 		       *~
 EXTRA_DIST = autogen.sh
 
+AUTOMAKE_OPTIONS = foreign dist-bzip2 no-dist-gzip

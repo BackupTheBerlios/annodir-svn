@@ -3,9 +3,11 @@ dnl a ./configure script (it's best to use autogen.sh)
 
 dnl -- STANDARD THINGS --
 
-AC_INIT(src/annodir.cc)
+AC_INIT(annodir, 0.1)
+AC_PREREQ(2.5)
+AC_CONFIG_SRCDIR(src/annodir.cc)
 AC_CONFIG_AUX_DIR(config)
-AM_INIT_AUTOMAKE(annodir, 0.1)
+AM_INIT_AUTOMAKE(1.6)
 
 test "x$sysconfdir" = "xNONE" && sysconfdir="$ac_default_sysconfdir"
 AC_DEFINE_UNQUOTED(SYSCONFDIR, "$sysconfdir", [System configuration directory])
