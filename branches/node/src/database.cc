@@ -58,7 +58,7 @@ database_T::load(std::istream &stream)
         std::string s;
         if (std::getline(stream, s))
         {
-            util::debug_msg(s.c_str());
+            util::debug_msg("db_T::load(): %s", s.c_str());
 
             /* strip trailing colon */
             if (s[s.length() - 1] != ':')

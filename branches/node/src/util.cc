@@ -22,14 +22,14 @@
  */
 
 #include "config.h"
-#include "src/util.hh"
-
 #include <string>
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <cstdarg>
+
+#include "src/util.hh"
 
     char *
 util::basename(char *path)
@@ -60,18 +60,14 @@ util::debug_msg(const char *msg, ...)
 {
 #ifdef DEBUG
     char buf[4096];
-    size_t n;
     va_list v;
 
     va_start(v, msg);
 
-    strcpy(buf, "D: ");
-    n = strlen(buf);
-
 #ifdef HAVE_VSNPRINTF
-    vsnprintf(buf + n, sizeof(buf) - n, msg, v);
+    vsnprintf(buf, sizeof(buf), msg, v);
 #else
-    vsprintf(buf + n, msg, v);
+    vsprintf(buf, msg, v);
 #endif /* HAVE_VSNPRINTF */
 
     std::cout << buf << std::endl;

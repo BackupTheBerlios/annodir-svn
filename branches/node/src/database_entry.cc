@@ -75,7 +75,7 @@ database_entry_T::load(std::istream &stream)
     std::string s;
     while (std::getline(stream, s))
     {
-        util::debug_msg(s.c_str());
+        util::debug_msg("db_entry_T::load(): %s", s.c_str());
 
         /* strip leading whitespace */
         std::string::size_type start_pos;
