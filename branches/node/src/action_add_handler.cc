@@ -27,6 +27,7 @@
 #include <cstring>
 #include <memory>
 #include <fstream>
+#include <string>
 
 #include "src/database.hh"
 #include "src/node_entry.hh"
@@ -73,7 +74,7 @@ action_add_handler_T::operator() (void)
         bool exists = false;
 
         /* load database */
-        std::auto_ptr<database_T > db(new database_T());
+        database_T db;
 
         {
             std::auto_ptr<std::istream > f(new 
@@ -81,7 +82,7 @@ action_add_handler_T::operator() (void)
             if ((*f))
             {
                 exists = true;
-                db->load(*f);
+                db.load(*f);
             }
             else
             {
@@ -91,32 +92,48 @@ action_add_handler_T::operator() (void)
         }
 
         /* add metadata if the file didn't already exist */
-        if (!exists)
+        if (not exists)
         {
-            db->root.entry = make_new_entry("metadata", &(db->root));
-            if (! db->root.entry)
+            db.entry = make_new_entry("metadata", &db);
+            if (not db.entry)
                 return EXIT_FAILURE;
-            db->root.entry->set_new_object_defaults();
+            db.entry->set_new_object_defaults();
         }
 
+        node_entry_T *parent;
+        /* no index specified, so it will become last top-level child */
+        if (options.get_index().empty())
+        {
+            parent = &db;
+        }
+        else
+        {
+            std::string parent_index = options.get_index();   
+            std::vector<node_entry_T * >::iterator i;
+            for (i = db.children.begin() ; i != db.children.end() ; ++i)
+            {
+                
+            }
+        }
+        
         /* add a new entry */
-        node_entry_T *node = new node_entry_T(&(db->root));
+        node_entry_T *node = new node_entry_T(parent);
         node->entry = make_new_entry(options.get_type().c_str(), node);
 
-        if (!node->entry)
+        if (not node->entry)
             return EXIT_FAILURE;
         
         node->entry->set_new_object_defaults();
 
         if (node->entry->prompt_user_for_values())
         {
-            db->root.children.push_back(node);
+            db.children.push_back(node);
 
             /* save */
             std::auto_ptr<std::ostream> f(new
                     std::ofstream(options.get_filename().c_str()));
             if ((*f))
-                db->dump(*f);
+                db.dump(*f);
             else
                 throw annodir_file_unwriteable_E();
         }

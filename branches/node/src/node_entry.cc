@@ -27,9 +27,16 @@
 #include "src/node_entry.hh"
 #include "src/util.hh"
 
+node_entry_T::node_entry_T()
+{
+
+}
+
 /*
- * Initialize a node instance
- * Set parent and sibling pointers to their respective nodes
+ * Initialize a node instance.
+ *  - Set parent and sibling pointers to their respective nodes
+ *  - Construct the index and it's string representation
+ *  - Construct indentation string of the appropriate width
  */
 node_entry_T::node_entry_T(node_entry_T *parent_node)
 {
@@ -108,7 +115,9 @@ node_entry_T::index()
  */
 node_entry_T::~node_entry_T()
 {
-    delete entry;
+    std::vector<node_entry_T * >::iterator i;
+    for (i = children.begin() ; i != children.end() ; ++i)
+        delete *i;
 }
 
 /* vim: set tw=80 sw=4 et : */

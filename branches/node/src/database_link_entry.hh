@@ -24,8 +24,9 @@
 #ifndef HAVE_DATABASE_LINK_ENTRY_HH
 #define HAVE_DATABASE_LINK_ENTRY_HH 1
 
-#include "src/node_entry.hh"
+#include "src/database.hh"
 #include "src/database_entry.hh"
+#include "src/node_entry.hh"
 
 class database_link_entry_T : public database_entry_T
 {

@@ -27,20 +27,17 @@
 #include <iostream>
 #include "src/node_entry.hh"
 
-class database_T
+class database_T : public node_entry_T
 {
     public:
-        database_T();
-        database_T(std::istream &stream);
-
+        database_T(node_entry_T *parent_node = NULL);
+        database_T(std::istream &stream, node_entry_T *parent_node = NULL);
         virtual ~database_T();
 
-        node_entry_T root;
-
         virtual void load(std::istream &stream);
-        virtual bool dump(std::ostream &stream) { return root.dump(stream); }
-        virtual void display(std::ostream &stream) { root.display(stream); }
-        virtual void do_export(std::ostream &stream) { root.do_export(stream); }
+        virtual bool dump(std::ostream &stream) { return entry->dump(stream); }
+        virtual void display(std::ostream &stream) { entry->display(stream); }
+        virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
 };
 
 #endif

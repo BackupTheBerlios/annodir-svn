@@ -23,8 +23,9 @@
 
 #include <cstdio>
 
-#include "src/database_entry.hh"
+#include "src/database.hh"
 #include "src/node_entry.hh"
+#include "src/database_entry.hh"
 #include "src/database_note_entry.hh"
 #include "src/database_link_entry.hh"
 #include "src/options.hh"
@@ -49,8 +50,7 @@ database_entry_keys_T::get_with_default(std::string key,
 database_entry_T::database_entry_T(node_entry_T *node)
 {
     id = default_id();
-    if (node)
-        mynode = node;
+    mynode = node;
 }
 
 /*
@@ -60,8 +60,8 @@ database_entry_T::database_entry_T(node_entry_T *node)
 database_entry_T::database_entry_T(std::istream *stream, node_entry_T *node)
 {
     id = default_id();
-    if (node)
-        mynode = node;
+    mynode = node;
+
     if (stream)
         load(*stream);
     else
@@ -88,7 +88,7 @@ database_entry_T::load(std::istream &stream)
         if (s[s.length() - 1] == ':')
         {
             s.erase(s.length() - 1);
-            node_entry_T *node = new node_entry_T(mynode);
+            database_T *node = new database_T(mynode);
             
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
@@ -160,9 +160,6 @@ database_entry_T::dump(std::ostream &stream)
         stream << mynode->indent() << "  " << i->first
             << "=" << i->second << std::endl;
 
-    /* end */
-    stream << mynode->indent() << "end" << std::endl;
-
     /* loop through children */
     std::vector<node_entry_T * >::iterator x;
     for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
@@ -170,6 +167,10 @@ database_entry_T::dump(std::ostream &stream)
         if (! (*x)->entry->dump(stream))
             return false;
     }
+
+    /* end */
+    stream << mynode->indent() << "end" << std::endl;
+
     return true;
 }
 

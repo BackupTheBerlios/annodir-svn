@@ -31,22 +31,7 @@
 
 class node_entry_T
 {
-    public:
-	node_entry_T(node_entry_T *parent_node = NULL);
-	virtual ~node_entry_T();
-        
-	std::vector<node_entry_T * > children;
-        database_entry_T *entry;
-
-        virtual void load(std::istream &stream) { entry->load(stream); }
-        virtual bool dump(std::ostream &stream) { return entry->dump(stream); }
-        virtual void display(std::ostream &stream) { entry->display(stream); }
-        virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
-        
-        std::string const &index();
-        std::string const &indent() { return node_entry_T::indent_str; }
-
-    private:
+    protected:
         std::vector<int > _index;
         std::string index_str;
         std::string indent_str;
@@ -54,6 +39,21 @@ class node_entry_T
         node_entry_T *parent;   /* parent */
         node_entry_T *prev;     /* previous sibling */
         node_entry_T *next;     /* next sibling */
+
+    public:
+        node_entry_T();
+	node_entry_T(node_entry_T *parent_node = NULL);
+	virtual ~node_entry_T();
+        
+        database_entry_T *entry;
+	std::vector<node_entry_T * > children;
+ 
+        std::string const &index();
+        std::string const &indent() { return node_entry_T::indent_str; }
+
+        virtual bool dump(std::ostream &stream) { return entry->dump(stream); }
+        virtual void display(std::ostream &stream) { entry->display(stream); }
+        virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
 };
 
 #endif

@@ -32,10 +32,8 @@
 #include "src/exceptions.hh"
 #include "src/util.hh"
 
-/*
- * Create a new database_T instance
- */
-database_T::database_T()
+database_T::database_T(node_entry_T *parent_node)
+    : node_entry_T(parent_node)
 {
 
 }
@@ -44,15 +42,19 @@ database_T::database_T()
  * Create a new database_T instance, and populate it with items read from the
  * stream supplied.
  */
-database_T::database_T(std::istream &stream)
+database_T::database_T(std::istream &stream, node_entry_T *parent_node)
+    : node_entry_T(parent_node)
 {
     load(stream);
 }
 
+/*
+ * Load top-level nodes (which in turn load their children)
+ */
     void
 database_T::load(std::istream &stream)
 {
-    while (! stream.eof())
+    while (not stream.eof())
     {
         /* get the header to determine what to create */
         std::string s;
@@ -68,12 +70,12 @@ database_T::load(std::istream &stream)
             /* special case - metadata doesn't get its own node */
             if (database_metadata_entry_T::recognise_item(s))
             {
-                root.entry = new database_metadata_entry_T(&stream, &root);
+                entry = new database_metadata_entry_T(&stream, this);
                 continue;
             }
 
-            node_entry_T *node = new node_entry_T(&root);
-            
+            database_T *node = new database_T(this);
+
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
                 node->entry = new database_note_entry_T(&stream, node);
@@ -84,22 +86,18 @@ database_T::load(std::istream &stream)
             else
                 throw item_not_recognised_E();
 
-            root.children.push_back(node);
+            children.push_back(node);
         }
     }
 }
 
 
 /*
- * Tidy up. Delete all of our nodes.
+ * Tidy up.
  */
-
-/* TODO: add purge() member */
 database_T::~database_T()
 {
-    std::vector<node_entry_T * >::iterator i;
-    for (i = root.children.begin() ; i != root.children.end() ; ++i)
-        delete *i;
+    delete entry;
 }
 
 /* vim: set tw=80 sw=4 et : */

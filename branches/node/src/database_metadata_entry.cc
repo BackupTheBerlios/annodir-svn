@@ -38,8 +38,6 @@ database_metadata_entry_T::database_metadata_entry_T(node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
-    if (node)
-        mynode = node;
 }
 
 /*
@@ -76,5 +74,36 @@ database_metadata_entry_T::set_new_object_defaults()
     database_entry_T::set_new_object_defaults();
     keys["title"].assign(util::basename(getcwd(path, PATH_MAX)));
 }
+
+/*
+ * Dump our data to the supplied stream.
+ * NOTE: this is identical to database_entry_T::dump() with the 
+ * exception that "end" needs to be printed BEFORE child entries.
+ */
+    bool
+database_metadata_entry_T::dump(std::ostream &stream)
+{
+    /* block header */
+    stream << mynode->indent() << id << ":" << std::endl;
+
+    /* entries */
+    std::map<std::string, std::string >::iterator i;
+    for (i = keys.begin() ; i != keys.end() ; ++i)
+        stream << mynode->indent() << "  " << i->first
+            << "=" << i->second << std::endl;
+
+    /* end */
+    stream << mynode->indent() << "end" << std::endl;
+    
+    /* loop through children */
+    std::vector<node_entry_T * >::iterator x;
+    for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
+    {
+        if (! (*x)->entry->dump(stream))
+            return false;
+    }
+    return true;
+}
+
 
 /* vim: set tw=80 sw=4 et : */

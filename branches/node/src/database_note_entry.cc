@@ -24,8 +24,9 @@
 #include <vector>
 #include <cstdlib>
 
-#include "src/node_entry.hh"
 #include "src/database_note_entry.hh"
+#include "src/node_entry.hh"
+#include "src/database.hh"
 #include "src/options.hh"
 #include "src/input.hh"
 #include "src/util.hh"
@@ -34,8 +35,6 @@ database_note_entry_T::database_note_entry_T(node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
-    if (node)
-        mynode = node;
 }
 
 /*

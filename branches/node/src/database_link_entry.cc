@@ -26,8 +26,8 @@
 #include <memory>
 #include <fstream>
 
-#include "src/node_entry.hh"
 #include "src/database_link_entry.hh"
+#include "src/node_entry.hh"
 #include "src/exceptions.hh"
 #include "src/database.hh"
 #include "src/options.hh"
@@ -40,8 +40,6 @@ database_link_entry_T::database_link_entry_T(node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
-    if(node)
-        mynode = node;
 }
 
 /*

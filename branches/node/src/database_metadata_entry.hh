@@ -24,8 +24,9 @@
 #ifndef HAVE_DATABASE_METADATA_ENTRY_HH
 #define HAVE_DATABASE_METADATA_ENTRY_HH 1
 
-#include "src/node_entry.hh"
+#include "src/database.hh"
 #include "src/database_entry.hh"
+#include "src/node_entry.hh"
 
 class database_metadata_entry_T : public database_entry_T
 {
@@ -39,6 +40,8 @@ class database_metadata_entry_T : public database_entry_T
 
 	static bool recognise_item(std::string item);
 	virtual void set_new_object_defaults();
+
+        virtual bool dump(std::ostream &stream);
 };
 
 #endif

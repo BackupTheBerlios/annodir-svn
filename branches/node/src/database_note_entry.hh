@@ -27,8 +27,9 @@
 #include <string>
 #include <iostream>
 
-#include "src/node_entry.hh"
+#include "src/database.hh"
 #include "src/database_entry.hh"
+#include "src/node_entry.hh"
 
 class database_note_entry_T : public database_entry_T
 {
