@@ -64,6 +64,25 @@ make_new_entry(const char *type, node_entry_T *node)
         return new database_entry_T(node); 
 }
 
+/*
+ * Deduce the node that corresponds to the given index string
+ */
+
+    node_entry_T *
+get_node_with_index(node_entry_T *node, std::string const &index)
+{
+    node_entry_T *node_p = NULL;
+    node_entry_T::iterator i;
+    for (i = node->begin() ; i != node->end() ; i++)
+    {
+        node_p = *i;
+        if ((node_p->index() == index) or 
+            (node_p = get_node_with_index(node_p, index)))
+            break;
+    }
+    return ((node_p ? (node_p->index() == index ? node_p : NULL) : NULL));
+}
+
     int
 action_add_handler_T::operator() (void)
 {
@@ -100,24 +119,19 @@ action_add_handler_T::operator() (void)
             db.entry->set_new_object_defaults();
         }
 
-        node_entry_T *parent;
-        /* no index specified, so it will become last top-level child */
-        //if (options.get_index().empty())
-        //{
-            parent = &db;
-        //}
-        /*
-        else
+        /* 
+         * If an index was specified (--index), the new node will become a
+         * child of that node.  Otherwise, the new node will become the last
+         * top-level child (parent is the root node).
+         */
+        node_entry_T *parent = &db;
+        if (not options.get_index().empty())
         {
-            std::string parent_index = options.get_index();   
-            std::vector<node_entry_T * >::iterator i;
-            for (i = db.begin() ; i != db.end() ; ++i)
-            {
-                
-            }
+            parent = get_node_with_index(&db, options.get_index());
+            if (not parent)
+                throw node_invalid_index_E();
         }
-        */
-    
+
         /* add a new entry */
         node_entry_T *node = new node_entry_T(parent);
         node->entry = make_new_entry(options.get_type().c_str(), node);
@@ -159,7 +173,13 @@ action_add_handler_T::operator() (void)
             << std::endl;
         return EXIT_FAILURE;
     }
-
+    catch (node_invalid_index_E)
+    {
+        /* specified index is invalid */
+        std::cout << "Error: invalid index '" << options.get_index()
+            << "'." << std::endl;
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 

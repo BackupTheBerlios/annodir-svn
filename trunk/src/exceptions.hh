@@ -50,6 +50,10 @@ class item_E                      : public annodir_base_E { };
 class item_not_recognised_E       : public item_E { };
 class item_not_parsable_E         : public item_E { };
 
+/* node exceptions */
+class node_E                      : public annodir_base_E { };
+class node_invalid_index_E        : public node_E { };
+
 #endif
 
 /* vim: set tw=80 sw=4 et : */
