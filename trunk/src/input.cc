@@ -21,6 +21,8 @@
 
 #include "config.h"
 #include "src/input.hh"
+#include <string>
+
 /* needed for readline... */
 #include <cstdlib>
 #include <cstdio>
@@ -29,7 +31,12 @@
     char *
 get_user_input(const char *prompt)
 {
-    return readline(prompt);
+    std::string pretty_prompt;
+    pretty_prompt.assign(prompt);
+    while (pretty_prompt.length() < 8)
+        pretty_prompt.append(" ");
+    pretty_prompt.append(" > ");
+    return readline(pretty_prompt.c_str());
 }
 
 
