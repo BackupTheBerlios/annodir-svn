@@ -1,0 +1,65 @@
+=== Design Notes
+
+== Usage Overview
+
+annodir [action] [extra options]
+
+action is one of --list (default), --add, --delete, --edit
+
+== Storage
+
+Data is stored in $PWD/.annodir, which is a plain text file. This should be
+overridable via commandline and maybe an environment variable. The file contains
+a number of entries. Each entry has a header identifying the class of the entry
+(todo item, note etc) followed by a series of key=value lines (we'll need to
+escape these somehow), followed by an end marker to make parsing nice and easy.
+For example: >
+
+	note:
+	  created_by=ciaranm
+	  created_at=1097533644
+	  title=Some Random Example
+	  body=Fnord
+	end
+	todo:
+	  created_by=ciaranm
+	  created_at=1097533688
+	  text=Figure out how to escape newlines etc here
+	  priority=medium
+	end
+
+For compatability, we should be able to handle any kind of item (without any
+special context stuff) with a generic fallback. We then have special handlers
+for notes, todo items and so on. Common fields such as created_by (multi user is
+good, once we figure out locking) can be handled automagically by the base entry
+class maybe?
+
+== Internal Workings
+
+We've got a number of key components:
+
+-- commandline
+
+Uses getopt_long, maybe needs to be able to fallback to regular getopt via an
+autoconf thingie? Does *BSD have getopt_long? Figures out what action to call
+(add, list, delete etc) and calls the relevant handler
+
+-- action handlers
+
+Different handlers for different actions. We have a list handler, an add handler
+and so on.
+
+-- extra input
+
+Presumably we'll want to get some input not via the commandline. Use readline
+maybe? Dunno.
+
+-- backend
+
+We've got a db class and then a class structure for the different entry kinds.
+The entries themselves can save and load via a stream and also display
+themselves nicely (we need a nice display module for this, right now nicely
+means print 'em out). The db itself can save (calls each item to do that) and
+load (parses the header, creates the relevant class).
+
+ vim: set tw=80 :
