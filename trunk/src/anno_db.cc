@@ -22,6 +22,7 @@
 #include "src/anno_db.hh"
 #include "src/anno_db_entry.hh"
 #include "src/anno_db_note_entry.hh"
+#include "src/exceptions.hh"
 
 /*
  * Create a new anno_db_T instance
@@ -53,7 +54,7 @@ anno_db_T::load(std::istream &stream)
 
             /* strip trailing colon */
             if (s[s.length() - 1] != ':')
-                throw "Bleh!";
+                throw item_not_parsable_E();
             s.erase(s.length() - 1);
 
             /* try to find a relevant class */
@@ -62,7 +63,7 @@ anno_db_T::load(std::istream &stream)
             else if (anno_db_entry_T::recognise_item(s))
                 entry = new anno_db_entry_T(&stream);
             else
-                throw "Bleh!";
+                throw item_not_recognised_E();
 
             entries.push_back(entry);
         }

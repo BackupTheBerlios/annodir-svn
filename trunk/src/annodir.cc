@@ -257,7 +257,17 @@ main(int argc, char *argv[])
 
         action_handler_T *handler = handlers[options.action()];
         if (handler)
-            (*handler)();
+        {
+            try
+            {
+                (*handler)();
+            }
+            catch (item_E)
+            {
+                std::cerr << "Error reading input." << std::endl;
+                return EXIT_FAILURE;
+            }
+        }
         else
             throw args_unimplemented_E();
 

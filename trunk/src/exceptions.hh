@@ -39,6 +39,11 @@ class annodir_file_unreadable_E   : public annodir_file_E { };
 class annodir_file_unwriteable_E  : public annodir_file_E { };
 class annodir_file_notthere_E     : public annodir_file_E { };
 
+/* item exceptions */
+class item_E { };
+class item_not_recognised_E       : public item_E { };
+class item_not_parsable_E         : public item_E { };
+
 #endif
 
 /* vim: set tw=80 sw=4 et : */
