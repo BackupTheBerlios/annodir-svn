@@ -76,6 +76,24 @@ node_entry_T::node_entry_T(const node_entry_T *parent_node)
 }
 
 /*
+ * Deduce the node that corresponds to the given index string
+ */
+
+    node_entry_T *
+node_entry_T::find_index(std::string const &index)
+{
+    node_entry_T *node_p = NULL;
+    for (node_entry_T::iterator i = begin() ; i != end() ; i++)
+    {
+        node_p = *i;
+        if ((node_p->index() == index) or (node_p = node_p->find_index(index)))
+            break;
+    }
+    return ((node_p ? (node_p->index() == index ? node_p : NULL) : NULL));
+}
+
+
+/*
  * Construct index string representation 
  */
     std::string const&

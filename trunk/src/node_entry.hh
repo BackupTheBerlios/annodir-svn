@@ -49,6 +49,7 @@ class node_entry_T : public std::vector<node_entry_T * >
  
         std::string const &index();
         std::string const &indent() const { return indent_str; }
+        node_entry_T *find_index(std::string const &index);
 
         virtual void recurse(void (database_entry_T::*fp)(std::ostream&),
             std::ostream &stream);
