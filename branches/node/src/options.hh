@@ -45,6 +45,7 @@ class options_T
         static std::string _user;
         static std::string _type;
         static std::string _export;
+        static std::string _index;
         static bool _verbose;
         static bool _compact;
         static bool _summarise;
@@ -82,6 +83,9 @@ class options_T
 
         void set_export(std::string const &value) { options_T::_export = value; }
         std::string const &get_export() { return options_T::_export; }
+
+        void set_index(std::string const &value) { options_T::_index = value; }
+        std::string const &get_index() { return options_T::_index; }
 };
 
 #endif

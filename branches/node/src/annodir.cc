@@ -65,6 +65,9 @@ static struct option long_options[] =
       /* enable debugging code */
     {"debug",             no_argument,         0,   'D'},
 
+      /* index */
+    {"index",             required_argument,   0,   'i'},
+
     /* actions */
     {"list",              optional_argument,   0,   'l'},
     {"add",               optional_argument,   0,   'a'},
@@ -79,7 +82,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRhD\3f:t:u:E::a::e::l::d::";
+static const char *short_options = "vcsRhD\3i:f:t:u:E::a::e::l::d::";
 
 /*
  * Display usage.
@@ -167,6 +170,10 @@ handle_options(int argc, char *argv[], options_T *opts)
 
             case 't': /* type */
                 opts->set_type(optarg);
+                break;
+
+            case 'i': /* index */
+                opts->set_index(optarg);
                 break;
 
             case 'D': /* debug */
