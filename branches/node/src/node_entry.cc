@@ -30,11 +30,6 @@
 #include "src/database_entry.hh"
 #include "src/util.hh"
 
-node_entry_T::node_entry_T()
-{
-
-}
-
 /*
  * Initialize a node instance.
  *  - Set parent and sibling pointers to their respective nodes

@@ -41,7 +41,6 @@ class node_entry_T
         node_entry_T *next;     /* next sibling */
 
     public:
-        node_entry_T();
 	node_entry_T(const node_entry_T *parent_node = NULL);
 	virtual ~node_entry_T();
         
