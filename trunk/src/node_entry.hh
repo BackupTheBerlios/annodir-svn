@@ -50,9 +50,6 @@ class node_entry_T : public std::vector<node_entry_T * >
         std::string const &index();
         std::string const &indent() const { return indent_str; }
 
-        node_entry_T *whos_yo_daddy() const { return _parent; }
-        node_entry_T *next() const { return _next; }
-
         virtual void recurse(void (database_entry_T::*fp)(std::ostream&),
             std::ostream &stream);
         virtual void dump(std::ostream &stream) { entry->dump(stream); }
