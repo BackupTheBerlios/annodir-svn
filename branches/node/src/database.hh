@@ -30,15 +30,14 @@
 class database_T : public node_entry_T
 {
     public:
-        database_T(const node_entry_T *parent_node = NULL);
+        database_T(const node_entry_T *parent_node = NULL) 
+            : node_entry_T(parent_node) {};
         database_T(std::istream &stream,
-            const node_entry_T *parent_node = NULL);
-        virtual ~database_T();
+            const node_entry_T *parent_node = NULL) : node_entry_T(parent_node)
+            { load(stream); }
+        virtual ~database_T() { delete entry; }
 
         virtual void load(std::istream &stream);
-        virtual void dump(std::ostream &stream) { entry->dump(stream); }
-        virtual void display(std::ostream &stream) { entry->display(stream); }
-        virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
 };
 
 #endif

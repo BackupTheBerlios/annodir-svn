@@ -32,22 +32,6 @@
 #include "src/exceptions.hh"
 #include "src/util.hh"
 
-database_T::database_T(const node_entry_T *parent_node)
-    : node_entry_T(parent_node)
-{
-
-}
-
-/*
- * Create a new database_T instance, and populate it with items read from the
- * stream supplied.
- */
-database_T::database_T(std::istream &stream, const node_entry_T *parent_node)
-    : node_entry_T(parent_node)
-{
-    load(stream);
-}
-
 /*
  * Load top-level nodes (which in turn load their children)
  */
@@ -89,15 +73,6 @@ database_T::load(std::istream &stream)
             children.push_back(node);
         }
     }
-}
-
-
-/*
- * Tidy up.
- */
-database_T::~database_T()
-{
-    delete entry;
 }
 
 /* vim: set tw=80 sw=4 et : */
