@@ -76,16 +76,17 @@ database_link_entry_T::recognise_item(std::string item)
 database_link_entry_T::set_new_object_defaults()
 {
     database_entry_T::set_new_object_defaults();
+    keys["title"].assign("Link");
 }
 
     bool
 database_link_entry_T::prompt_user_for_values()
 {
-    if (!database_entry_T::prompt_user_for_values())
+    if (not database_entry_T::prompt_user_for_values())
         return false;
 
     char *input = NULL;
-    if (!((input = input::get_user_input("Location", keys["location"]))))
+    if (not ((input = input::get_user_input("Location", keys["location"]))))
         return false;
     
     try {
@@ -126,6 +127,15 @@ database_link_entry_T::prompt_user_for_values()
         return false;
     }
 
+    /* location key is now guaranteed to be set; use it to set default title */
+    input = NULL;
+    std::string def_title(util::dirname(keys["location"]));
+
+    if (not ((input = input::get_user_input("Title", def_title))))
+        return false;
+    keys["title"].assign(input);
+    free(input);
+
     return true;
 }
 
@@ -149,7 +159,7 @@ database_link_entry_T::display(std::ostream &stream)
                 throw annodir_file_unreadable_E();
         }
         util::debug_msg("Loading link at '%s'", keys["location"].c_str());
-        std::auto_ptr<database_T > db(new database_T(*f));
+        std::auto_ptr<database_T > db(new database_T(*f, mynode->parent()));
 
         db->display(std::cout);
     }
