@@ -24,10 +24,10 @@
 #ifndef NODE_ENTRY_HH
 #define NODE_ENTRY_HH 1
 
-#include "config.h"
-#include "src/database_entry.hh"
 #include <vector>
 #include <string>
+
+#include "src/database_entry.hh"
 
 class node_entry_T
 {

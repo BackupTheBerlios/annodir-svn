@@ -21,7 +21,6 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "config.h"
 #include "src/node_entry.hh"
 
 node_entry_T::node_entry_T (node_entry_T *parent_node)
