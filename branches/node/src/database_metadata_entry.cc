@@ -99,5 +99,11 @@ database_metadata_entry_T::dump(std::ostream &stream)
     mynode->recurse(&database_entry_T::dump, stream);
 }
 
+    void
+database_metadata_entry_T::do_export(std::ostream &stream)
+{
+    stream << "[" << keys["title"] << "] " << std::endl;
+    database_entry_T::do_export(stream);
+}
 
 /* vim: set tw=80 sw=4 et : */

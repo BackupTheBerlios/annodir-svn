@@ -42,6 +42,9 @@ class database_metadata_entry_T : public database_entry_T
 	virtual void set_new_object_defaults();
 
         virtual void dump(std::ostream &stream);
+        virtual void display(std::ostream &stream)
+        { mynode->recurse(&database_entry_T::display, stream); }
+        virtual void do_export(std::ostream &stream);
 };
 
 #endif

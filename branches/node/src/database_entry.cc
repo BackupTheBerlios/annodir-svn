@@ -174,17 +174,13 @@ database_entry_T::dump(std::ostream &stream)
     void
 database_entry_T::display(std::ostream &stream)
 {
-    if (id != "metadata")
-    {
-        /* block header */
-        stream << mynode->indent() << id << ":" << std::endl;
+    /* block header */
+    stream << mynode->indent() << id << ":" << std::endl;
 
-        /* entries */
-        database_entry_keys_T::iterator i;
-        for (i = keys.begin() ; i != keys.end() ; ++i)
-            stream << mynode->indent() << i->first << "=" << i->second
-                << std::endl;
-    }
+    /* entries */
+    database_entry_keys_T::iterator i;
+    for (i = keys.begin() ; i != keys.end() ; ++i)
+        stream << mynode->indent() << i->first << "=" << i->second << std::endl;
 
     /* recurse through child node entries */
     mynode->recurse(&database_entry_T::display, stream);
@@ -196,13 +192,14 @@ database_entry_T::display(std::ostream &stream)
     void
 database_entry_T::do_export(std::ostream &stream)
 {
-    if (id == "metadata")
-        stream << "[" << keys["title"] << "] " << std::endl; 
-    else
+    /* database_metadata_entry_T's do_export() calls this function
+     * after displaying the initial title since everything else is
+     * the same, so only display the id if not metadata             */
+    if (id != "metadata")
         stream << mynode->indent() << "[" << id << "] " 
             << keys.get_with_default("title", "Untitled") << std::endl;
 
-    if (!keys["body"].empty())
+    if (not keys["body"].empty())
         stream << mynode->indent()
             << keys.get_with_default("body", "(no text)") << std::endl;
 
@@ -218,7 +215,7 @@ database_entry_T::do_export(std::ostream &stream)
 
     stream << " on: " << date_str;
 
-    if(!keys["priority"].empty())
+    if(not keys["priority"].empty())
         stream << " with priority: "
             << keys.get_with_default("priority", "medium");
 
