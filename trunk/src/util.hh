@@ -1,5 +1,5 @@
 /*
- * annodir -- src/database.hh
+ * annodir -- src/util.hh
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
  *
@@ -19,29 +19,12 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_DATABASE_HH
-#define HAVE_DATABASE_HH 1
+#ifndef HAVE_UTIL_HH
+#define HAVE_UTIL_HH 1
 
-#include "config.h"
-#include "src/database_entry.hh"
-#include <vector>
-#include <iostream>
+#include <string>
 
-class database_T
-{
-    public:
-        database_T();
-        database_T(std::istream &stream);
-
-        virtual ~database_T();
-
-        std::vector<database_entry_T * > entries;
-        virtual void load(std::istream &stream);
-        virtual bool dump(std::ostream &stream);
-        virtual void display(std::ostream &stream);
-        virtual void do_export(std::ostream &stream);
-};
+const char * basename(char *);
+std::string format_datestr(std::string&);
 
 #endif
-
-/* vim: set tw=80 sw=4 et : */

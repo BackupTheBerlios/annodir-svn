@@ -31,5 +31,6 @@ options_action_T options_T::_action = action_unspecified;
 std::string options_T::_file = ".annodir";
 std::string options_T::_user = "anonymous";
 std::string options_T::_type = "note";
+std::string options_T::_export = "annotations";
 
 /* vim: set tw=80 sw=4 et : */

@@ -1,5 +1,5 @@
 /*
- * annodir -- src/database.hh
+ * annodir -- src/action_export_handler.hh
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
  *
@@ -19,27 +19,17 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_DATABASE_HH
-#define HAVE_DATABASE_HH 1
+#ifndef HAVE_ACTION_EXPORT_HANDLER_HH
+#define HAVE_ACTION_EXPORT_HANDLER_HH 1
 
 #include "config.h"
-#include "src/database_entry.hh"
-#include <vector>
-#include <iostream>
+#include <src/action_handler.hh>
 
-class database_T
+class action_export_handler_T : public action_handler_T
 {
     public:
-        database_T();
-        database_T(std::istream &stream);
-
-        virtual ~database_T();
-
-        std::vector<database_entry_T * > entries;
-        virtual void load(std::istream &stream);
-        virtual bool dump(std::ostream &stream);
-        virtual void display(std::ostream &stream);
-        virtual void do_export(std::ostream &stream);
+        action_export_handler_T() { };
+        virtual int operator() (void);
 };
 
 #endif

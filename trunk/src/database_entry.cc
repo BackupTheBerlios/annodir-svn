@@ -22,7 +22,7 @@
 
 #include "src/database_entry.hh"
 #include "src/options.hh"
-#include <time.h>
+#include "src/util.hh"
 
     std::string&
 database_entry_keys_T::get_with_default(std::string key,
@@ -138,6 +138,40 @@ database_entry_T::display(std::ostream &stream)
     {
         stream << "  " << i->first << "=" << i->second << std::endl;
     }
+}
+
+/*
+ * Export our data (in a todo-like list) to the specified stream
+ */
+    void
+database_entry_T::do_export(std::ostream &stream)
+{
+    if (id == "metadata")
+        stream << "[" << keys["title"] << "] "; 
+    else
+        stream << "[" << id << "] " 
+            << keys.get_with_default("title", "Untitled") << std::endl;
+
+    if (!keys["body"].empty())
+        stream << keys.get_with_default("body", "(no text)") << std::endl;
+
+    stream << "created by: " << keys.get_with_default("created_by",
+            "(anonymous)");
+    
+    std::string date_str = "(no date)";
+    {
+        database_entry_keys_T::iterator pos = keys.find("created_at");
+        if (keys.end() != pos)
+            date_str = format_datestr(pos->second);
+    }
+
+    stream << " on: " << date_str;
+
+    if(!keys["priority"].empty())
+        stream << " with priority: "
+            << keys.get_with_default("priority", "medium");
+
+    stream << std::endl << std::endl;
 }
 
 /*

@@ -27,6 +27,7 @@
 #include "src/action_handler.hh"
 #include "src/action_list_handler.hh"
 #include "src/action_add_handler.hh"
+#include "src/action_export_handler.hh"
 #include "src/rcfile.hh"
 
 #include <unistd.h>
@@ -66,6 +67,7 @@ static struct option long_options[] =
     {"add",               optional_argument,   0,   'a'},
     {"delete",            optional_argument,   0,   'd'},
     {"edit",              optional_argument,   0,   'e'},
+    {"export",            optional_argument,   0,   'E'},
 
     /* standard stuff */
     {"help",              no_argument,         0,   'h'},
@@ -74,7 +76,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRh\3f:t:u:a::e::l::d::";
+static const char *short_options = "vcsRh\3f:t:u:E::a::e::l::d::";
 
 /*
  * Display usage.
@@ -188,6 +190,14 @@ handle_options(int argc, char *argv[], options_T *opts)
                 opts->set_action(action_delete);
                 break;
 
+            case 'E': /* action export */
+                if (opts->action() != action_unspecified)
+                    throw args_one_action_only_E();
+                opts->set_action(action_export);
+                if(optarg)
+                    opts->set_export(optarg);
+                break;
+
             case 'h': /* help */
                 throw args_help_E();
                 break;
@@ -233,6 +243,9 @@ handle_rc(std::string const &file)
 
         if (rcfile.keys.end() != (pos = rcfile.keys.find("type")))
             options.set_type(pos->second);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("export")))
+            options.set_export(pos->second);
 
         if (rcfile.keys.end() != (pos = rcfile.keys.find("verbose")))
             options.set_verbose(true);
@@ -293,6 +306,7 @@ main(int argc, char *argv[])
         std::map<options_action_T, action_handler_T * > handlers;
         handlers.insert(std::make_pair(action_add,  new action_add_handler_T) );
         handlers.insert(std::make_pair(action_list, new action_list_handler_T) );
+        handlers.insert(std::make_pair(action_export, new action_export_handler_T));
 
         action_handler_T *handler = handlers[options.action()];
         if (handler)

@@ -23,6 +23,7 @@
 #include "src/database_note_entry.hh"
 #include "src/options.hh"
 #include "src/input.hh"
+#include "src/util.hh"
 #include <cstdlib>
 
 /*
@@ -70,16 +71,7 @@ database_note_entry_T::display(std::ostream &stream)
             {
                 database_entry_keys_T::iterator pos = keys.find("created_at");
                 if (keys.end() != pos)
-                {
-                    time_t date_time_t = strtol(pos->second.c_str(), NULL, 10);
-                    if (0 != date_time_t)
-                    {
-                        char buf[255] = { 0 };
-                        /* gcc warning on the following line is spurious */
-                        strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
-                        date_str.assign(buf);
-                    }
-                }
+                    date_str = format_datestr(pos->second);
             }
 
             if (options.compact())

@@ -116,6 +116,14 @@ database_T::display(std::ostream &stream)
         (*i)->display(stream);
 }
 
+    void
+database_T::do_export(std::ostream &stream)
+{
+    std::vector<database_entry_T * >::iterator i;
+    for (i = entries.begin() ; i != entries.end() ; ++i)
+        (*i)->do_export(stream);
+}
+
 /*
  * Tidy up. Delete all of our entries.
  */

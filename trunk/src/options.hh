@@ -33,7 +33,8 @@ enum options_action_T
     action_list,
     action_add,
     action_edit,
-    action_delete
+    action_delete,
+    action_export
 };
 
 class options_T
@@ -42,6 +43,7 @@ class options_T
         static std::string _file;
         static std::string _user;
         static std::string _type;
+        static std::string _export;
         static bool _verbose;
         static bool _compact;
         static bool _summarise;
@@ -72,6 +74,9 @@ class options_T
 
         void set_type(std::string const &value) { options_T::_type = value; }
         std::string const &get_type() { return options_T::_type; }
+
+        void set_export(std::string const &value) { options_T::_export = value; }
+        std::string const &get_export() { return options_T::_export; }
 };
 
 #endif

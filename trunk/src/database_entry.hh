@@ -43,6 +43,7 @@ class database_entry_T
         virtual bool dump(std::ostream &stream);
         virtual void load(std::istream &stream);
         virtual void display(std::ostream &stream);
+        virtual void do_export(std::ostream &stream);
 
         database_entry_keys_T keys;
 

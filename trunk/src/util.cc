@@ -1,5 +1,5 @@
 /*
- * annodir -- src/database.hh
+ * annodir -- src/util.cc
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
  *
@@ -19,29 +19,36 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_DATABASE_HH
-#define HAVE_DATABASE_HH 1
 
 #include "config.h"
-#include "src/database_entry.hh"
-#include <vector>
-#include <iostream>
+#include "src/util.hh"
 
-class database_T
+#include <string>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+
+    const char *
+basename(char *path)
 {
-    public:
-        database_T();
-        database_T(std::istream &stream);
+    path = (path += strlen(path));
+    while(*(--path) != '/');
+    return ++path;
+}
 
-        virtual ~database_T();
+    std::string
+format_datestr(std::string& epoch)
+{
+    std::string date_str;
+    time_t date_time_t = strtol(epoch.c_str(), NULL, 10);
 
-        std::vector<database_entry_T * > entries;
-        virtual void load(std::istream &stream);
-        virtual bool dump(std::ostream &stream);
-        virtual void display(std::ostream &stream);
-        virtual void do_export(std::ostream &stream);
-};
-
-#endif
-
-/* vim: set tw=80 sw=4 et : */
+    if (0 != date_time_t)
+    {
+	char buf[255] = { 0 };
+	/* gcc warning on the following line is spurious.
+	   (doesn't seem to happen w/3.4.x though. -ka0ttic) */
+	strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
+	date_str.assign(buf);
+    }
+    return (date_str.empty() ? "(no date)" : date_str);
+}

@@ -24,11 +24,10 @@
 #include "src/exceptions.hh"
 #include "src/database.hh"
 #include "src/options.hh"
-#include "src/input.hh"
+#include "src/util.hh"
 
 #include <errno.h>
 #include <cstdlib>
-#include <cstring>
 #include <memory>
 #include <fstream>
 #include <unistd.h>
@@ -36,14 +35,6 @@
 #ifndef PATH_MAX
 # define PATH_MAX 4096
 #endif /* PATH_MAX */
-
-    static const char *
-basename(char *path)
-{
-    path = (path += strlen(path));
-    while(*(--path) != '/');
-    return ++path;
-}
 
 /*
  * Create a new item read from the supplied stream.
