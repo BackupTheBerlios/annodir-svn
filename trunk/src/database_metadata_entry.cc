@@ -21,27 +21,30 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "src/database_metadata_entry.hh"
-#include "src/exceptions.hh"
-#include "src/database.hh"
-#include "src/options.hh"
-#include "src/util.hh"
-
 #include <errno.h>
 #include <cstdlib>
 #include <memory>
 #include <fstream>
 #include <unistd.h>
 
-#ifndef PATH_MAX
-# define PATH_MAX 4096
-#endif /* PATH_MAX */
+#include "src/database_metadata_entry.hh"
+#include "src/node_entry.hh"
+#include "src/exceptions.hh"
+#include "src/database.hh"
+#include "src/options.hh"
+#include "src/util.hh"
+
+database_metadata_entry_T::database_metadata_entry_T(const node_entry_T *node)
+    : database_entry_T(node)
+{
+    id = default_id();
+}
 
 /*
  * Create a new item read from the supplied stream.
  */
-database_metadata_entry_T::database_metadata_entry_T(std::istream *stream)
-    : database_entry_T(stream)
+database_metadata_entry_T::database_metadata_entry_T(std::istream *stream,
+    const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }
@@ -72,13 +75,35 @@ database_metadata_entry_T::set_new_object_defaults()
     keys["title"].assign(util::basename(getcwd(path, PATH_MAX)));
 }
 
-/* 
- * metadata shouldn't be displayed
+/*
+ * Dump our data to the supplied stream.
+ * NOTE: this is identical to database_entry_T::dump() with the 
+ * exception that "end" needs to be printed BEFORE child entries.
  */
     void
-database_metadata_entry_T::display(std::ostream &stream)
+database_metadata_entry_T::dump(std::ostream &stream)
 {
-    return;
+    /* block header */
+    stream << mynode->indent() << id << ":" << std::endl;
+
+    /* entries */
+    std::map<std::string, std::string >::iterator i;
+    for (i = keys.begin() ; i != keys.end() ; ++i)
+        stream << mynode->indent() << "  " << i->first
+            << "=" << i->second << std::endl;
+
+    /* end */
+    stream << mynode->indent() << "end" << std::endl;
+    
+    /* recurse through child nodes */
+    mynode->recurse(&database_entry_T::dump, stream);
+}
+
+    void
+database_metadata_entry_T::do_export(std::ostream &stream)
+{
+    stream << "[" << keys["title"] << "] " << std::endl;
+    database_entry_T::do_export(stream);
 }
 
 /* vim: set tw=80 sw=4 et : */

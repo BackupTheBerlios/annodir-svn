@@ -24,11 +24,20 @@
 #define HAVE_UTIL_HH 1
 
 #include <string>
+#include <cstdarg>
+#include <unistd.h>
+
+#ifndef PATH_MAX
+# define PATH_MAX 4096
+#endif
 
 namespace util
 {
     char * basename(char *);
     std::string format_datestr(std::string&);
+    std::string sprintf(const char *, ...);
+    std::string sprintf(const char *, va_list);
+    void debug_msg(const char *, ...);
 }
 
 #endif

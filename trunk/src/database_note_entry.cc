@@ -21,17 +21,27 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#include <vector>
+#include <cstdlib>
+
 #include "src/database_note_entry.hh"
+#include "src/node_entry.hh"
+#include "src/database.hh"
 #include "src/options.hh"
 #include "src/input.hh"
 #include "src/util.hh"
-#include <cstdlib>
+
+database_note_entry_T::database_note_entry_T(const node_entry_T *node)
+    : database_entry_T(node)
+{
+    id = default_id();
+}
 
 /*
  * Create a new item read from the supplied stream.
  */
-database_note_entry_T::database_note_entry_T(std::istream *stream)
-    : database_entry_T(stream)
+database_note_entry_T::database_note_entry_T(std::istream *stream,
+    const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }
@@ -52,8 +62,9 @@ database_note_entry_T::default_id()
 database_note_entry_T::display(std::ostream &stream)
 {
     options_T options;
+    std::string padding = "   ";
 
-    stream << "[note] "
+    stream << mynode->indent() << mynode->index() << ". "
         << keys.get_with_default("title", "Untitled");
 
     if (!options.summarise())
@@ -61,10 +72,10 @@ database_note_entry_T::display(std::ostream &stream)
         if (options.compact() and !keys["body"].empty())
             stream << ": ";
         else if (!options.compact())
-            stream << std::endl << "  ";
+            stream << std::endl << mynode->indent() << mynode->indent()
+                << padding;
 
-        stream
-            << keys.get_with_default("body", "(no text)");
+        stream << keys.get_with_default("body", "(no text)");
 
         if (options.verbose())
         {
@@ -83,15 +94,22 @@ database_note_entry_T::display(std::ostream &stream)
             }
             else /* !compact */
             {
-                stream << std::endl;
-                stream << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
+                stream << std::endl << mynode->indent() << mynode->indent();
+                stream << padding << "Created by "
+                    << keys.get_with_default("created_by", "(anonymous)");
                 stream << ", " << date_str;
             } /* if !compact */
 
         } /* if !verbose */
-    } /* if !summarise */
 
-    stream << std::endl;
+        stream << std::endl;
+
+        /* recurse through child nodes */
+        mynode->recurse(&database_entry_T::display, stream);
+
+    } /* if !summarise */
+    else
+        stream << std::endl;
 }
 
 /*

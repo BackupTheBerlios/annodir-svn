@@ -21,22 +21,32 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "src/database_link_entry.hh"
-#include "src/exceptions.hh"
-#include "src/database.hh"
-#include "src/options.hh"
-#include "src/input.hh"
-
 #include <errno.h>
 #include <cstdlib>
 #include <memory>
 #include <fstream>
 
+#include "src/database_link_entry.hh"
+#include "src/node_entry.hh"
+#include "src/exceptions.hh"
+#include "src/database.hh"
+#include "src/options.hh"
+#include "src/input.hh"
+
+/*
+ * Create a new entry (belong to the specified node)
+ */
+database_link_entry_T::database_link_entry_T(const node_entry_T *node)
+    : database_entry_T(node)
+{
+    id = default_id();
+}
+
 /*
  * Create a new item read from the supplied stream.
  */
-database_link_entry_T::database_link_entry_T(std::istream *stream)
-    : database_entry_T(stream)
+database_link_entry_T::database_link_entry_T(std::istream *stream,
+    const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }

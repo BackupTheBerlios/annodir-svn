@@ -21,118 +21,58 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#include <cstdlib>
+
 #include "src/database.hh"
+#include "src/node_entry.hh"
 #include "src/database_entry.hh"
 #include "src/database_note_entry.hh"
 #include "src/database_link_entry.hh"
 #include "src/database_metadata_entry.hh"
 #include "src/exceptions.hh"
-
-#include <algorithm>
-
-/* 
- * is it metadata db entry? 
- */
-    bool
-isMetadata(database_entry_T *entry)
-{
-    return entry->recognise_item("metadata");
-}
+#include "src/util.hh"
 
 /*
- * Create a new database_T instance
+ * Load top-level nodes (which in turn load their children)
  */
-database_T::database_T()
-{
-
-}
-
-/*
- * Create a new database_T instance, and populate it with items read from the
- * stream supplied.
- */
-database_T::database_T(std::istream &stream)
-{
-    load(stream);
-}
-
     void
 database_T::load(std::istream &stream)
 {
-    while (! stream.eof())
+    while (not stream.eof())
     {
         /* get the header to determine what to create */
         std::string s;
         if (std::getline(stream, s))
         {
-            database_entry_T *entry;
+            util::debug_msg("db_T::load(): %s", s.c_str());
 
             /* strip trailing colon */
             if (s[s.length() - 1] != ':')
                 throw item_not_parsable_E();
             s.erase(s.length() - 1);
+            
+            /* special case - metadata doesn't get its own node */
+            if (database_metadata_entry_T::recognise_item(s))
+            {
+                entry = new database_metadata_entry_T(&stream, this);
+                continue;
+            }
+
+            node_entry_T *node = new node_entry_T(this);
 
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
-                entry = new database_note_entry_T(&stream);
+                node->entry = new database_note_entry_T(&stream, node);
             else if (database_link_entry_T::recognise_item(s))
-                entry = new database_link_entry_T(&stream);
-            else if (database_metadata_entry_T::recognise_item(s))
-                entry = new database_metadata_entry_T(&stream);
+                node->entry = new database_link_entry_T(&stream, node);
             else if (database_entry_T::recognise_item(s))
-                entry = new database_entry_T(&stream);
+                node->entry = new database_entry_T(&stream, node);
             else
                 throw item_not_recognised_E();
 
-            entries.push_back(entry);
+            children.push_back(node);
         }
     }
-}
-
-/*
- * Dump our data (including our entries) to the supplied output stream
- */
-    bool
-database_T::dump(std::ostream &stream)
-{
-    std::stable_partition(entries.begin(), entries.end(), isMetadata);
-
-    std::vector<database_entry_T * >::iterator i;
-    for (i = entries.begin() ; i != entries.end() ; ++i)
-    {
-        if (! (*i)->dump(stream))
-            return false;
-    }
-    return true;
-}
-
-/*
- * Display our data (including our entries) to the supplied output stream
- */
-    void
-database_T::display(std::ostream &stream)
-{
-    std::vector<database_entry_T * >::iterator i;
-    for (i = entries.begin() ; i != entries.end() ; ++i)
-        (*i)->display(stream);
-}
-
-    void
-database_T::do_export(std::ostream &stream)
-{
-    std::vector<database_entry_T * >::iterator i;
-    for (i = entries.begin() ; i != entries.end() ; ++i)
-        (*i)->do_export(stream);
-}
-
-/*
- * Tidy up. Delete all of our entries.
- */
-database_T::~database_T()
-{
-    std::vector<database_entry_T * >::iterator i;
-    for (i = entries.begin() ; i != entries.end() ; ++i)
-        delete *i;
 }
 
 /* vim: set tw=80 sw=4 et : */

@@ -22,17 +22,21 @@
  */
 
 #include "config.h"
-#include "src/util.hh"
-
 #include <string>
+#include <iostream>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <cstdarg>
+
+#include "src/util.hh"
+#include "src/options.hh"
 
     char *
 util::basename(char *path)
 {
-    char *s = std::strrchr (path, '/');
+    char *s = std::strrchr(path, '/');
     return (s ? s + 1 : path);
 }
 
@@ -51,4 +55,62 @@ util::format_datestr(std::string& epoch)
 	date_str.assign(buf);
     }
     return (date_str.empty() ? "(no date)" : date_str);
+}
+
+/*
+ * Return a string formatted with printf-like format specifier
+ */
+    std::string
+util::sprintf(const char *str, ...)
+{
+    va_list v;
+    va_start(v, str);
+    std::string s(util::sprintf(str, v));
+    va_end(v);
+    return s;
+}
+
+/*
+ * Overloaded sprintf that takes a string and va_list
+ */
+    std::string
+util::sprintf(const char *str, va_list v)
+{
+#ifdef HAVE_VASPRINTF
+    char *buf;
+    vasprintf(&buf, str, v);
+#else
+    char buf[4096] = { 0 };
+# ifdef HAVE_VSNPRINTF
+    vsnprintf(buf, sizeof(buf), str, v);
+# else
+    vsprintf(buf, str, v);
+# endif
+#endif
+
+    std::string s(buf);
+
+#ifdef HAVE_VASPRINTF
+    std::free(buf);
+#endif
+
+    return s;
+}
+
+/*
+ * I hate to bring in options_T just for this, but it's either here
+ * or make the caller declare an options_T instance and pass a bool value
+ */
+    void
+util::debug_msg(const char *msg, ...)
+{
+    options_T options;
+
+    if (not options.debug())
+	return;
+    
+    va_list v;
+    va_start(v, msg);
+    std::cout << util::sprintf(msg, v) << std::endl;
+    va_end(v);
 }

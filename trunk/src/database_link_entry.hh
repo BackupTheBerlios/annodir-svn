@@ -24,8 +24,9 @@
 #ifndef HAVE_DATABASE_LINK_ENTRY_HH
 #define HAVE_DATABASE_LINK_ENTRY_HH 1
 
-#include "config.h"
+#include "src/database.hh"
 #include "src/database_entry.hh"
+#include "src/node_entry.hh"
 
 class database_link_entry_T : public database_entry_T
 {
@@ -33,7 +34,9 @@ class database_link_entry_T : public database_entry_T
 	virtual std::string default_id();
 
     public:
-	database_link_entry_T(std::istream *stream = NULL);
+        database_link_entry_T(const node_entry_T *node = NULL);
+	database_link_entry_T(std::istream *stream = NULL,
+            const node_entry_T *node = NULL);
 
 	virtual void display(std::ostream &stream);
 

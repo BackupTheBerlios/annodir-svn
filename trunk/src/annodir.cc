@@ -62,6 +62,11 @@ static struct option long_options[] =
     {"user",              required_argument,   0,   'u'},
       /* set entry type (note, link, etc) */
     {"type",              required_argument,   0,   't'},
+      /* enable debugging code */
+    {"debug",             no_argument,         0,   'D'},
+
+      /* index */
+    {"index",             required_argument,   0,   'i'},
 
     /* actions */
     {"list",              optional_argument,   0,   'l'},
@@ -77,7 +82,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRh\3f:t:u:E::a::e::l::d::";
+static const char *short_options = "vcsRhD\3i:f:t:u:E::a::e::l::d::";
 
 /*
  * Display usage.
@@ -165,6 +170,14 @@ handle_options(int argc, char *argv[], options_T *opts)
 
             case 't': /* type */
                 opts->set_type(optarg);
+                break;
+
+            case 'i': /* index */
+                opts->set_index(optarg);
+                break;
+
+            case 'D': /* debug */
+                opts->set_debug(true);
                 break;
 
             case 'a': /* action add */
@@ -260,6 +273,9 @@ handle_rc(std::string const &file)
 
         if (rcfile.keys.end() != (pos = rcfile.keys.find("recursive")))
             options.set_recursive(true);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("debug")))
+            options.set_debug(true);
     }
 }
 

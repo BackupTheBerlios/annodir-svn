@@ -45,10 +45,12 @@ class options_T
         static std::string _user;
         static std::string _type;
         static std::string _export;
+        static std::string _index;
         static bool _verbose;
         static bool _compact;
         static bool _summarise;
         static bool _recursive;
+        static bool _debug;
         static options_action_T _action;
 
     public:
@@ -64,6 +66,9 @@ class options_T
         void set_recursive(bool value) { options_T::_recursive = value; }
         bool recursive() { return options_T::_recursive; }
 
+        void set_debug(bool value) { options_T::_debug = value; }
+        bool debug() { return options_T::_debug; }
+
         void set_action(options_action_T value) { options_T::_action = value; }
         options_action_T action() { return options_T::_action; }
 
@@ -78,6 +83,9 @@ class options_T
 
         void set_export(std::string const &value) { options_T::_export = value; }
         std::string const &get_export() { return options_T::_export; }
+
+        void set_index(std::string const &value) { options_T::_index = value; }
+        std::string const &get_index() { return options_T::_index; }
 };
 
 #endif

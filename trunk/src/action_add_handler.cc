@@ -27,8 +27,10 @@
 #include <cstring>
 #include <memory>
 #include <fstream>
+#include <string>
 
 #include "src/database.hh"
+#include "src/node_entry.hh"
 #include "src/exceptions.hh"
 #include "src/options.hh"
 #include "src/action_add_handler.hh"
@@ -38,27 +40,28 @@
 #include "src/input.hh"
 
     database_entry_T *
-make_new_entry(const char *type)
+make_new_entry(const char *type, node_entry_T *node)
 {
     if (0 == strcasecmp(type, "prompt"))
     {
         char *in = get_user_input("Item Type");
         if (in)
         {
-            return make_new_entry(in);
+            return make_new_entry(in, node);
             free(in);
         }
         else
             return NULL;
     }
+
     else if (0 == strcasecmp(type, "note"))
-        return new database_note_entry_T;
+        return new database_note_entry_T(node);
     else if (0 == strcasecmp(type, "link"))
-        return new database_link_entry_T;
+        return new database_link_entry_T(node);
     else if (0 == strcasecmp(type, "metadata"))
-        return new database_metadata_entry_T;
+        return new database_metadata_entry_T(node);
     else /* fallback */
-        return new database_entry_T; 
+        return new database_entry_T(node); 
 }
 
     int
@@ -71,7 +74,7 @@ action_add_handler_T::operator() (void)
         bool exists = false;
 
         /* load database */
-        std::auto_ptr<database_T > db(new database_T());
+        database_T db;
 
         {
             std::auto_ptr<std::istream > f(new 
@@ -79,7 +82,7 @@ action_add_handler_T::operator() (void)
             if ((*f))
             {
                 exists = true;
-                db->load(*f);
+                db.load(*f);
             }
             else
             {
@@ -88,36 +91,51 @@ action_add_handler_T::operator() (void)
             }
         }
 
-        database_entry_T *meta_entry = NULL;
         /* add metadata if the file didn't already exist */
-        if (!exists)
+        if (not exists)
         {
-            meta_entry = make_new_entry("metadata");
-
-            if (!meta_entry)
+            db.entry = make_new_entry("metadata", &db);
+            if (not db.entry)
                 return EXIT_FAILURE;
-
-            meta_entry->set_new_object_defaults();
-            db->entries.push_back(meta_entry);
+            db.entry->set_new_object_defaults();
         }
 
-        /* add a new entry */
-        database_entry_T *entry = make_new_entry(
-                options.get_type().c_str());
-
-        if (!entry)
-            return EXIT_FAILURE;
-
-        entry->set_new_object_defaults();
-        if (entry->prompt_user_for_values())
+        node_entry_T *parent;
+        /* no index specified, so it will become last top-level child */
+        //if (options.get_index().empty())
+        //{
+            parent = &db;
+        //}
+        /*
+        else
         {
-            db->entries.push_back(entry);
+            std::string parent_index = options.get_index();   
+            std::vector<node_entry_T * >::iterator i;
+            for (i = db.children.begin() ; i != db.children.end() ; ++i)
+            {
+                
+            }
+        }
+        */
+    
+        /* add a new entry */
+        node_entry_T *node = new node_entry_T(parent);
+        node->entry = make_new_entry(options.get_type().c_str(), node);
+
+        if (not node->entry)
+            return EXIT_FAILURE;
+        
+        node->entry->set_new_object_defaults();
+
+        if (node->entry->prompt_user_for_values())
+        {
+            db.children.push_back(node);
 
             /* save */
             std::auto_ptr<std::ostream> f(new
                     std::ofstream(options.get_filename().c_str()));
             if ((*f))
-                db->dump(*f);
+                db.dump(*f);
             else
                 throw annodir_file_unwriteable_E();
         }

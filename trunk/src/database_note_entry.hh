@@ -23,17 +23,20 @@
 #ifndef HAVE_DATABASE_NOTE_ENTRY_HH
 #define HAVE_DATABASE_NOTE_ENTRY_HH 1
 
-#include "config.h"
-#include "src/database_entry.hh"
-
 #include <map>
 #include <string>
 #include <iostream>
 
+#include "src/database.hh"
+#include "src/database_entry.hh"
+#include "src/node_entry.hh"
+
 class database_note_entry_T : public database_entry_T
 {
     public:
-        database_note_entry_T(std::istream *stream = NULL);
+        database_note_entry_T(const node_entry_T *node = NULL);
+        database_note_entry_T(std::istream *stream = NULL,
+            const node_entry_T *node = NULL);
 
         virtual void display(std::ostream &stream);
 
