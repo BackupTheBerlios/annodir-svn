@@ -93,15 +93,14 @@ action_add_handler_T::operator() (void)
         bool exists = false;
 
         /* load database */
-        database_T db;
-
+        std::auto_ptr<database_T > db(new database_T());
         {
             std::auto_ptr<std::istream > f(new 
                     std::ifstream(options.get_filename().c_str()));
             if ((*f))
             {
                 exists = true;
-                db.load(*f);
+                db->load(*f);
             }
             else
             {
@@ -113,10 +112,10 @@ action_add_handler_T::operator() (void)
         /* add metadata if the file didn't already exist */
         if (not exists)
         {
-            db.entry = make_new_entry("metadata", &db);
-            if (not db.entry)
+            db->entry = make_new_entry("metadata", &(*db));
+            if (not db->entry)
                 return EXIT_FAILURE;
-            db.entry->set_new_object_defaults();
+            db->entry->set_new_object_defaults();
         }
 
         /* 
@@ -124,10 +123,10 @@ action_add_handler_T::operator() (void)
          * child of that node.  Otherwise, the new node will become the last
          * top-level child (parent is the root node).
          */
-        node_entry_T *parent = &db;
+        node_entry_T *parent = &(*db);
         if (not options.get_index().empty())
         {
-            parent = get_node_with_index(&db, options.get_index());
+            parent = get_node_with_index(&(*db), options.get_index());
             if (not parent)
                 throw node_invalid_index_E();
         }
@@ -149,7 +148,7 @@ action_add_handler_T::operator() (void)
             std::auto_ptr<std::ostream> f(new
                     std::ofstream(options.get_filename().c_str()));
             if ((*f))
-                db.dump(*f);
+                db->dump(*f);
             else
                 throw annodir_file_unwriteable_E();
         }
