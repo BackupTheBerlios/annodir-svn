@@ -58,9 +58,9 @@ database_note_entry_T::display(std::ostream &stream)
 
     if (!options.summarise())
     {
-        if (options.compact())
+        if (options.compact() and !keys["body"].empty())
             stream << ": ";
-        else
+        else if (!options.compact())
             stream << std::endl << "  ";
 
         stream
