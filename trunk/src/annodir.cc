@@ -27,7 +27,10 @@
 #include "src/action_list_handler.hh"
 #include "src/action_add_handler.hh"
 
-#include <getopt.h>
+#include <unistd.h>
+#ifdef HAVE_GETOPT_H
+# include <getopt.h>
+#endif /* HAVE_GETOPT_H */
 #include <errno.h>
 
 #include <iostream>
@@ -36,7 +39,8 @@
 #include <cstring>
 #include <memory>
 
-static struct option options[] =
+#ifdef HAVE_GETOPT_LONG
+static struct option long_options[] =
 {
     /* general options */
     {"recursive",         no_argument,         0,   'R'},
@@ -54,6 +58,9 @@ static struct option options[] =
     {"version",           no_argument,         0,   '\3'},
     { 0, 0, 0, 0 }
 };
+#endif /* HAVE_GETOPT_LONG */
+
+static const char *short_options = "vcRh\3a::e::l::d::";
 
 /*
  * Display usage.
@@ -96,8 +103,14 @@ handle_options(int argc, char *argv[], options_T *opts)
 
     while (1)
     {
-        key = getopt_long(argc, argv, "vcRh\3a::e::l::d::",
-                options, &option_index);
+
+#ifdef HAVE_GETOPT_LONG
+        key = getopt_long(argc, argv, short_options,
+                long_options, &option_index);
+#else
+        key = getopt(argc, argv, short_options);
+#endif /* HAVE_GETOPT_LONG */
+
         if (key == -1)
             break;
 
