@@ -19,7 +19,9 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "anno_db_entry.hh"
+#include "src/anno_db_entry.hh"
+#include "src/options.hh"
+#include <time.h>
 
     std::string&
 anno_db_entry_keys_T::get_with_default(std::string key,
@@ -59,18 +61,26 @@ anno_db_entry_T::load(std::istream &stream)
 /*
  * Create a new item read from the supplied stream.
  */
-anno_db_entry_T::anno_db_entry_T(std::istream &stream)
+anno_db_entry_T::anno_db_entry_T(std::istream *stream)
 {
     id = default_id();
-    load(stream);
+    if (stream)
+        load(*stream);
+    else
+        set_new_object_defaults();
 }
 
 /*
- * Create a new item
+ * Create nice default settings if an item is newly created.
  */
-anno_db_entry_T::anno_db_entry_T()
+        void
+anno_db_entry_T::set_new_object_defaults()
 {
-    id = default_id();
+    options_T options;
+    char buf[255] = { 0 };
+    snprintf(buf, sizeof(buf) - 1, "%d", time(NULL));
+    keys["created_by"].assign(options.get_user());
+    keys["created_at"].assign(buf);
 }
 
 /*

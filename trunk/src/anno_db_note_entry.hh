@@ -31,8 +31,7 @@
 class anno_db_note_entry_T : public anno_db_entry_T
 {
     public:
-        anno_db_note_entry_T(std::istream &stream);
-        anno_db_note_entry_T();
+        anno_db_note_entry_T(std::istream *stream = NULL);
 
         virtual void display(std::ostream &stream);
 

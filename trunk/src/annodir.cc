@@ -54,6 +54,8 @@ static struct option long_options[] =
     {"summarize",         no_argument,         0,   's'}, /* silly usians */
       /* file lets the user specify a file other than .annodir */
     {"file",              required_argument,   0,   'f'},
+      /* lets the user override the created_by etc fields */
+    {"user",              required_argument,   0,   'u'},
 
     /* actions */
     {"list",              optional_argument,   0,   'l'},
@@ -68,7 +70,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRh\3f:a::e::l::d::";
+static const char *short_options = "vcsRh\3f:u:a::e::l::d::";
 
 /*
  * Display usage.
@@ -150,6 +152,10 @@ handle_options(int argc, char *argv[], options_T *opts)
                 opts->set_filename(optarg);
                 break;
 
+            case 'u': /* user */
+                opts->set_user(optarg);
+                break;
+
             case 'a': /* action add */
                 if (opts->action() != action_unspecified)
                     throw args_one_action_only_E();
@@ -205,6 +211,11 @@ main(int argc, char *argv[])
 
     if (getenv("ANNODIR_FILE"))
         options.set_filename(getenv("ANNODIR_FILE"));
+
+    if (getenv("ANNODIR_USER"))
+        options.set_user(getenv("ANNODIR_USER"));
+    else if (getenv("USER"))
+        options.set_user(getenv("USER"));
 
     try
     {

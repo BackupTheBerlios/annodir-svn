@@ -39,6 +39,7 @@ class options_T
 {
     protected:
         static std::string _file;
+        static std::string _user;
         static bool _verbose;
         static bool _compact;
         static bool _summarise;
@@ -63,6 +64,9 @@ class options_T
 
         void set_filename(const char *value) { options_T::_file = value; }
         const char *get_filename() { return options_T::_file.c_str(); }
+
+        void set_user(const char *value) { options_T::_user = value; }
+        const char *get_user() { return options_T::_user.c_str(); }
 };
 
 #endif

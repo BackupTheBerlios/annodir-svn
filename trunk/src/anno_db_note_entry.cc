@@ -26,18 +26,9 @@
 /*
  * Create a new item read from the supplied stream.
  */
-anno_db_note_entry_T::anno_db_note_entry_T(std::istream &stream)
+anno_db_note_entry_T::anno_db_note_entry_T(std::istream *stream)
+    : anno_db_entry_T(stream)
 {
-    id = default_id();
-    load(stream);
-}
-
-/*
- * Create a new item
- */
-anno_db_note_entry_T::anno_db_note_entry_T()
-{
-    id = default_id();
 }
 
 /*

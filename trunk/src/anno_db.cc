@@ -58,9 +58,9 @@ anno_db_T::load(std::istream &stream)
 
             /* try to find a relevant class */
             if (anno_db_note_entry_T::recognise_item(s))
-                entry = new anno_db_note_entry_T(stream);
+                entry = new anno_db_note_entry_T(&stream);
             else if (anno_db_entry_T::recognise_item(s))
-                entry = new anno_db_entry_T(stream);
+                entry = new anno_db_entry_T(&stream);
             else
                 throw "Bleh!";
 

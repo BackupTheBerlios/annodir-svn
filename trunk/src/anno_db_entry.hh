@@ -36,8 +36,7 @@ class anno_db_entry_keys_T : public std::map<std::string, std::string >
 class anno_db_entry_T
 {
     public:
-        anno_db_entry_T(std::istream &stream);
-        anno_db_entry_T();
+        anno_db_entry_T(std::istream *stream = NULL);
 
         virtual bool dump(std::ostream &stream);
         virtual void load(std::istream &stream);
@@ -48,6 +47,7 @@ class anno_db_entry_T
         static bool recognise_item(std::string item);
 
     protected:
+        virtual void set_new_object_defaults();
         virtual std::string default_id();
         std::string id;
 };
