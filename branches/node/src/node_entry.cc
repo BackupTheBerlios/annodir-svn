@@ -23,6 +23,7 @@
 
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 #include "src/node_entry.hh"
 #include "src/util.hh"
 
@@ -76,12 +77,22 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
 node_entry_T::index()
 {
     index_str.clear();
+
+    /* skip first element, as we care less about the root node (index 0) */
     std::vector<int >::iterator i;
     for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
     {
-        char buf[8];
+#ifdef HAVE_ASPRINTF
+        char *buf;
+        std::asprintf(&buf, "%d.", *i);
+#else
+        char buf[10] = { 0 };
         std::snprintf(buf, sizeof(buf), "%d.", *i);
+#endif
         index_str.append(buf);
+#ifdef HAVE_ASPRINTF
+        std::free(buf);
+#endif
     }
 
     /* chop trailing '.' */

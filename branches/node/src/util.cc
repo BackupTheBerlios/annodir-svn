@@ -67,7 +67,7 @@ util::debug_msg(const char *msg, ...)
 
     if (not options.debug())
 	return;
-
+    
     va_list v;
     va_start(v, msg);
 
@@ -86,7 +86,7 @@ util::debug_msg(const char *msg, ...)
     std::cout << buf << std::endl;
 
 #ifdef HAVE_VASPRINTF
-    free(buf);
+    std::free(buf);
 #endif
     va_end(v);
 }
