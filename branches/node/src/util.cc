@@ -83,10 +83,10 @@ util::debug_msg(const char *msg, ...)
 # endif
 #endif
 
+    std::cout << buf << std::endl;
+
 #ifdef HAVE_VASPRINTF
     free(buf);
 #endif
-    
-    std::cout << buf << std::endl;
     va_end(v);
 }
