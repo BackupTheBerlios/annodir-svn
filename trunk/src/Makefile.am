@@ -9,6 +9,7 @@ annodir_SOURCES = \
 		  action_list_handler.hh action_list_handler.cc \
 		  action_add_handler.hh action_add_handler.cc \
 		  action_delete_handler.hh action_delete_handler.cc \
+		  action_edit_handler.hh action_edit_handler.cc \
 		  action_export_handler.hh action_export_handler.cc \
 		  options.hh options.cc \
 		  database.hh database.cc \

@@ -82,7 +82,7 @@ database_link_entry_T::prompt_user_for_values()
         return false;
 
     char *input = NULL;
-    if (!((input = get_user_input("Location"))))
+    if (!((input = input::get_user_input("Location", keys["location"]))))
         return false;
     
     try {

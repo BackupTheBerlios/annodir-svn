@@ -1,6 +1,6 @@
 /*
- * annodir -- src/input.hh
- * $Id$
+ * annodir -- src/action_edit_handler.hh
+ * $Id: node_entry.hh 92 2004-12-10 11:35:38Z ka0ttic $
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
  *
@@ -21,17 +21,16 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#ifndef INPUT_HH
-#define INPUT_HH 1
+#ifndef ACTION_EDIT_HANDLER_HH
+#define ACTION_EDIT_HANDLER_HH 1
 
-#include "config.h"
-#include <string>
+#include "src/action_handler.hh"
 
-namespace input
+class action_edit_handler_T : public action_handler_T
 {
-    char * get_user_input(std::string const &prompt,
-        std::string existing_text = "");
-}
+    public:
+	action_edit_handler_T() { };
+	virtual int operator() (void);
+};
 
 #endif
-/* vim: set tw=80 sw=4 et : */

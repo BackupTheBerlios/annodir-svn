@@ -30,17 +30,26 @@
 #include <cstdio>
 #include <readline/readline.h>
 
-    char *
-get_user_input(const char *prompt)
+std::string const *rl_buffer;
+
+    static int
+init_readline()
 {
-    std::string pretty_prompt;
-    pretty_prompt.assign(prompt);
+    rl_insert_text(const_cast<char * >(rl_buffer->c_str()));
+    return 0;
+}
+
+    char *
+input::get_user_input(std::string const &prompt, std::string existing_text)
+{
+    std::string pretty_prompt(prompt);
     while (pretty_prompt.length() < 8)
         pretty_prompt.append(" ");
     pretty_prompt.append(" > ");
+
+    rl_startup_hook = (int(*)())init_readline;
+    rl_buffer = &existing_text;
     return readline(pretty_prompt.c_str());
 }
-
-
 
 /* vim: set tw=80 sw=4 et : */

@@ -134,12 +134,12 @@ database_note_entry_T::prompt_user_for_values()
         return false;
 
     char *input = NULL;
-    if (!((input = get_user_input("Title"))))
+    if (!((input = input::get_user_input("Title", keys["title"]))))
         return false;
     keys["title"].assign(input);
     free(input);
 
-    if (!((input = get_user_input("Body"))))
+    if (!((input = input::get_user_input("Body", keys["body"]))))
         return false;
     keys["body"].assign(input);
     free(input);

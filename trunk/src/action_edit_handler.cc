@@ -1,5 +1,5 @@
 /*
- * annodir -- src/action_delete_handler.cc
+ * annodir -- src/action_edit_handler.cc
  * $Id: node_entry.hh 92 2004-12-10 11:35:38Z ka0ttic $
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
@@ -27,9 +27,8 @@
 #include <memory>
 #include <cstdlib>
 #include <errno.h>
-#include <unistd.h>	/* for unlink() */
 
-#include "src/action_delete_handler.hh"
+#include "src/action_edit_handler.hh"
 #include "src/node_entry.hh"
 #include "src/database.hh"
 #include "src/exceptions.hh"
@@ -37,18 +36,18 @@
 #include "src/options.hh"
 
     int
-action_delete_handler_T::operator() (void)
+action_edit_handler_T::operator() (void)
 {
     options_T options;
 
     try
     {
 	/* load database */
-	std::auto_ptr<database_T > db(new database_T());
+	std::auto_ptr<database_T >db(new database_T());
 
 	{
 	    std::auto_ptr<std::istream > f(new
-		    std::ifstream(options.get_filename().c_str()));
+		std::ifstream(options.get_filename().c_str()));
 	    if ((*f))
 		db->load(*f);
 	    else
@@ -58,7 +57,7 @@ action_delete_handler_T::operator() (void)
 	    }
 	}
 
-	/* index not specified, prompt for one */
+	/* index not specified, prompt for one */\
 	if (options.get_index().empty())
 	{
 	    char *in = input::get_user_input("Index");
@@ -72,38 +71,26 @@ action_delete_handler_T::operator() (void)
 		throw node_invalid_index_E();
 	}
 
-	/* find the index */
+	/* find index */
 	node_entry_T *node = db->find_index(options.get_index());
 	if (not node)
 	    throw node_invalid_index_E();
 
-	/* we need to call erase() from the parent */
-	node_entry_T *parent = node->parent();
+	if (not node->entry)
+	    return EXIT_FAILURE;
 
-	node_entry_T::iterator i;
-	for (i = parent->begin(); i != parent->end() ; i++)
+	if (node->entry->prompt_user_for_values())
 	{
-	    if ((*i)->index() == node->index())
-		break;
-	}
-	parent->erase(i);
-	node = NULL;
-
-	/* save */
-	{
-	    std::auto_ptr<std::ostream > f(new
-		std::ofstream(options.get_filename().c_str()));
-	    if ((*f))
-		db->dump(*f);
-	    else
-		throw annodir_file_unwriteable_E();
-	}
-
-	if (db->empty() and options.delete_on_empty())
-	{
-	    if (0 != unlink(options.get_filename().c_str()))
-		throw annodir_file_unwriteable_E();
-	}
+	    /* save */
+            std::auto_ptr<std::ostream> f(new
+                    std::ofstream(options.get_filename().c_str()));
+            if ((*f))
+                db->dump(*f);
+            else
+                throw annodir_file_unwriteable_E();
+        }
+        else
+            return EXIT_FAILURE;
     }
     catch (annodir_file_unreadable_E)
     {

@@ -44,7 +44,7 @@ make_new_entry(const char *type, node_entry_T *node)
 {
     if (0 == strcasecmp(type, "prompt"))
     {
-        char *in = get_user_input("Item Type");
+        char *in = input::get_user_input("Item Type");
         if (in)
         {
             return make_new_entry(in, node);
@@ -82,7 +82,7 @@ action_add_handler_T::operator() (void)
             if ((*f))
             {
                 exists = true;
-                db->load(*f);
+     db->load(*f);
             }
             else
             {
