@@ -94,7 +94,7 @@ database_entry_T::set_new_object_defaults()
 #endif
 }
 
-    void
+    bool
 database_entry_T::prompt_user_for_values()
 {
 

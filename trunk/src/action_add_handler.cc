@@ -54,11 +54,15 @@ action_add_handler_T::operator() (void)
         /* add a new entry */
         database_entry_T *entry = new database_note_entry_T;
         entry->set_new_object_defaults();
-        entry->prompt_user_for_values();
-        db->entries.push_back(entry);
+        if (entry->prompt_user_for_values())
+        {
+            db->entries.push_back(entry);
 
-        /* dump to stdout for now */
-        db->dump(std::cout);
+            /* dump to stdout for now */
+            db->dump(std::cout);
+        }
+        else
+            return EXIT_FAILURE;
 
     }
     catch (annodir_file_unreadable_E)

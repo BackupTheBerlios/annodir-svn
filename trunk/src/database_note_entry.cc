@@ -113,15 +113,22 @@ database_note_entry_T::set_new_object_defaults()
     database_entry_T::set_new_object_defaults();
 }
 
-    void
+    bool
 database_note_entry_T::prompt_user_for_values()
 {
-    database_entry_T::prompt_user_for_values();
+    if (!database_entry_T::prompt_user_for_values())
+        return false;
 
     char *input = NULL;
-    input = get_user_input("Title > ");
-    if (input)
-        keys["title"].assign(input);
+    if (!((input = get_user_input("Title"))))
+        return false;
+    keys["title"].assign(input);
+
+    if (!((input = get_user_input("Body"))))
+        return false;
+    keys["body"].assign(input);
+
+    return true;
 }
 
 /* vim: set tw=80 sw=4 et : */
