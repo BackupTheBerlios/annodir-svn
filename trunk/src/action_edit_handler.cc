@@ -57,7 +57,7 @@ action_edit_handler_T::operator() (void)
 	    }
 	}
 
-	/* index not specified, prompt for one */\
+	/* index not specified, prompt for one */
 	if (options.get_index().empty())
 	{
 	    char *in = input::get_user_input("Index");
