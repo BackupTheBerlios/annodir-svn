@@ -36,10 +36,11 @@ class database_T
         virtual ~database_T();
 
         node_entry_T root;
+
         virtual void load(std::istream &stream);
-        virtual bool dump(std::ostream &stream);
-        virtual void display(std::ostream &stream);
-        virtual void do_export(std::ostream &stream);
+        virtual bool dump(std::ostream &stream) { return root.dump(stream); }
+        virtual void display(std::ostream &stream) { root.display(stream); }
+        virtual void do_export(std::ostream &stream) { root.do_export(stream); }
 };
 
 #endif

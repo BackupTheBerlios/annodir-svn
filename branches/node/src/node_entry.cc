@@ -102,6 +102,7 @@ node_entry_T::index()
     return index_str;
 }
 
+
 /*
  * Tidy up
  */

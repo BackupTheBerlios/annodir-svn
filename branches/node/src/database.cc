@@ -89,33 +89,12 @@ database_T::load(std::istream &stream)
     }
 }
 
-/*
- * Dump our data (including our entries) to the supplied output stream
- */
-    bool
-database_T::dump(std::ostream &stream)
-{
-    return root.entry->dump(stream);
-}
-
-/*
- * Display our data (including our entries) to the supplied output stream
- */
-    void
-database_T::display(std::ostream &stream)
-{
-    root.entry->display(stream);
-}
-
-    void
-database_T::do_export(std::ostream &stream)
-{
-    root.entry->do_export(stream);
-}
 
 /*
  * Tidy up. Delete all of our nodes.
  */
+
+/* TODO: add purge() member */
 database_T::~database_T()
 {
     std::vector<node_entry_T * >::iterator i;

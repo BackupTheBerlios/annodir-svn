@@ -24,6 +24,7 @@
 #ifndef NODE_ENTRY_HH
 #define NODE_ENTRY_HH 1
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include "src/database_entry.hh"
@@ -31,14 +32,17 @@
 class node_entry_T
 {
     public:
-        friend class database_entry_T;
-
 	node_entry_T(node_entry_T *parent_node = NULL);
-	~node_entry_T();
+	virtual ~node_entry_T();
         
 	std::vector<node_entry_T * > children;
         database_entry_T *entry;
 
+        virtual void load(std::istream &stream) { entry->load(stream); }
+        virtual bool dump(std::ostream &stream) { return entry->dump(stream); }
+        virtual void display(std::ostream &stream) { entry->display(stream); }
+        virtual void do_export(std::ostream &stream) { entry->do_export(stream); }
+        
         std::string const &index();
         std::string const &indent() { return node_entry_T::indent_str; }
 

@@ -27,7 +27,7 @@
 #include <string>
 #include <iostream>
 
-#include "src/node_entry.hh"
+class node_entry_T;
 
 class database_entry_keys_T : public std::map<std::string, std::string >
 {
@@ -39,8 +39,6 @@ class database_entry_keys_T : public std::map<std::string, std::string >
 class database_entry_T
 {
     public:
-        friend class node_entry_T;
-
         database_entry_T(node_entry_T *node = NULL);
         database_entry_T(std::istream *stream = NULL, 
             node_entry_T *node = NULL);
