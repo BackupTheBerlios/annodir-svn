@@ -123,21 +123,8 @@ database_entry_T::load(std::istream &stream)
 database_entry_T::set_new_object_defaults()
 {
     options_T options;
-
-#ifdef HAVE_ASPRINTF
-    char *str;
-    asprintf(&str, "%lu", (unsigned long) time(NULL));
-#else
-    char str[255] = { 0 };
-    std::snprintf(str, sizeof(str) - 1, "%lu", (unsigned long) time(NULL));
-#endif
-
     keys["created_by"].assign(options.get_user());
-    keys["created_at"].assign(str);
-
-#ifdef HAVE_ASPRINTF
-    std::free(str);
-#endif
+    keys["created_at"].assign(util::sprintf("%lu", (unsigned long) time(NULL)));
 }
 
     bool

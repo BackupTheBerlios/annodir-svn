@@ -34,6 +34,7 @@ namespace util
 {
     char * basename(char *);
     std::string format_datestr(std::string&);
+    std::string sprintf(const char *, ...);
     void debug_msg(const char *, ...);
 }
 

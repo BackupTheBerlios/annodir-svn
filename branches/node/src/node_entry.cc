@@ -91,19 +91,7 @@ node_entry_T::index()
     /* skip first element, as we care less about the root node (index 0) */
     std::vector<int >::iterator i;
     for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
-    {
-#ifdef HAVE_ASPRINTF
-        char *buf;
-        std::asprintf(&buf, "%d.", *i);
-#else
-        char buf[10] = { 0 };
-        std::snprintf(buf, sizeof(buf), "%d.", *i);
-#endif
-        index_str.append(buf);
-#ifdef HAVE_ASPRINTF
-        std::free(buf);
-#endif
-    }
+        index_str.append(util::sprintf("%d.", *i));
 
     /* chop trailing '.' */
     if (index_str[index_str.length() - 1] == '.')

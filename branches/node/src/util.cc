@@ -57,6 +57,33 @@ util::format_datestr(std::string& epoch)
     return (date_str.empty() ? "(no date)" : date_str);
 }
 
+    std::string
+util::sprintf(const char *str, ...)
+{
+    va_list v;
+    va_start(v, str);
+
+#ifdef HAVE_VASPRINTF
+    char *buf;
+    vasprintf(&buf, str, v);
+#else
+    char buf[4096] = { 0 };
+# ifdef HAVE_VSNPRINTF
+    vsnprintf(buf, sizeof(buf), str, v);
+# else
+    vsprintf(buf, str, v);
+# endif
+#endif
+    
+    std::string s(buf);
+
+#ifdef HAVE_VASPRINTF
+    std::free(buf);
+#endif
+
+    return s;
+}
+
 /*
  * I hate to bring in options_T just for this, but it's either here
  * or make the caller declare an options_T instance and pass a bool value
