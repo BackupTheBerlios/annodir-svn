@@ -28,7 +28,7 @@
 
 /*
  * Initialize a node instance
- * Set parent, prev, and next pointers to their respective nodes
+ * Set parent and sibling pointers to their respective nodes
  */
 node_entry_T::node_entry_T(node_entry_T *parent_node)
 {
@@ -40,8 +40,10 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     {
         prev = parent->children.back();
         prev->next = this;
+
         _index = prev->_index;
         _index.back()++;
+
         indent_str = prev->indent_str;
     }
     /* only child */
@@ -49,6 +51,7 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     {
         _index = parent->_index;
         _index.push_back(1);
+
         indent_str = parent->indent_str;
         /* top-level children nodes shouldn't be indented */
         if (parent->parent)
@@ -61,13 +64,9 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
         return;
     }
 
+    /* initial index string */
+    index_str = index();
     util::debug_msg("initialized new node with index %s", index_str.c_str());
-}
-
-/* Tidy up */
-node_entry_T::~node_entry_T()
-{
-    delete entry;
 }
 
 /*
@@ -76,6 +75,7 @@ node_entry_T::~node_entry_T()
     std::string const&
 node_entry_T::index()
 {
+    index_str.clear();
     std::vector<int >::iterator i;
     for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
     {
@@ -89,6 +89,14 @@ node_entry_T::index()
         index_str.erase(index_str.length() - 1);
 
     return index_str;
+}
+
+/*
+ * Tidy up
+ */
+node_entry_T::~node_entry_T()
+{
+    delete entry;
 }
 
 /* vim: set tw=80 sw=4 et : */
