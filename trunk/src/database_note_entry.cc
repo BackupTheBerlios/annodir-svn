@@ -73,6 +73,7 @@ database_note_entry_T::display(std::ostream &stream)
                     if (0 != date_time_t)
                     {
                         char buf[255] = { 0 };
+                        /* gcc warning on the following line is spurious */
                         strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
                         date_str.assign(buf);
                     }

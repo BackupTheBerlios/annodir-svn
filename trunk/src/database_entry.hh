@@ -37,6 +37,7 @@ class database_entry_T
 {
     public:
         database_entry_T(std::istream *stream = NULL);
+        virtual ~database_entry_T() { };
 
         virtual bool dump(std::ostream &stream);
         virtual void load(std::istream &stream);

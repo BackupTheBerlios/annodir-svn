@@ -80,10 +80,10 @@ database_entry_T::set_new_object_defaults()
 
 #ifdef HAVE_ASPRINTF
     char *str;
-    asprintf(&str, "%d", time(NULL));
+    asprintf(&str, "%lu", (unsigned long) time(NULL));
 #else
     char str[255] = { 0 };
-    snprintf(str, sizeof(str) - 1, "%d", time(NULL));
+    snprintf(str, sizeof(str) - 1, "%lu", (unsigned long) time(NULL));
 #endif
 
     keys["created_by"].assign(options.get_user());
@@ -97,7 +97,7 @@ database_entry_T::set_new_object_defaults()
     bool
 database_entry_T::prompt_user_for_values()
 {
-
+    return true;
 }
 
 /*

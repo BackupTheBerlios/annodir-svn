@@ -32,7 +32,7 @@ class database_T
         database_T();
         database_T(std::istream &stream);
 
-        ~database_T();
+        virtual ~database_T();
 
         std::vector<database_entry_T * > entries;
         virtual void load(std::istream &stream);
