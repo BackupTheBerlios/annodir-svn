@@ -33,6 +33,7 @@
 node_entry_T::node_entry_T(node_entry_T *parent_node)
 {
     parent = parent_node;
+    prev = next = 0;
 
     /* child with siblings */
     if (parent and !(parent->children.empty()))
@@ -44,14 +45,12 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     /* only child */
     else if (parent)
     {
-        prev = 0;
         _index = parent->_index;
         _index.push_back(1);
     }
     /* root */
     else
     {
-        prev = 0;
         _index.push_back(0);
         return;
     }
@@ -62,10 +61,12 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     std::vector<int >::iterator i;
     for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
     {
+        /* is there a C++ way of doing this? */
         char buf[8];
         snprintf(buf, sizeof(buf), "%d.", *i);
         index_str.append(buf);
     }
+
     /* chop trailing '.' */
     if (index_str[index_str.length() - 1] == '.')
         index_str.erase(index_str.length() - 1);
