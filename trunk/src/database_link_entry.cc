@@ -20,7 +20,6 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "config.h"
 #include "src/database_link_entry.hh"
 #include "src/exceptions.hh"
 #include "src/database.hh"
@@ -74,7 +73,41 @@ database_link_entry_T::prompt_user_for_values()
     char *input = NULL;
     if (!((input = get_user_input("Location"))))
         return false;
-    keys["location"].assign(input);
+    
+    try {
+        if (0 != access(input, R_OK)) 
+        {
+            /* this is ugly but necessary: if the user is using filename
+             * completion, a space gets added to the end of the filename
+             * It might be configurable via readline to not append a space.
+             */
+            std::string str(input);
+            str = str.substr(0, str.size() - 1);
+
+            if (0 != access(str.c_str(), R_OK)) 
+            {
+                if (ENOENT == errno)
+                    throw annodir_file_notthere_E();
+                else
+                    throw annodir_file_unreadable_E();
+            }
+            keys["location"].assign(str);
+        }
+        else
+            keys["location"].assign(input);
+    }
+    catch (annodir_file_notthere_E)
+    {
+        std::cout << "Warning: couldn't open " << input << " for read("
+            << errno << "): " << strerror(errno) << std::endl;
+        return false;
+    }
+    catch (annodir_file_unreadable_E)
+    {
+        std::cout << "Error: couldn't open " << input << " for read ("
+            << errno << "): " << strerror(errno) << std::endl;
+        return false;
+    }
 
     return true;
 }
