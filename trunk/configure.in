@@ -1,0 +1,36 @@
+dnl configure.in for uhinv. run this through autoconf to produce
+dnl a ./configure script (it's best to use autogen.sh)
+
+dnl -- STANDARD THINGS --
+
+AC_INIT(src/annodir.cc)
+AC_CONFIG_AUX_DIR(config)
+AM_INIT_AUTOMAKE(annodir, 0.1)
+
+dnl check for required programs
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_RANLIB
+
+dnl check for standard headers
+AC_HEADER_STDC
+
+dnl -- REQUIRED --
+
+echo "--- checking for required things ---"
+
+dnl we need getopt.h. right now we'll force getopt_long. maybe later we
+dnl could add fallback to just regular getopt if necessary.
+AC_HEADER_DIRENT(,
+    [AC_MSG_ERROR([dirent.h is required])])
+AC_CHECK_HEADERS(getopt.h,,
+    [AC_MSG_ERROR([getopt.h is required])])
+AC_CHECK_FUNCS(getopt_long,,
+    [AC_MSG_ERROR([getopt_long is required])])
+
+echo "--- done with checks ---"
+
+dnl output
+AM_CONFIG_HEADER(config.h)
+AC_OUTPUT(Makefile src/Makefile)
