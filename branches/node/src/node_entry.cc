@@ -39,6 +39,7 @@ node_entry_T::node_entry_T(node_entry_T *parent_node)
     if (parent and !(parent->children.empty()))
     {
         prev = parent->children.back();
+        prev->next = this;
         _index = prev->_index;
         _index.back()++;
     }
