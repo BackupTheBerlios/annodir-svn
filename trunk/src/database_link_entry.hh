@@ -1,5 +1,5 @@
 /*
- * annodir -- src/options,cc
+ * annodir -- src/database_link_entry.hh
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  *
  * This file is part of annodir.
@@ -19,16 +19,28 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "config.h"
-#include "src/options.hh"
+#ifndef HAVE_DATABASE_LINK_ENTRY_HH
+#define HAVE_DATABASE_LINK_ENTRY_HH 1
 
-bool options_T::_verbose = false;
-bool options_T::_compact = false;
-bool options_T::_summarise = false;
-bool options_T::_recursive = false;
-options_action_T options_T::_action = action_unspecified;
-std::string options_T::_file = ".annodir";
-std::string options_T::_user = "anonymous";
-std::string options_T::_type = "note";
+#include "config.h"
+#include "src/database_entry.hh"
+
+class database_link_entry_T : public database_entry_T
+{
+    protected:
+	virtual std::string default_id();
+
+    public:
+	database_link_entry_T(std::istream *stream = NULL);
+
+	virtual void display(std::ostream &stream);
+
+	static bool recognise_item(std::string item);
+
+	virtual void set_new_object_defaults();
+	virtual bool prompt_user_for_values();
+};
+
+#endif
 
 /* vim: set tw=80 sw=4 et : */

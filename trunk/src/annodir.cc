@@ -57,6 +57,8 @@ static struct option long_options[] =
     {"file",              required_argument,   0,   'f'},
       /* lets the user override the created_by etc fields */
     {"user",              required_argument,   0,   'u'},
+      /* set entry type (note, link, etc) */
+    {"type",              required_argument,   0,   't'},
 
     /* actions */
     {"list",              optional_argument,   0,   'l'},
@@ -71,7 +73,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRh\3f:u:a::e::l::d::";
+static const char *short_options = "vcsRh\3f:t:u:a::e::l::d::";
 
 /*
  * Display usage.
@@ -155,6 +157,10 @@ handle_options(int argc, char *argv[], options_T *opts)
 
             case 'u': /* user */
                 opts->set_user(optarg);
+                break;
+
+            case 't': /* type */
+                opts->set_type(optarg);
                 break;
 
             case 'a': /* action add */

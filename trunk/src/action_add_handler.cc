@@ -30,6 +30,7 @@
 #include "src/options.hh"
 #include "src/action_add_handler.hh"
 #include "src/database_note_entry.hh"
+#include "src/database_link_entry.hh"
 
     int
 action_add_handler_T::operator() (void)
@@ -54,7 +55,14 @@ action_add_handler_T::operator() (void)
         }
 
         /* add a new entry */
-        database_entry_T *entry = new database_note_entry_T;
+        database_entry_T *entry;
+        if (options.get_type() == "note")
+            entry = new database_note_entry_T;
+        else if (options.get_type() == "link")
+            entry = new database_link_entry_T;
+        else /* fallback */
+            entry = new database_entry_T; 
+
         entry->set_new_object_defaults();
         if (entry->prompt_user_for_values())
         {

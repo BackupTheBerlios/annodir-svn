@@ -40,6 +40,7 @@ class options_T
     protected:
         static std::string _file;
         static std::string _user;
+        static std::string _type;
         static bool _verbose;
         static bool _compact;
         static bool _summarise;
@@ -67,6 +68,9 @@ class options_T
 
         void set_user(std::string const &value) { options_T::_user = value; }
         std::string const &get_user() { return options_T::_user; }
+
+        void set_type(std::string const &value) { options_T::_type = value; }
+        std::string const &get_type() { return options_T::_type; }
 };
 
 #endif

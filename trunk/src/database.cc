@@ -22,6 +22,7 @@
 #include "src/database.hh"
 #include "src/database_entry.hh"
 #include "src/database_note_entry.hh"
+#include "src/database_link_entry.hh"
 #include "src/exceptions.hh"
 
 /*
@@ -60,6 +61,8 @@ database_T::load(std::istream &stream)
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
                 entry = new database_note_entry_T(&stream);
+            else if (database_link_entry_T::recognise_item(s))
+                entry = new database_link_entry_T(&stream);
             else if (database_entry_T::recognise_item(s))
                 entry = new database_entry_T(&stream);
             else
