@@ -54,6 +54,7 @@ action_add_handler_T::operator() (void)
         /* add a new entry */
         anno_db_entry_T *entry = new anno_db_note_entry_T;
         entry->set_new_object_defaults();
+        entry->prompt_user_for_values();
         db->entries.push_back(entry);
 
         /* dump to stdout for now */

@@ -38,6 +38,7 @@ class anno_db_note_entry_T : public anno_db_entry_T
         static bool recognise_item(std::string item);
 
         virtual void set_new_object_defaults();
+        virtual void prompt_user_for_values();
 
     protected:
         virtual std::string default_id();

@@ -110,9 +110,15 @@ anno_db_note_entry_T::recognise_item(std::string item)
     void
 anno_db_note_entry_T::set_new_object_defaults()
 {
-    char *input = NULL;
     anno_db_entry_T::set_new_object_defaults();
-    keys["fred"] = "bob";
+}
+
+    void
+anno_db_note_entry_T::prompt_user_for_values()
+{
+    anno_db_entry_T::prompt_user_for_values();
+
+    char *input = NULL;
     input = get_user_input("Title > ");
     if (input)
         keys["title"].assign(input);
