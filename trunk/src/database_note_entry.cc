@@ -67,11 +67,11 @@ database_note_entry_T::display(std::ostream &stream)
     stream << mynode->indent() << mynode->index() << ". "
         << keys.get_with_default("title", "Untitled");
 
-    if (!options.summarise())
+    if (not options.summarise())
     {
-        if (options.compact() and !keys["body"].empty())
+        if (options.compact() and not keys["body"].empty())
             stream << ": ";
-        else if (!options.compact())
+        else if (not options.compact() and not keys["body"].empty())
             stream << std::endl << mynode->indent() << mynode->indent()
                 << padding;
 
