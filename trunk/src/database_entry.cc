@@ -101,7 +101,7 @@ database_entry_T::load(std::istream &stream)
             else
                 throw item_not_recognised_E();
 
-            mynode->children.push_back(node);
+            mynode->push_back(node);
         }
 
         if (s == "end")

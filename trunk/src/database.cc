@@ -70,7 +70,7 @@ database_T::load(std::istream &stream)
             else
                 throw item_not_recognised_E();
 
-            children.push_back(node);
+            push_back(node);
         }
     }
 }

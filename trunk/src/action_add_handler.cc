@@ -111,7 +111,7 @@ action_add_handler_T::operator() (void)
         {
             std::string parent_index = options.get_index();   
             std::vector<node_entry_T * >::iterator i;
-            for (i = db.children.begin() ; i != db.children.end() ; ++i)
+            for (i = db.begin() ; i != db.end() ; ++i)
             {
                 
             }
@@ -129,8 +129,8 @@ action_add_handler_T::operator() (void)
 
         if (node->entry->prompt_user_for_values())
         {
-            db.children.push_back(node);
-
+            parent->push_back(node);
+            
             /* save */
             std::auto_ptr<std::ostream> f(new
                     std::ofstream(options.get_filename().c_str()));

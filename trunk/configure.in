@@ -1,4 +1,3 @@
-
 dnl configure.in for annodir. run this through autoconf to produce
 dnl a ./configure script (it's best to use autogen.sh)
 

@@ -42,9 +42,9 @@ node_entry_T::node_entry_T(const node_entry_T *parent_node)
     prev = next = 0;
 
     /* child with siblings */
-    if (parent and not (parent->children.empty()))
+    if (parent and not parent->empty())
     {
-        prev = parent->children.back();
+        prev = parent->back();
         prev->next = this;
 
         _index = prev->_index;
@@ -103,7 +103,7 @@ node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
     std::ostream &stream)
 {
     std::vector<node_entry_T * >::iterator i;
-    for (i = children.begin() ; i != children.end() ; ++i)
+    for (i = begin() ; i != end() ; ++i)
         ((*i)->entry->*fp)(stream);
 }
 
@@ -113,7 +113,7 @@ node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
 node_entry_T::~node_entry_T()
 {
     std::vector<node_entry_T * >::iterator i;
-    for (i = children.begin() ; i != children.end() ; ++i)
+    for (i = begin() ; i != end() ; ++i)
         delete *i;
 }
 

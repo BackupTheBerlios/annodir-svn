@@ -29,7 +29,7 @@
 #include <vector>
 #include "src/database_entry.hh"
 
-class node_entry_T
+class node_entry_T : public std::vector<node_entry_T * >
 {
     protected:
         std::vector<int > _index;
@@ -45,10 +45,13 @@ class node_entry_T
 	virtual ~node_entry_T();
         
         database_entry_T *entry;
-	std::vector<node_entry_T * > children;
  
         std::string const &index();
-        std::string const &indent() { return node_entry_T::indent_str; }
+        std::string const &indent() const { return indent_str; }
+
+        node_entry_T *whos_yo_daddy(node_entry_T *node) const
+        { return ( parent ? parent : node ); }
+        /* TODO: add overloaded whos_yo_daddy() that also takes an index string */
 
         virtual void recurse(void (database_entry_T::*fp)(std::ostream&),
             std::ostream &stream);
