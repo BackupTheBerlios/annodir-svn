@@ -27,7 +27,7 @@
 
 namespace util
 {
-    const char * basename(char *);
+    char * basename(char *);
     std::string format_datestr(std::string&);
 }
 

@@ -29,12 +29,11 @@
 #include <cstring>
 #include <ctime>
 
-    const char *
+    char *
 util::basename(char *path)
 {
-    path = (path += std::strlen(path));
-    while(*(--path) != '/');
-    return ++path;
+    char *s = std::strrchr (path, '/');
+    return (s ? s + 1 : path);
 }
 
     std::string
