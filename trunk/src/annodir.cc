@@ -26,6 +26,7 @@
 #include "src/action_handler.hh"
 #include "src/action_list_handler.hh"
 #include "src/action_add_handler.hh"
+#include "src/rcfile.hh"
 
 #include <unistd.h>
 #ifdef HAVE_GETOPT_H
@@ -209,14 +210,37 @@ main(int argc, char *argv[])
 {
     options_T options;
 
+    /* initialise 'unimportant' things from env */
+    if (getenv("USER"))
+        options.set_user(getenv("USER"));
+
+    /* initialise from user rcfile */
+    if (getenv("HOME"))
+    {
+        std::string rcname(getenv("HOME"));
+        rcname.append("/.annodirrc");
+        std::auto_ptr<std::ifstream > f(new std::ifstream(rcname.c_str()));
+        if (*f)
+        {
+            rcfile_T rcfile(*f);
+            rcfile_keys_T::iterator pos;
+
+            if (rcfile.keys.end() != (pos = rcfile.keys.find("user")))
+                options.set_user(pos->second.c_str());
+
+            if (rcfile.keys.end() != (pos = rcfile.keys.find("file")))
+                options.set_filename(pos->second.c_str());
+        }
+    }
+
+    /* initialise 'important' things from env */
     if (getenv("ANNODIR_FILE"))
         options.set_filename(getenv("ANNODIR_FILE"));
 
     if (getenv("ANNODIR_USER"))
         options.set_user(getenv("ANNODIR_USER"));
-    else if (getenv("USER"))
-        options.set_user(getenv("USER"));
 
+    /* initalise from and handle commandline */
     try
     {
         int r = handle_options(argc, argv, &options);

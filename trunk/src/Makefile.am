@@ -3,6 +3,7 @@ bin_PROGRAMS = annodir
 annodir_SOURCES = \
 		  exceptions.hh \
 		  action_handler.hh \
+		  rcfile.hh rcfile.cc \
 		  action_list_handler.hh action_list_handler.cc \
 		  action_add_handler.hh action_add_handler.cc \
 		  options.hh options.cc \
