@@ -212,36 +212,65 @@ handle_options(int argc, char *argv[], options_T *opts)
     return 0;
 }
 
+/*
+ * Handle rc file
+ */
+    void
+handle_rc(std::string const &file)
+{
+    std::auto_ptr<std::ifstream > f(new std::ifstream(file.c_str()));
+    if (*f)
+    {
+        options_T options;
+        rcfile_T rcfile(*f);
+        rcfile_keys_T::iterator pos;
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("user")))
+            options.set_user(pos->second);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("file")))
+            options.set_filename(pos->second);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("type")))
+            options.set_type(pos->second);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("verbose")))
+            options.set_verbose(true);
+
+        if ( (rcfile.keys.end() != (pos = rcfile.keys.find("summarise"))) or
+             (rcfile.keys.end() != (pos = rcfile.keys.find("summarize"))) )
+            options.set_summarise(true);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("compact")))
+            options.set_compact(true);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("recursive")))
+            options.set_recursive(true);
+    }
+}
+
     int
 main(int argc, char *argv[])
 {
     options_T options;
     char *getenv_result;
+    std::string rcname;
 
     /* initialise 'unimportant' things from env */
     if ((getenv_result = getenv("USER")))
         options.set_user(getenv_result);
 
+    /* initialise from system rcfile */
+    rcname.assign(SYSCONFDIR);
+    rcname.append("/annodirrc");
+    handle_rc(rcname);
+    
     /* initialise from user rcfile */
     if ((getenv_result = getenv("HOME")))
     {
-        std::string rcname(getenv_result);
+        rcname.assign(getenv_result);
         rcname.append("/.annodirrc");
-        std::auto_ptr<std::ifstream > f(new std::ifstream(rcname.c_str()));
-        if (*f)
-        {
-            rcfile_T rcfile(*f);
-            rcfile_keys_T::iterator pos;
-
-            if (rcfile.keys.end() != (pos = rcfile.keys.find("user")))
-                options.set_user(pos->second.c_str());
-
-            if (rcfile.keys.end() != (pos = rcfile.keys.find("file")))
-                options.set_filename(pos->second.c_str());
-
-            if (rcfile.keys.end() != (pos = rcfile.keys.find("type")))
-                options.set_type(pos->second.c_str());
-        }
+        handle_rc(rcname);
     }
 
     /* initialise 'important' things from env */

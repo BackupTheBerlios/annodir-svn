@@ -16,5 +16,5 @@ annodir_SOURCES = \
 
 LIBS = @READLINE_LIBS@
 
-AM_CXXFLAGS = -Wall
+AM_CXXFLAGS = -Wall -DSYSCONFDIR=\"$(sysconfdir)\"
 MAINTAINERCLEANFILES = Makefile.in *~
