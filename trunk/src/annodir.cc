@@ -20,7 +20,7 @@
  */
 
 #include "config.h"
-#include "src/anno_db.hh"
+#include "src/database.hh"
 #include "src/options.hh"
 #include "src/exceptions.hh"
 #include "src/action_handler.hh"

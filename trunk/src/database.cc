@@ -1,5 +1,5 @@
 /*
- * annodir -- src/anno_db.cc
+ * annodir -- src/database.cc
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  *
  * This file is part of annodir.
@@ -19,9 +19,9 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "src/anno_db.hh"
-#include "src/anno_db_entry.hh"
-#include "src/anno_db_note_entry.hh"
+#include "src/database.hh"
+#include "src/database_entry.hh"
+#include "src/database_note_entry.hh"
 #include "src/exceptions.hh"
 
 /*

@@ -1,5 +1,5 @@
 /*
- * annodir -- src/anno_db_entry.hh
+ * annodir -- src/database.hh
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  *
  * This file is part of annodir.
@@ -18,30 +18,27 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_ANNO_DB_NOTE_ENTRY_HH
-#define HAVE_ANNO_DB_NOTE_ENTRY_HH 1
+#ifndef HAVE_ANNO_DB_HH
+#define HAVE_ANNO_DB_HH 1
 
 #include "config.h"
-#include "src/anno_db_entry.hh"
-
-#include <map>
-#include <string>
+#include "src/database_entry.hh"
+#include <vector>
 #include <iostream>
 
-class anno_db_note_entry_T : public anno_db_entry_T
+class anno_db_T
 {
     public:
-        anno_db_note_entry_T(std::istream *stream = NULL);
+        anno_db_T();
+        anno_db_T(std::istream &stream);
 
+        ~anno_db_T();
+
+        std::vector<anno_db_entry_T * > entries;
+        virtual void load(std::istream &stream);
+        virtual bool dump(std::ostream &stream);
         virtual void display(std::ostream &stream);
 
-        static bool recognise_item(std::string item);
-
-        virtual void set_new_object_defaults();
-        virtual void prompt_user_for_values();
-
-    protected:
-        virtual std::string default_id();
 };
 
 #endif

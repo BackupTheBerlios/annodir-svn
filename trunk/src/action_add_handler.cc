@@ -25,11 +25,11 @@
 #include <memory>
 #include <fstream>
 
-#include "src/anno_db.hh"
+#include "src/database.hh"
 #include "src/exceptions.hh"
 #include "src/options.hh"
 #include "src/action_add_handler.hh"
-#include "src/anno_db_note_entry.hh"
+#include "src/database_note_entry.hh"
 
     int
 action_add_handler_T::operator() (void)

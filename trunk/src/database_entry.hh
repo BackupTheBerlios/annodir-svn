@@ -1,5 +1,5 @@
 /*
- * annodir -- src/anno_db_entry.hh
+ * annodir -- src/database_entry.hh
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  *
  * This file is part of annodir.

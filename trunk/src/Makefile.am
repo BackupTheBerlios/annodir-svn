@@ -8,9 +8,9 @@ annodir_SOURCES = \
 		  action_list_handler.hh action_list_handler.cc \
 		  action_add_handler.hh action_add_handler.cc \
 		  options.hh options.cc \
-		  anno_db.hh anno_db.cc \
-		  anno_db_entry.hh anno_db_entry.cc \
-		  anno_db_note_entry.hh anno_db_note_entry.cc \
+		  database.hh database.cc \
+		  database_entry.hh database_entry.cc \
+		  database_note_entry.hh database_note_entry.cc \
 		  annodir.cc
 
 LIBS = @READLINE_LIBS@

@@ -25,7 +25,7 @@
 #include <memory>
 #include <fstream>
 
-#include "src/anno_db.hh"
+#include "src/database.hh"
 #include "src/exceptions.hh"
 #include "src/options.hh"
 #include "src/action_list_handler.hh"
