@@ -209,15 +209,16 @@ handle_options(int argc, char *argv[], options_T *opts)
 main(int argc, char *argv[])
 {
     options_T options;
+    char *getenv_result;
 
     /* initialise 'unimportant' things from env */
-    if (getenv("USER"))
-        options.set_user(getenv("USER"));
+    if ((getenv_result = getenv("USER")))
+        options.set_user(getenv_result);
 
     /* initialise from user rcfile */
-    if (getenv("HOME"))
+    if ((getenv_result = getenv("HOME")))
     {
-        std::string rcname(getenv("HOME"));
+        std::string rcname(getenv_result);
         rcname.append("/.annodirrc");
         std::auto_ptr<std::ifstream > f(new std::ifstream(rcname.c_str()));
         if (*f)
@@ -234,11 +235,11 @@ main(int argc, char *argv[])
     }
 
     /* initialise 'important' things from env */
-    if (getenv("ANNODIR_FILE"))
-        options.set_filename(getenv("ANNODIR_FILE"));
+    if ((getenv_result = getenv("ANNODIR_FILE")))
+        options.set_filename(getenv_result);
 
-    if (getenv("ANNODIR_USER"))
-        options.set_user(getenv("ANNODIR_USER"));
+    if ((getenv_result = getenv("ANNODIR_USER")))
+        options.set_user(getenv_result);
 
     /* initalise from and handle commandline */
     try
