@@ -55,16 +55,35 @@ anno_db_note_entry_T::default_id()
 anno_db_note_entry_T::display(std::ostream &stream)
 {
     options_T options;
+
+    stream << "[note] "
+        << keys.get_with_default("title", "Untitled");
+
     if (options.compact())
-    {
-        stream << "[note] " << keys["title"] << ": "
-            << keys["text"] << std::endl;
-    }
+        stream << ": ";
     else
+        stream << std::endl << "  ";
+
+    stream
+        << keys.get_with_default("body", "(no text)");
+
+    if (options.verbose())
     {
-        stream << "[note] " << keys["title"] << ": " << std::endl
-            << "  " << keys["text"] << std::endl;
+        if (options.compact())
+        {
+            stream << " [" << keys.get_with_default("created_by", "(anonymous)");
+            stream << ", " << keys.get_with_default("created_at", "(no date)");
+            stream << "]";
+        }
+        else
+        {
+            stream << std::endl;
+            stream << "  Created by " << keys.get_with_default("created_by", "(anonymous)");
+            stream << " on " << keys.get_with_default("created_at", "(no date)");
+        }
     }
+
+    stream << std::endl;
 }
 
 /*
