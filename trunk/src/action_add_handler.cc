@@ -33,6 +33,7 @@
 #include "src/action_add_handler.hh"
 #include "src/database_note_entry.hh"
 #include "src/database_link_entry.hh"
+#include "src/database_metadata_entry.hh"
 #include "src/input.hh"
 
     database_entry_T *
@@ -53,6 +54,8 @@ make_new_entry(const char *type)
         return new database_note_entry_T;
     else if (0 == strcasecmp(type, "link"))
         return new database_link_entry_T;
+    else if (0 == strcasecmp(type, "metadata"))
+        return new database_metadata_entry_T;
     else /* fallback */
         return new database_entry_T; 
 }
@@ -64,6 +67,8 @@ action_add_handler_T::operator() (void)
 
     try
     {
+        bool exists = false;
+
         /* load database */
         std::auto_ptr<database_T > db(new database_T());
 
@@ -71,12 +76,28 @@ action_add_handler_T::operator() (void)
             std::auto_ptr<std::istream > f(new 
                     std::ifstream(options.get_filename().c_str()));
             if ((*f))
+            {
+                exists = true;
                 db->load(*f);
+            }
             else
             {
                 if (ENOENT != errno)
                     throw annodir_file_unreadable_E();
             }
+        }
+
+        database_entry_T *meta_entry = NULL;
+        /* add metadata if the file didn't already exist */
+        if (!exists)
+        {
+            meta_entry = make_new_entry("metadata");
+
+            if (!meta_entry)
+                return EXIT_FAILURE;
+
+            meta_entry->set_new_object_defaults();
+            db->entries.push_back(meta_entry);
         }
 
         /* add a new entry */

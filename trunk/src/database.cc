@@ -24,7 +24,19 @@
 #include "src/database_entry.hh"
 #include "src/database_note_entry.hh"
 #include "src/database_link_entry.hh"
+#include "src/database_metadata_entry.hh"
 #include "src/exceptions.hh"
+
+#include <algorithm>
+
+/* 
+ * is it metadata db entry? 
+ */
+    bool
+isMetadata(database_entry_T *entry)
+{
+    return entry->recognise_item("metadata");
+}
 
 /*
  * Create a new database_T instance
@@ -64,6 +76,8 @@ database_T::load(std::istream &stream)
                 entry = new database_note_entry_T(&stream);
             else if (database_link_entry_T::recognise_item(s))
                 entry = new database_link_entry_T(&stream);
+            else if (database_metadata_entry_T::recognise_item(s))
+                entry = new database_metadata_entry_T(&stream);
             else if (database_entry_T::recognise_item(s))
                 entry = new database_entry_T(&stream);
             else
@@ -80,6 +94,8 @@ database_T::load(std::istream &stream)
     bool
 database_T::dump(std::ostream &stream)
 {
+    std::stable_partition(entries.begin(), entries.end(), isMetadata);
+
     std::vector<database_entry_T * >::iterator i;
     for (i = entries.begin() ; i != entries.end() ; ++i)
     {
