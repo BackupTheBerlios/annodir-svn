@@ -13,13 +13,25 @@ overridable via commandline and maybe an environment variable. The file contains
 a number of entries. Each entry has a header identifying the class of the entry
 (todo item, note etc) followed by a series of key=value lines (we'll need to
 escape these somehow), followed by an end marker to make parsing nice and easy.
-For example: >
+Each of these entries may also contain a number of sub-entries, with their
+header beginning/ending before the parent entry ends.  Entries are transparently
+contained in nodes, so that sub-entries are possible.  Each node has an
+decimal-separated index string for sub-entry notation (eg. 1.2.3 - 3rd sub-entry
+of 2nd sub-entry of first entry).
+
+.annodir example: >
 
 	note:
 	  created_by=ciaranm
 	  created_at=1097533644
 	  title=Some Random Example
 	  body=Fnord
+	  note:
+	    created_by=ka0ttic
+	    created_at=1192678359
+	    title=A sub entry
+	    body=yeah baby
+	  end
 	end
 	todo:
 	  created_by=ciaranm
