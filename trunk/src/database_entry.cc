@@ -47,23 +47,22 @@ database_entry_keys_T::get_with_default(std::string key,
 /*
  * Create a new entry (belonging to the specified node)
  */
-database_entry_T::database_entry_T(const node_entry_T *node)
+database_entry_T::database_entry_T(node_entry_T *node)
 {
     id = default_id();
     padding = "   ";
-    mynode = const_cast<node_entry_T * > (node);
+    mynode = node;
 }
 
 /*
  * Create a new entry (belonging to the specified node)
  * read from the supplied stream.
  */
-database_entry_T::database_entry_T(std::istream *stream,
-    const node_entry_T *node)
+database_entry_T::database_entry_T(std::istream *stream, node_entry_T *node)
 {
     id = default_id();
     padding = "   ";
-    mynode = const_cast<node_entry_T * > (node);
+    mynode = node;
 
     if (stream)
         load(*stream);
@@ -95,11 +94,11 @@ database_entry_T::load(std::istream &stream)
             
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
-                node->entry = new database_note_entry_T(&stream, node);
+                node->insert_entry(new database_note_entry_T(&stream, node));
             else if (database_link_entry_T::recognise_item(s))
-                node->entry = new database_link_entry_T(&stream, node);
+                node->insert_entry(new database_link_entry_T(&stream, node), true);
             else if (recognise_item(s))
-                node->entry = new database_entry_T(&stream, node);
+                node->insert_entry(new database_entry_T(&stream, node));
             else
                 throw item_not_recognised_E();
 
@@ -232,4 +231,5 @@ database_entry_T::recognise_item(std::string item)
 {
     return true;
 }
+
 /* vim: set tw=80 sw=4 et : */

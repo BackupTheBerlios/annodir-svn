@@ -30,15 +30,20 @@
 
 class database_link_entry_T : public database_entry_T
 {
+    private:
+        database_T *linkdb;
+
     protected:
 	virtual std::string default_id();
 
     public:
-        database_link_entry_T(const node_entry_T *node = NULL);
+        database_link_entry_T(node_entry_T *db = NULL);
 	database_link_entry_T(std::istream *stream = NULL,
-            const node_entry_T *node = NULL);
+            node_entry_T *db = NULL);
 
+        virtual void load(std::istream &stream);
 	virtual void display(std::ostream &stream);
+        virtual void dump(std::ostream &stream);
 
 	static bool recognise_item(std::string item);
 

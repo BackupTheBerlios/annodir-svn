@@ -27,6 +27,7 @@
 #include <fstream>
 
 #include "src/database_link_entry.hh"
+#include "src/database_metadata_entry.hh"
 #include "src/node_entry.hh"
 #include "src/exceptions.hh"
 #include "src/database.hh"
@@ -37,21 +38,30 @@
 /*
  * Create a new entry (belong to the specified node)
  */
-database_link_entry_T::database_link_entry_T(const node_entry_T *node)
-    : database_entry_T(node)
+database_link_entry_T::database_link_entry_T(node_entry_T *db)
+    : database_entry_T(db)
 {
     id = default_id();
     util::debug_msg("Initializing new entry of type '%s'", id.c_str());
+
+    linkdb = dynamic_cast<database_T * >(db);
 }
 
 /*
  * Create a new item read from the supplied stream.
  */
-database_link_entry_T::database_link_entry_T(std::istream *stream,
-    const node_entry_T *node) : database_entry_T(stream, node)
+database_link_entry_T::database_link_entry_T(std::istream *stream, node_entry_T *db)
+    : database_entry_T(db)
 {
     id = default_id();
     util::debug_msg("Initializing new entry of type '%s'", id.c_str());
+
+    linkdb = dynamic_cast<database_T * >(db);
+
+    if (stream)
+        load(*stream);
+    else
+        set_new_object_defaults();
 }
 
 /*
@@ -77,6 +87,154 @@ database_link_entry_T::set_new_object_defaults()
 {
     database_entry_T::set_new_object_defaults();
     keys["title"].assign("Link");
+}
+
+    void
+database_link_entry_T::load(std::istream &stream)
+{
+    options_T options;
+    std::string s;
+
+    /* get keys, including the link location */
+    while (std::getline(stream, s) and s != "end")
+    {
+        /* strip leading whitespace */
+        std::string::size_type start_pos;
+        if (std::string::npos != (start_pos = s.find_first_not_of(" \t")))
+            s.erase(0, start_pos);
+
+        /* split on = */
+        std::string::size_type equals_pos;
+        if (std::string::npos != (equals_pos = s.find('=')))
+            keys[s.substr(0, equals_pos)] = s.substr(equals_pos + 1);
+        else
+            keys[s] = "undefined";
+    }
+
+    /* load link database */
+    try
+    {
+        std::auto_ptr<std::ifstream > f(new
+            std::ifstream(keys["location"].c_str()));
+        if (not (*f))
+        {
+            if (ENOENT == errno)
+                throw annodir_file_notthere_E();
+            else
+                throw annodir_file_unreadable_E();
+        }
+
+        util::debug_msg("Loading link at '%s'", keys["location"].c_str());
+        
+        linkdb->load((*f));
+    }
+    catch (annodir_file_notthere_E)
+    {
+        if (options.verbose())
+            std::cerr << "Warning: couldn't open " << keys["location"]
+                << " for read(" << errno << "): " << strerror(errno)
+                << std::endl;
+    }
+    catch (annodir_file_unreadable_E)
+    {
+        std::cerr << "Error: couldn't open " << keys["location"]
+            << " for read (" << errno << "): " << strerror(errno) << std::endl;
+    } 
+}
+
+/*
+ * Display linked database
+ */
+    void
+database_link_entry_T::display(std::ostream &stream)
+{
+    options_T options;
+
+    stream << mynode->indent() << mynode->index() << ". " << keys["title"];
+
+    if (not options.summarise())
+    {
+        if (options.verbose())
+        {
+            std::string date_str = "(no date)";
+            {
+                database_entry_keys_T::iterator pos = keys.find("created_at");
+                if (keys.end() != pos)
+                    date_str = util::format_datestr(pos->second);
+            }
+
+            if (options.compact())
+            {
+                stream << " [" << keys.get_with_default("created_by", "(anonymous)");
+                stream << ", " << date_str << "]";
+            }
+            else /* not compact */
+            {
+                stream << std::endl << mynode->indent() << mynode->indent();
+                stream << padding << "Created by "
+                    << keys.get_with_default("created_by", "(anonymous)");
+                stream << ", " << date_str;
+            }
+        }
+        stream << std::endl;
+
+        /* display linked database */
+        linkdb->entry("metadata")->display(stream);
+    }
+    else
+        stream << std::endl;
+}
+
+/*
+ * Dump link info to current annodir file, then dump the link db itself
+ */
+    void
+database_link_entry_T::dump(std::ostream &stream)
+{
+    options_T options;
+
+    /* block header */
+    stream << mynode->parent()->indent() << id << ":" << std::endl;
+
+    /* entries */
+    std::map<std::string, std::string >::iterator i;
+    for (i = keys.begin() ; i != keys.end() ; ++i)
+        stream << mynode->parent()->indent() << "  " << i->first
+            << "=" << i->second << std::endl;
+
+    /* end */
+    stream << mynode->parent()->indent() << "end" << std::endl;
+
+    /* dump link db itself */
+    try
+    {
+        std::auto_ptr<std::ostream > f(new
+            std::ofstream(keys["location"].c_str()));
+        if (not (*f))
+        {
+            if (ENOENT == errno)
+                throw annodir_file_notthere_E();
+            else
+                throw annodir_file_unreadable_E();
+        }
+
+        util::debug_msg("Dumping link at '%s'", keys["location"].c_str());
+        
+        /* dump link's metadata and let it recurse */
+        linkdb->entry("metadata")->dump((*f));
+    }
+    catch (annodir_file_notthere_E)
+    {
+        if (options.verbose())
+            std::cerr << "Warning: couldn't open " << keys["location"]
+                << " for read(" << errno << "): " << strerror(errno)
+                << std::endl;
+    }
+    catch (annodir_file_unreadable_E)
+    {
+        std::cerr << "Error: couldn't open " << keys["location"]
+            << " for read (" << errno << "): " << strerror(errno) << std::endl;
+    } 
 }
 
     bool
@@ -137,76 +295,6 @@ database_link_entry_T::prompt_user_for_values()
     free(input);
 
     return true;
-}
-
-/*
- * open "link" and display
- */
-    void
-database_link_entry_T::display(std::ostream &stream)
-{
-    options_T options;
-
-    try
-    {
-        std::auto_ptr<std::ifstream > f(new
-            std::ifstream(keys["location"].c_str()));
-        if (not (*f))
-        {
-            if (ENOENT == errno)
-                throw annodir_file_notthere_E();
-            else
-                throw annodir_file_unreadable_E();
-        }
-
-        util::debug_msg("Loading link at '%s'", keys["location"].c_str());
-        
-        std::auto_ptr<database_T > db(new database_T(*f, mynode));
-    
-        stream << mynode->indent() << mynode->index() << ". " << keys["title"];
-
-        if (not options.summarise())
-        {
-            if (options.verbose())
-            {
-                std::string date_str = "(no date)";
-                {
-                    database_entry_keys_T::iterator pos = keys.find("created_at");
-                    if (keys.end() != pos)
-                        date_str = util::format_datestr(pos->second);
-                }
-
-                if (options.compact())
-                {
-                    stream << " [" << keys.get_with_default("created_by", "(anonymous)");
-                    stream << ", " << date_str << "]";
-                }
-                else /* not compact */
-                {
-                    stream << std::endl << mynode->indent() << mynode->indent();
-                    stream << padding << "Created by "
-                        << keys.get_with_default("created_by", "(anonymous)");
-                    stream << ", " << date_str;
-                }
-            }
-        }
-        stream << std::endl;
-
-        /* finally, display the link db */
-        db->display(stream);
-    }
-    catch (annodir_file_notthere_E)
-    {
-        if (options.verbose())
-            std::cerr << "Warning: couldn't open " << keys["location"]
-                << " for read(" << errno << "): " << strerror(errno)
-                << std::endl;
-    }
-    catch (annodir_file_unreadable_E)
-    {
-        std::cerr << "Error: couldn't open " << keys["location"]
-            << " for read (" << errno << "): " << strerror(errno) << std::endl;
-    }
 }
 
 /* vim: set tw=80 sw=4 et : */

@@ -39,9 +39,8 @@ class database_entry_keys_T : public std::map<std::string, std::string >
 class database_entry_T
 {
     public:
-        database_entry_T(const node_entry_T *node = NULL);
-        database_entry_T(std::istream *stream = NULL, 
-            const node_entry_T *node = NULL);
+        database_entry_T(node_entry_T *node = NULL);
+        database_entry_T(std::istream *stream = NULL, node_entry_T *node = NULL);
         virtual ~database_entry_T() { };
 
         virtual void dump(std::ostream &stream);
@@ -51,7 +50,12 @@ class database_entry_T
 
         database_entry_keys_T keys;
 
+        /* are we of the specified type?
+         *  - recognise_item() is for use when an obj has not been instantiated
+         *  - is() is for instantiated objects (entry->is(str))
+         */
         static bool recognise_item(std::string item);
+        bool is(std::string item) { return (item == id); }
 
         virtual void set_new_object_defaults();
         virtual bool prompt_user_for_values();

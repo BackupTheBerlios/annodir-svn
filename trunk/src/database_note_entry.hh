@@ -34,9 +34,9 @@
 class database_note_entry_T : public database_entry_T
 {
     public:
-        database_note_entry_T(const node_entry_T *node = NULL);
+        database_note_entry_T(node_entry_T *node = NULL);
         database_note_entry_T(std::istream *stream = NULL,
-            const node_entry_T *node = NULL);
+            node_entry_T *node = NULL);
 
         virtual void display(std::ostream &stream);
 

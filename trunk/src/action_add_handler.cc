@@ -40,14 +40,14 @@
 #include "src/input.hh"
 
     database_entry_T *
-make_new_entry(const char *type, node_entry_T *node)
+make_new_entry(const char *type, node_entry_T *node, std::istream *stream)
 {
     if (0 == strcasecmp(type, "prompt"))
     {
         char *in = input::get_user_input("Item Type");
         if (in)
         {
-            return make_new_entry(in, node);
+            return make_new_entry(in, node, stream);
             free(in);
         }
         else
@@ -57,7 +57,7 @@ make_new_entry(const char *type, node_entry_T *node)
     else if (0 == strcasecmp(type, "note"))
         return new database_note_entry_T(node);
     else if (0 == strcasecmp(type, "link"))
-        return new database_link_entry_T(node);
+        return new database_link_entry_T(stream, node);
     else if (0 == strcasecmp(type, "metadata"))
         return new database_metadata_entry_T(node);
     else /* fallback */
@@ -76,28 +76,26 @@ action_add_handler_T::operator() (void)
         /* load database */
         std::auto_ptr<database_T > db(new database_T());
 
+        std::auto_ptr<std::istream > f(new 
+            std::ifstream(options.get_filename().c_str()));
+        if ((*f))
         {
-            std::auto_ptr<std::istream > f(new 
-                    std::ifstream(options.get_filename().c_str()));
-            if ((*f))
-            {
-                exists = true;
-     db->load(*f);
-            }
-            else
-            {
-                if (ENOENT != errno)
-                    throw annodir_file_unreadable_E();
-            }
+            exists = true;
+            db->load(*f);
+        }
+        else
+        {
+            if (ENOENT != errno)
+                throw annodir_file_unreadable_E();
         }
 
         /* add metadata if the file didn't already exist */
         if (not exists)
         {
-            db->entry = make_new_entry("metadata", &(*db));
-            if (not db->entry)
+            db->insert_entry(make_new_entry("metadata", &(*db), NULL));
+            if (not db->entry())
                 return EXIT_FAILURE;
-            db->entry->set_new_object_defaults();
+            db->entry()->set_new_object_defaults();
         }
 
         /* 
@@ -118,14 +116,14 @@ action_add_handler_T::operator() (void)
 
         /* add a new entry */
         node_entry_T *node = new node_entry_T(parent);
-        node->entry = make_new_entry(options.get_type().c_str(), node);
+        node->insert_entry(make_new_entry(options.get_type().c_str(), node, &(*f)));
 
-        if (not node->entry)
+        if (not node->entry())
             return EXIT_FAILURE;
-        
-        node->entry->set_new_object_defaults();
 
-        if (node->entry->prompt_user_for_values())
+        node->entry()->set_new_object_defaults();
+
+        if (node->entry()->prompt_user_for_values())
         {
             parent->push_back(node);
             
@@ -144,7 +142,7 @@ action_add_handler_T::operator() (void)
     catch (annodir_file_unreadable_E)
     {
         /* bleh! file there, can't read it. */
-        std::cout << "Error: couldn't open " << options.get_filename()
+        std::cerr << "Error: couldn't open " << options.get_filename()
             << " for read (" << errno << "): " << strerror(errno) 
             << std::endl;
         return EXIT_FAILURE;
@@ -152,7 +150,7 @@ action_add_handler_T::operator() (void)
     catch (annodir_file_unwriteable_E)
     {
         /* bleh! file there, can't read it. */
-        std::cout << "Error: couldn't open " << options.get_filename()
+        std::cerr << "Error: couldn't open " << options.get_filename()
             << " for write (" << errno << "): " << strerror(errno) 
             << std::endl;
         return EXIT_FAILURE;
@@ -160,8 +158,15 @@ action_add_handler_T::operator() (void)
     catch (node_invalid_index_E)
     {
         /* specified index is invalid */
-        std::cout << "Error: invalid index '" << options.get_index()
+        std::cerr << "Error: invalid index '" << options.get_index()
             << "'." << std::endl;
+        return EXIT_FAILURE;
+    }
+    catch (node_invalid_parent_E)
+    {
+        std::cerr << "Error: cannot create sub-entry of index '"
+            << options.get_index() << "'." << std::endl << options.get_type()
+            << " entries are not valid parent containers." << std::endl;
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

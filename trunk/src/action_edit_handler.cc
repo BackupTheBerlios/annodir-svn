@@ -76,10 +76,10 @@ action_edit_handler_T::operator() (void)
 	if (not node)
 	    throw node_invalid_index_E();
 
-	if (not node->entry)
+	if (not node->entry())
 	    return EXIT_FAILURE;
 
-	if (node->entry->prompt_user_for_values())
+	if (node->entry()->prompt_user_for_values())
 	{
 	    /* save */
             std::auto_ptr<std::ostream> f(new

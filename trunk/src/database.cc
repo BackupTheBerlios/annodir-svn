@@ -46,36 +46,55 @@ database_T::load(std::istream &stream)
         {
             util::debug_msg("db_T::load(): %s", s.c_str());
 
+            /* strip leading whitespace */
+            std::string::size_type start_pos;
+            if (std::string::npos != (start_pos = s.find_first_not_of(" \t")))
+                s.erase(0, start_pos);
+
             /* strip trailing colon */
             if (s[s.length() - 1] != ':')
                 throw item_not_parsable_E();
             s.erase(s.length() - 1);
             
-            /* special cases - metadata & link don't get their own node */
+            /* special case - metadata doesn't get its own node */
             if (database_metadata_entry_T::recognise_item(s))
             {
-                entry = new database_metadata_entry_T(&stream, this);
-                continue;
-            }
-            else if (database_link_entry_T::recognise_item(s))
-            {
-                entry = new database_link_entry_T(&stream, this);
+                insert_entry(new database_metadata_entry_T(&stream, this));
                 continue;
             }
 
-            node_entry_T *node = new node_entry_T(this);
+            node_entry_T *node = NULL;
 
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
-                node->entry = new database_note_entry_T(&stream, node);
+            {
+                node = new node_entry_T(this);
+                node->insert_entry(new database_note_entry_T(&stream, node));
+            }
+            else if (database_link_entry_T::recognise_item(s))
+            {
+                node = dynamic_cast<database_T * >(node);
+                node = new database_T(this);
+                node->insert_entry(new database_link_entry_T(&stream, node), true);
+            }
             else if (database_entry_T::recognise_item(s))
-                node->entry = new database_entry_T(&stream, node);
+            {
+                node = new node_entry_T(this);
+                node->insert_entry(new database_entry_T(&stream, node));
+            }
             else
                 throw item_not_recognised_E();
 
             push_back(node);
         }
     }
+}
+
+database_T::~database_T()
+{
+    std::vector<database_entry_T * >::iterator i;
+    for (i = _entries.begin() ; i != _entries.end() ; i++)
+        delete *i;
 }
 
 /* vim: set tw=80 sw=4 et : */
