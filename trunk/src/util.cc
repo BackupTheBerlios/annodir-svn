@@ -31,7 +31,7 @@
     const char *
 basename(char *path)
 {
-    path = (path += strlen(path));
+    path = (path += std::strlen(path));
     while(*(--path) != '/');
     return ++path;
 }
@@ -40,14 +40,14 @@ basename(char *path)
 format_datestr(std::string& epoch)
 {
     std::string date_str;
-    time_t date_time_t = strtol(epoch.c_str(), NULL, 10);
+    std::time_t date_time_t = std::strtol(epoch.c_str(), NULL, 10);
 
     if (0 != date_time_t)
     {
 	char buf[255] = { 0 };
 	/* gcc warning on the following line is spurious.
 	   (doesn't seem to happen w/3.4.x though. -ka0ttic) */
-	strftime(buf, sizeof(buf), "%x", localtime(&date_time_t));
+	std::strftime(buf, sizeof(buf), "%x", std::localtime(&date_time_t));
 	date_str.assign(buf);
     }
     return (date_str.empty() ? "(no date)" : date_str);
