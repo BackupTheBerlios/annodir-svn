@@ -46,8 +46,9 @@ class anno_db_entry_T
 
         static bool recognise_item(std::string item);
 
-    protected:
         virtual void set_new_object_defaults();
+
+    protected:
         virtual std::string default_id();
         std::string id;
 };

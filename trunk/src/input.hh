@@ -1,5 +1,5 @@
 /*
- * annodir -- src/anno_db_entry.hh
+ * annodir -- src/input.hh
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  *
  * This file is part of annodir.
@@ -18,31 +18,9 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_ANNO_DB_NOTE_ENTRY_HH
-#define HAVE_ANNO_DB_NOTE_ENTRY_HH 1
 
 #include "config.h"
-#include "src/anno_db_entry.hh"
 
-#include <map>
-#include <string>
-#include <iostream>
-
-class anno_db_note_entry_T : public anno_db_entry_T
-{
-    public:
-        anno_db_note_entry_T(std::istream *stream = NULL);
-
-        virtual void display(std::ostream &stream);
-
-        static bool recognise_item(std::string item);
-
-        virtual void set_new_object_defaults();
-
-    protected:
-        virtual std::string default_id();
-};
-
-#endif
+char * get_user_input(const char *prompt);
 
 /* vim: set tw=80 sw=4 et : */

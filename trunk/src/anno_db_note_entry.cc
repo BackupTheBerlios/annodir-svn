@@ -21,6 +21,7 @@
 
 #include "src/anno_db_note_entry.hh"
 #include "src/options.hh"
+#include "src/input.hh"
 #include <cstdlib>
 
 /*
@@ -104,6 +105,17 @@ anno_db_note_entry_T::display(std::ostream &stream)
 anno_db_note_entry_T::recognise_item(std::string item)
 {
     return (item == "note");
+}
+
+    void
+anno_db_note_entry_T::set_new_object_defaults()
+{
+    char *input = NULL;
+    anno_db_entry_T::set_new_object_defaults();
+    keys["fred"] = "bob";
+    input = get_user_input("Title > ");
+    if (input)
+        keys["title"].assign(input);
 }
 
 /* vim: set tw=80 sw=4 et : */

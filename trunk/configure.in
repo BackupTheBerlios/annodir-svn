@@ -33,6 +33,16 @@ AC_CHECK_FUNCS(asprintf,,
     [AC_CHECK_FUNCS(snprintf,,
     [AC_MSG_ERROR([either asprintf or snprintf is required])])])
 
+unset tcap
+AC_CHECK_HEADERS(readline/readline.h, ,
+    [AC_MSG_ERROR([readline/readline.h is required])])
+AC_CHECK_LIB(ncurses, tputs, [tcap="$tcap -lncurses"])
+AC_CHECK_LIB(readline, readline, [READLINE_LIBS="-lreadline $tcap"], , $tcap)
+if test -z "$READLINE_LIBS" ; then
+    AC_MSG_ERROR([need a working readline])
+fi
+AC_SUBST(READLINE_LIBS)
+
 echo "--- checking for optional things ---"
 AC_CHECK_HEADERS(getopt.h)
 AC_CHECK_FUNCS(getopt_long)

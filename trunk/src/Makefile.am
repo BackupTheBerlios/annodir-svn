@@ -4,6 +4,7 @@ annodir_SOURCES = \
 		  exceptions.hh \
 		  action_handler.hh \
 		  rcfile.hh rcfile.cc \
+		  input.hh input.cc \
 		  action_list_handler.hh action_list_handler.cc \
 		  action_add_handler.hh action_add_handler.cc \
 		  options.hh options.cc \
@@ -11,6 +12,8 @@ annodir_SOURCES = \
 		  anno_db_entry.hh anno_db_entry.cc \
 		  anno_db_note_entry.hh anno_db_note_entry.cc \
 		  annodir.cc
+
+LIBS = @READLINE_LIBS@
 
 AM_CFLAGS = -Wall
 MAINTAINERCLEANFILES = Makefile.in *~
