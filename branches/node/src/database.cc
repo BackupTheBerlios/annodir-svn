@@ -95,13 +95,7 @@ database_T::load(std::istream &stream)
     bool
 database_T::dump(std::ostream &stream)
 {
-    std::vector<node_entry_T * >::iterator i;
-    for (i = root.children.begin() ; i != root.children.end() ; ++i)
-    {
-        if (! (*i)->entry->dump(stream))
-            return false;
-    }
-    return true;
+    return root.entry->dump(stream);
 }
 
 /*
@@ -110,17 +104,13 @@ database_T::dump(std::ostream &stream)
     void
 database_T::display(std::ostream &stream)
 {
-    std::vector<node_entry_T * >::iterator i;
-    for (i = root.children.begin() ; i != root.children.end() ; ++i)
-        (*i)->entry->display(stream);
+    root.entry->display(stream);
 }
 
     void
 database_T::do_export(std::ostream &stream)
 {
-    std::vector<node_entry_T * >::iterator i;
-    for (i = root.children.begin() ; i != root.children.end() ; ++i)
-        (*i)->entry->do_export(stream);
+    root.entry->do_export(stream);
 }
 
 /*

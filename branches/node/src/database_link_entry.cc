@@ -39,6 +39,7 @@
 database_link_entry_T::database_link_entry_T(node_entry_T *node)
     : database_entry_T(node)
 {
+    id = default_id();
     if(node)
         mynode = node;
 }

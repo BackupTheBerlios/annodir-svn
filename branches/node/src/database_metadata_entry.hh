@@ -37,10 +37,7 @@ class database_metadata_entry_T : public database_entry_T
 	database_metadata_entry_T(std::istream *stream = NULL,
             node_entry_T *node = NULL);
 
-	virtual void display(std::ostream &stream);
-
 	static bool recognise_item(std::string item);
-
 	virtual void set_new_object_defaults();
 };
 

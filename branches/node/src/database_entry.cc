@@ -42,6 +42,31 @@ database_entry_keys_T::get_with_default(std::string key,
 }
 
 /*
+ * Create a new entry (belonging to the specified node)
+ */
+database_entry_T::database_entry_T(node_entry_T *node)
+{
+    id = default_id();
+    if (node)
+        mynode = node;
+}
+
+/*
+ * Create a new entry (belonging to the specified node)
+ * read from the supplied stream.
+ */
+database_entry_T::database_entry_T(std::istream *stream, node_entry_T *node)
+{
+    id = default_id();
+    if (node)
+        mynode = node;
+    if (stream)
+        load(*stream);
+    else
+        set_new_object_defaults();
+}
+
+/*
  * Load from stream
  */
     void
@@ -86,30 +111,6 @@ database_entry_T::load(std::istream &stream)
         else
             keys[s] = "undefined";
     }
-}
-
-/*
- * Create a new entry (belonging to the specified node)
- */
-database_entry_T::database_entry_T(node_entry_T *node)
-{
-   if (node)
-       mynode = node;
-}
-
-/*
- * Create a new entry (belonging to the specified node)
- * read from the supplied stream.
- */
-database_entry_T::database_entry_T(std::istream *stream, node_entry_T *node)
-{
-    id = default_id();
-    if (node)
-        mynode = node;
-    if (stream)
-        load(*stream);
-    else
-        set_new_object_defaults();
 }
 
 /*
@@ -177,14 +178,17 @@ database_entry_T::dump(std::ostream &stream)
     void
 database_entry_T::display(std::ostream &stream)
 {
-    /* block header */
-    stream << id << ":" << std::endl;
-
-    /* entries */
-    database_entry_keys_T::iterator i;
-    for (i = keys.begin() ; i != keys.end() ; ++i)
+    if (id != "metadata")
     {
-        stream << "  " << i->first << "=" << i->second << std::endl;
+        /* block header */
+        stream << id << ":" << std::endl;
+
+        /* entries */
+        database_entry_keys_T::iterator i;
+        for (i = keys.begin() ; i != keys.end() ; ++i)
+        {
+            stream << "  " << i->first << "=" << i->second << std::endl;
+        }
     }
 
     /* loop through children */

@@ -37,6 +37,7 @@
 database_metadata_entry_T::database_metadata_entry_T(node_entry_T *node)
     : database_entry_T(node)
 {
+    id = default_id();
     if (node)
         mynode = node;
 }
@@ -74,15 +75,6 @@ database_metadata_entry_T::set_new_object_defaults()
     char path[PATH_MAX + 1];
     database_entry_T::set_new_object_defaults();
     keys["title"].assign(util::basename(getcwd(path, PATH_MAX)));
-}
-
-/* 
- * metadata shouldn't be displayed
- */
-    void
-database_metadata_entry_T::display(std::ostream &stream)
-{
-    return;
 }
 
 /* vim: set tw=80 sw=4 et : */
