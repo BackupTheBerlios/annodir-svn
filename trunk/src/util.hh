@@ -33,11 +33,11 @@
 
 namespace util
 {
-    char * basename(const char *);
-    char * basename(std::string const &);
+    const char * basename(const char *);
+    const char * basename(std::string const &);
     const char * dirname(const char *);
     const char * dirname(std::string const &);
-    std::string format_datestr(std::string&);
+    std::string format_datestr(std::string const &);
     std::string sprintf(const char *, ...);
     std::string sprintf(const char *, va_list);
     void debug_msg(const char *, ...);

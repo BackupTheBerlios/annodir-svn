@@ -33,7 +33,7 @@
 #include "src/util.hh"
 #include "src/options.hh"
 
-    char *
+    const char *
 util::basename(const char *path)
 {
     std::string s = path;
@@ -43,10 +43,10 @@ util::basename(const char *path)
 	s.erase(s.length() - 1);
 
     char *p = std::strrchr(s.c_str(), '/');
-    return (p ? (*(p + 1) != '\0' ? p + 1 : p) : const_cast<char * >(path));
+    return (p ? (*(p + 1) != '\0' ? p + 1 : p) : path);
 }
 
-    char *
+    const char *
 util::basename(std::string const &path)
 {
     return util::basename(path.c_str());
@@ -71,7 +71,7 @@ util::dirname(std::string const &path)
 }
 
     std::string
-util::format_datestr(std::string& epoch)
+util::format_datestr(std::string const &epoch)
 {
     std::string date_str;
     time_t date_time_t = std::strtol(epoch.c_str(), NULL, 10);
