@@ -21,15 +21,59 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#include <string>
+#include <cstdio>
 #include "src/node_entry.hh"
+#include "src/util.hh"
 
-node_entry_T::node_entry_T (node_entry_T *parent_node)
+/*
+ * Initialize a node instance
+ * Set parent, prev, and next pointers to their respective nodes
+ */
+node_entry_T::node_entry_T(node_entry_T *parent_node)
 {
-    if (parent_node)
-        parent = parent_node;
+    parent = parent_node;
+
+    /* child with siblings */
+    if (parent and !(parent->children.empty()))
+    {
+        prev = parent->children.back();
+        _index = prev->_index;
+        _index.back()++;
+    }
+    /* only child */
+    else if (parent)
+    {
+        prev = 0;
+        _index = parent->_index;
+        _index.push_back(1);
+    }
+    /* root */
+    else
+    {
+        prev = 0;
+        _index.push_back(0);
+        return;
+    }
+
+    /* perhaps an index class is needed... */
+
+    /* construct index string */
+    std::vector<int >::iterator i;
+    for (i = _index.begin() + 1 ; i != _index.end() ; ++i)
+    {
+        char buf[8];
+        snprintf(buf, sizeof(buf), "%d.", *i);
+        index_str.append(buf);
+    }
+    /* chop trailing '.' */
+    if (index_str[index_str.length() - 1] == '.')
+        index_str.erase(index_str.length() - 1);
+    
+    util::debug_msg("initialized new node with index %s", index_str.c_str());
 }
 
-/* Tidy up; delete our entry */
+/* Tidy up */
 node_entry_T::~node_entry_T()
 {
     delete entry;

@@ -24,6 +24,7 @@
 #ifndef NODE_ENTRY_HH
 #define NODE_ENTRY_HH 1
 
+#include <string>
 #include <vector>
 #include "src/database_entry.hh"
 
@@ -34,11 +35,18 @@ class node_entry_T
 
 	node_entry_T(node_entry_T *parent_node = NULL);
 	~node_entry_T();
-
-        node_entry_T *parent;
+        
 	std::vector<node_entry_T * > children;
-        std::vector<int > index;
         database_entry_T *entry;
+
+        std::string const &index() { return node_entry_T::index_str; };
+
+    private:
+        std::vector<int > _index;
+        std::string index_str;
+        node_entry_T *parent;   /* parent */
+        node_entry_T *prev;     /* previous sibling */
+        node_entry_T *next;     /* next sibling */
 };
 
 #endif
