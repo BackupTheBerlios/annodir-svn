@@ -27,5 +27,6 @@ bool options_T::_compact = false;
 bool options_T::_summarise = false;
 bool options_T::_recursive = false;
 options_action_T options_T::_action = action_unspecified;
+std::string options_T::_file = ".annodir";
 
 /* vim: set tw=80 sw=4 et : */

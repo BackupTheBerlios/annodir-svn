@@ -37,7 +37,8 @@ action_list_handler_T::operator() (void)
     try
     {
         /* load the db */
-        std::auto_ptr<std::ifstream > f(new std::ifstream(".annodir"));
+        std::auto_ptr<std::ifstream > f(new 
+                std::ifstream(options.get_filename()));
         if (! (*f))
         {
             if (ENOENT == errno)
@@ -56,14 +57,15 @@ action_list_handler_T::operator() (void)
         /* file isn't there. not a problem, only whine if we're in verbose mode.
          * just don't display anything. */
         if (options.verbose())
-            std::cout << "Warning: couldn't open .annodir for read ("
-                << errno << "): " << strerror(errno) << std::endl;
+            std::cout << "Warning: couldn't open " << options.get_filename()
+                << " for read (" << errno << "): " << strerror(errno) 
+                << std::endl;
     }
     catch (annodir_file_unreadable_E)
     {
         /* bleh! file there, can't read it. */
-        std::cout << "Error: couldn't open .annodir for read ("
-            << errno << "): " << strerror(errno) << std::endl;
+        std::cout << "Error: couldn't open " << options.get_filename()
+            << " for read (" << errno << "): " << strerror(errno) << std::endl;
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

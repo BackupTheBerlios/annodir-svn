@@ -41,7 +41,8 @@ action_add_handler_T::operator() (void)
         /* load database */
         std::auto_ptr<anno_db_T > db(new anno_db_T());
 
-        std::auto_ptr<std::istream > f(new std::ifstream(".annodir"));
+        std::auto_ptr<std::istream > f(new 
+                std::ifstream(options.get_filename()));
         if ((*f))
             db->load(*f);
         else
@@ -62,8 +63,9 @@ action_add_handler_T::operator() (void)
     catch (annodir_file_unreadable_E)
     {
         /* bleh! file there, can't read it. */
-        std::cout << "Error: couldn't open .annodir for read ("
-            << errno << "): " << strerror(errno) << std::endl;
+        std::cout << "Error: couldn't open " << options.get_filename()
+            << " for read (" << errno << "): " << strerror(errno) 
+            << std::endl;
         return EXIT_FAILURE;
     }
 

@@ -52,6 +52,8 @@ static struct option long_options[] =
       /* summarise displays only the titles */
     {"summarise",         no_argument,         0,   's'},
     {"summarize",         no_argument,         0,   's'}, /* silly usians */
+      /* file lets the user specify a file other than .annodir */
+    {"file",              required_argument,   0,   'f'},
 
     /* actions */
     {"list",              optional_argument,   0,   'l'},
@@ -66,7 +68,7 @@ static struct option long_options[] =
 };
 #endif /* HAVE_GETOPT_LONG */
 
-static const char *short_options = "vcsRh\3a::e::l::d::";
+static const char *short_options = "vcsRh\3f:a::e::l::d::";
 
 /*
  * Display usage.
@@ -76,7 +78,13 @@ usage()
 {
     std::cerr
         << "Usage: annodir [options]" << std::endl
-        << "Try annodir --help for further details" << std::endl;
+        << "Try annodir "
+#ifdef HAVE_GETOPT_LONG
+        << "--help"
+#else
+        << "-h"
+#endif /* HAVE_GETOPT_LONG */
+        << " for further details" << std::endl;
 }
 
 /*
@@ -137,6 +145,10 @@ handle_options(int argc, char *argv[], options_T *opts)
             case 'R': /* recursive */
                 opts->set_recursive(true);
                 break;
+            
+            case 'f': /* file */
+                opts->set_filename(optarg);
+                break;
 
             case 'a': /* action add */
                 if (opts->action() != action_unspecified)
@@ -190,6 +202,9 @@ handle_options(int argc, char *argv[], options_T *opts)
 main(int argc, char *argv[])
 {
     options_T options;
+
+    if (getenv("ANNODIR_FILE"))
+        options.set_filename(getenv("ANNODIR_FILE"));
 
     try
     {

@@ -24,6 +24,8 @@
 #ifndef HAVE_OPTIONS_HH
 #define HAVE_OPTIONS_HH 1
 
+#include <string>
+
 enum options_action_T
 {
     action_unspecified,
@@ -36,6 +38,7 @@ enum options_action_T
 class options_T
 {
     protected:
+        static std::string _file;
         static bool _verbose;
         static bool _compact;
         static bool _summarise;
@@ -57,6 +60,9 @@ class options_T
 
         void set_action(options_action_T value) { options_T::_action = value; }
         options_action_T action() { return options_T::_action; }
+
+        void set_filename(const char *value) { options_T::_file = value; }
+        const char *get_filename() { return options_T::_file.c_str(); }
 };
 
 #endif
