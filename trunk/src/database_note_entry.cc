@@ -30,6 +30,7 @@
 database_note_entry_T::database_note_entry_T(std::istream *stream)
     : database_entry_T(stream)
 {
+    id = default_id();
 }
 
 /*

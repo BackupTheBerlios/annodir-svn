@@ -41,14 +41,16 @@ action_add_handler_T::operator() (void)
         /* load database */
         std::auto_ptr<database_T > db(new database_T());
 
-        std::auto_ptr<std::istream > f(new 
-                std::ifstream(options.get_filename().c_str()));
-        if ((*f))
-            db->load(*f);
-        else
         {
-            if (ENOENT != errno)
-                throw annodir_file_unreadable_E();
+            std::auto_ptr<std::istream > f(new 
+                    std::ifstream(options.get_filename().c_str()));
+            if ((*f))
+                db->load(*f);
+            else
+            {
+                if (ENOENT != errno)
+                    throw annodir_file_unreadable_E();
+            }
         }
 
         /* add a new entry */
@@ -58,8 +60,13 @@ action_add_handler_T::operator() (void)
         {
             db->entries.push_back(entry);
 
-            /* dump to stdout for now */
-            db->dump(std::cout);
+            /* save */
+            std::auto_ptr<std::ostream> f(new
+                    std::ofstream(options.get_filename().c_str()));
+            if ((*f))
+                db->dump(*f);
+            else
+                throw annodir_file_unwriteable_E();
         }
         else
             return EXIT_FAILURE;
@@ -70,6 +77,14 @@ action_add_handler_T::operator() (void)
         /* bleh! file there, can't read it. */
         std::cout << "Error: couldn't open " << options.get_filename()
             << " for read (" << errno << "): " << strerror(errno) 
+            << std::endl;
+        return EXIT_FAILURE;
+    }
+    catch (annodir_file_unwriteable_E)
+    {
+        /* bleh! file there, can't read it. */
+        std::cout << "Error: couldn't open " << options.get_filename()
+            << " for write (" << errno << "): " << strerror(errno) 
             << std::endl;
         return EXIT_FAILURE;
     }
