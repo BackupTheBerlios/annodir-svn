@@ -35,6 +35,7 @@ database_note_entry_T::database_note_entry_T(const node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
+    util::debug_msg("Initializing new entry of type '%s'", id.c_str());
 }
 
 /*
@@ -44,6 +45,7 @@ database_note_entry_T::database_note_entry_T(std::istream *stream,
     const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
+    util::debug_msg("Initializing new entry of type '%s'", id.c_str());
 }
 
 /*

@@ -32,6 +32,7 @@
 #include "src/database.hh"
 #include "src/options.hh"
 #include "src/input.hh"
+#include "src/util.hh"
 
 /*
  * Create a new entry (belong to the specified node)
@@ -40,6 +41,7 @@ database_link_entry_T::database_link_entry_T(const node_entry_T *node)
     : database_entry_T(node)
 {
     id = default_id();
+    util::debug_msg("Initializing new entry of type '%s'", id.c_str());
 }
 
 /*
@@ -49,6 +51,7 @@ database_link_entry_T::database_link_entry_T(std::istream *stream,
     const node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
+    util::debug_msg("Initializing new entry of type '%s'", id.c_str());
 }
 
 /*
@@ -138,13 +141,14 @@ database_link_entry_T::display(std::ostream &stream)
     {
         std::auto_ptr<std::ifstream > f(new
                 std::ifstream(keys["location"].c_str()));
-        if (! (*f))
+        if (not (*f))
         {
             if (ENOENT == errno)
                 throw annodir_file_notthere_E();
             else
                 throw annodir_file_unreadable_E();
         }
+        util::debug_msg("Loading link at '%s'", keys["location"].c_str());
         std::auto_ptr<database_T > db(new database_T(*f));
 
         db->display(std::cout);
