@@ -35,7 +35,7 @@
     char *
 util::basename(char *path)
 {
-    char *s = std::strrchr (path, '/');
+    char *s = std::strrchr(path, '/');
     return (s ? s + 1 : path);
 }
 
@@ -65,19 +65,28 @@ util::debug_msg(const char *msg, ...)
 {
     options_T options;
 
-    if (! options.debug())
+    if (not options.debug())
 	return;
 
-    char buf[4096];
     va_list v;
     va_start(v, msg);
 
-#ifdef HAVE_VSNPRINTF
-    vsnprintf(buf, sizeof(buf), msg, v);
+#ifdef HAVE_VASPRINTF
+    char *buf;
+    vasprintf(&buf, msg, v);
 #else
+    char buf[4096] = { 0 };
+# ifdef HAVE_VSNPRINTF
+    vsnprintf(buf, sizeof(buf), msg, v);
+# else
     vsprintf(buf, msg, v);
-#endif /* HAVE_VSNPRINTF */
+# endif
+#endif
 
+#ifdef HAVE_VASPRINTF
+    free(buf);
+#endif
+    
     std::cout << buf << std::endl;
     va_end(v);
 }
