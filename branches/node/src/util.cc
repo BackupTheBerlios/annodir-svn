@@ -65,8 +65,9 @@ util::sprintf(const char *str, ...)
 {
     va_list v;
     va_start(v, str);
-    return util::sprintf(str, v);
+    std::string s(util::sprintf(str, v));
     va_end(v);
+    return s;
 }
 
 /*
