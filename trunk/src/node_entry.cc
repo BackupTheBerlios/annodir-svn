@@ -37,30 +37,30 @@
  *  - Construct indentation string of the appropriate width
  */
 node_entry_T::node_entry_T(const node_entry_T *parent_node)
+    : _prev(0), _next(0)
 {
-    parent = const_cast<node_entry_T * > (parent_node);
-    prev = next = 0;
+    _parent = const_cast<node_entry_T * > (parent_node);
 
     /* child with siblings */
-    if (parent and not parent->empty())
+    if (_parent and not _parent->empty())
     {
-        prev = parent->back();
-        prev->next = this;
+        _prev = _parent->back();
+        _prev->_next = this;
 
-        _index = prev->_index;
+        _index = _prev->_index;
         _index.back()++;
 
-        indent_str = prev->indent_str;
+        indent_str = _prev->indent_str;
     }
     /* only child */
-    else if (parent)
+    else if (_parent)
     {
-        _index = parent->_index;
+        _index = _parent->_index;
         _index.push_back(1);
 
-        indent_str = parent->indent_str;
+        indent_str = _parent->indent_str;
         /* top-level children nodes shouldn't be indented */
-        if (parent->parent)
+        if (_parent->_parent)
             indent_str.append("  ");
     }
     /* root */
@@ -96,14 +96,13 @@ node_entry_T::index()
 }
 
 /*
- * recurse through child nodes running the specified function for each
+ * Recurse through child nodes running the specified function for each
  */
     void
 node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
     std::ostream &stream)
 {
-    std::vector<node_entry_T * >::iterator i;
-    for (i = begin() ; i != end() ; ++i)
+    for (node_entry_T::iterator i = begin() ; i != end() ; ++i)
         ((*i)->entry->*fp)(stream);
 }
 
@@ -112,8 +111,7 @@ node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
  */
 node_entry_T::~node_entry_T()
 {
-    std::vector<node_entry_T * >::iterator i;
-    for (i = begin() ; i != end() ; ++i)
+    for (node_entry_T::iterator i = begin() ; i != end() ; ++i)
         delete *i;
 }
 

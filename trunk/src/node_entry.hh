@@ -37,9 +37,9 @@ class node_entry_T : public std::vector<node_entry_T * >
         std::string indent_str;
 
     protected:
-        node_entry_T *parent;   /* parent */
-        node_entry_T *prev;     /* previous sibling */
-        node_entry_T *next;     /* next sibling */
+        node_entry_T *_parent;   /* parent */
+        node_entry_T *_prev;     /* previous sibling */
+        node_entry_T *_next;     /* next sibling */
 
     public:
 	node_entry_T(const node_entry_T *parent_node = NULL);
@@ -50,9 +50,8 @@ class node_entry_T : public std::vector<node_entry_T * >
         std::string const &index();
         std::string const &indent() const { return indent_str; }
 
-        node_entry_T *whos_yo_daddy(node_entry_T *node) const
-        { return ( parent ? parent : node ); }
-        /* TODO: add overloaded whos_yo_daddy() that also takes an index string */
+        node_entry_T *whos_yo_daddy() const { return _parent; }
+        node_entry_T *next() const { return _next; }
 
         virtual void recurse(void (database_entry_T::*fp)(std::ostream&),
             std::ostream &stream);
