@@ -27,6 +27,7 @@
 #include <memory>
 #include <cstdlib>
 #include <errno.h>
+#include <unistd.h>	/* for unlink() */
 
 #include "src/action_delete_handler.hh"
 #include "src/node_entry.hh"
@@ -95,6 +96,12 @@ action_delete_handler_T::operator() (void)
 	    if ((*f))
 		db->dump(*f);
 	    else
+		throw annodir_file_unwriteable_E();
+	}
+
+	if (db->empty() and options.delete_on_empty())
+	{
+	    if (0 != unlink(options.get_filename().c_str()))
 		throw annodir_file_unwriteable_E();
 	}
     }

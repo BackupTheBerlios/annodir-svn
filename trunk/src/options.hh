@@ -51,6 +51,7 @@ class options_T
         static bool _summarise;
         static bool _recursive;
         static bool _debug;
+        static bool _delete_on_empty;
         static options_action_T _action;
 
     public:
@@ -68,6 +69,10 @@ class options_T
 
         void set_debug(bool value) { options_T::_debug = value; }
         bool debug() { return options_T::_debug; }
+
+        void set_delete_on_empty(bool value) 
+            { options_T::_delete_on_empty = value; }
+        bool delete_on_empty() { return options_T::_delete_on_empty; }
 
         void set_action(options_action_T value) { options_T::_action = value; }
         options_action_T action() { return options_T::_action; }

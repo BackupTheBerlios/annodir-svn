@@ -277,6 +277,9 @@ handle_rc(std::string const &file)
 
         if (rcfile.keys.end() != (pos = rcfile.keys.find("debug")))
             options.set_debug(true);
+
+        if (rcfile.keys.end() != (pos = rcfile.keys.find("delete_on_empty")))
+            options.set_delete_on_empty(true);
     }
 }
 
