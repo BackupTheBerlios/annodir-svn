@@ -45,6 +45,10 @@ of the file: >
 Other stuff may possibly be added to the metadata section later as we think
 of it.  created_{by,at} for recording who/when initially created it maybe?
 
+Another idea regarding metadata, it'd be cool if you could override settings
+from annodirrc on a per-file basis.  Can't think of a better place than in the
+metadata section (much better than say, per-directory annodirrc's).
+
 == Internal Workings
 
 We've got a number of key components:
