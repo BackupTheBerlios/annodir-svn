@@ -130,7 +130,7 @@ node_entry_T::recurse(void (database_entry_T::*fp)(std::ostream&),
  * Insert entry ; if front is true insert at front (defaults to false)
  */
     void
-node_entry_T::insert_entry(database_entry_T *e, bool front)
+node_entry_T::insert_entry(database_entry_T *e, bool front /* = false */)
 {
     if (front)
         _entries.insert(_entries.begin(), e);
@@ -145,10 +145,15 @@ node_entry_T::insert_entry(database_entry_T *e, bool front)
 entry_is(database_entry_T *e, std::string id) { return e->is(id); }
 
     database_entry_T *
-node_entry_T::entry(std::string id)
+node_entry_T::entry(std::string id /* = "" */)
 {
     if (_entries.empty())
         return NULL;
+
+    /* default arg ("") means return the a pointer to the first entry */
+    if (id.empty())
+        return _entries.front();
+
     std::stable_partition(_entries.begin(), _entries.end(),
             std::bind2nd(ptr_fun(entry_is), id));
     return _entries.front();
