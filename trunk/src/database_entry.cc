@@ -148,7 +148,7 @@ database_entry_T::display(std::ostream &stream)
 database_entry_T::do_export(std::ostream &stream)
 {
     if (id == "metadata")
-        stream << "[" << keys["title"] << "] "; 
+        stream << "[" << keys["title"] << "] " << std::endl; 
     else
         stream << "[" << id << "] " 
             << keys.get_with_default("title", "Untitled") << std::endl;
