@@ -40,9 +40,15 @@ We've got a number of key components:
 
 -- commandline
 
-Uses getopt_long, maybe needs to be able to fallback to regular getopt via an
-autoconf thingie? Does *BSD have getopt_long? Figures out what action to call
-(add, list, delete etc) and calls the relevant handler
+Figures out what action to call (add, list, delete etc) and calls the relevant
+handler
+
+Uses getopt_long, which is available on all Linux systems and all of the modern
+BSD's.  We shouldn't have any problems, however we must keep in mind that there
+are very small differences between GNU and BSD getopt_long implementations, so 
+there is a chance for very subtle command-line option bugs.  These differences
+are documented in BSD's getopt_long(3) manual page.  A fallback to getopt()
+should still be implemented, since any POSIX.2-compliant OS should support it.
 
 -- action handlers
 
