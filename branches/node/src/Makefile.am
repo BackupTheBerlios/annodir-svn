@@ -15,6 +15,7 @@ annodir_SOURCES = \
 		  database_note_entry.hh database_note_entry.cc \
 		  database_link_entry.hh database_link_entry.cc \
 		  database_metadata_entry.hh database_metadata_entry.cc \
+		  node_entry.hh node_entry.cc \
 		  annodir.cc
 
 LIBS = @READLINE_LIBS@

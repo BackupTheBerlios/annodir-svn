@@ -25,9 +25,11 @@
 #include "src/util.hh"
 
 #include <string>
+#include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <cstdarg>
 
     char *
 util::basename(char *path)
@@ -51,4 +53,28 @@ util::format_datestr(std::string& epoch)
 	date_str.assign(buf);
     }
     return (date_str.empty() ? "(no date)" : date_str);
+}
+
+    void
+util::debug_msg(const char *msg, ...)
+{
+#ifdef DEBUG
+    char buf[4096];
+    size_t n;
+    va_list v;
+
+    va_start(v, msg);
+
+    strcpy(buf, "D: ");
+    n = strlen(buf);
+
+#ifdef HAVE_VSNPRINTF
+    vsnprintf(buf + n, sizeof(buf) - n, msg, v);
+#else
+    vsprintf(buf + n, msg, v);
+#endif /* HAVE_VSNPRINTF */
+
+    std::cout << buf << std::endl;
+    va_end(v);
+#endif /* DEBUG */
 }

@@ -29,6 +29,7 @@
 #include <fstream>
 
 #include "src/database.hh"
+#include "src/node_entry.hh"
 #include "src/exceptions.hh"
 #include "src/options.hh"
 #include "src/action_add_handler.hh"
@@ -38,27 +39,28 @@
 #include "src/input.hh"
 
     database_entry_T *
-make_new_entry(const char *type)
+make_new_entry(const char *type, node_entry_T *node)
 {
     if (0 == strcasecmp(type, "prompt"))
     {
         char *in = get_user_input("Item Type");
         if (in)
         {
-            return make_new_entry(in);
+            return make_new_entry(in, node);
             free(in);
         }
         else
             return NULL;
     }
+
     else if (0 == strcasecmp(type, "note"))
-        return new database_note_entry_T;
+        return new database_note_entry_T(node);
     else if (0 == strcasecmp(type, "link"))
-        return new database_link_entry_T;
+        return new database_link_entry_T(node);
     else if (0 == strcasecmp(type, "metadata"))
-        return new database_metadata_entry_T;
+        return new database_metadata_entry_T(node);
     else /* fallback */
-        return new database_entry_T; 
+        return new database_entry_T(node); 
 }
 
     int
@@ -88,30 +90,27 @@ action_add_handler_T::operator() (void)
             }
         }
 
-        database_entry_T *meta_entry = NULL;
         /* add metadata if the file didn't already exist */
         if (!exists)
         {
-            meta_entry = make_new_entry("metadata");
-
-            if (!meta_entry)
+            db->root.entry = make_new_entry("metadata", &(db->root));
+            if (! db->root.entry)
                 return EXIT_FAILURE;
-
-            meta_entry->set_new_object_defaults();
-            db->entries.push_back(meta_entry);
+            db->root.entry->set_new_object_defaults();
         }
 
         /* add a new entry */
-        database_entry_T *entry = make_new_entry(
-                options.get_type().c_str());
+        node_entry_T *node = new node_entry_T(&(db->root));
+        node->entry = make_new_entry(options.get_type().c_str(), node);
 
-        if (!entry)
+        if (!node->entry)
             return EXIT_FAILURE;
+        
+        node->entry->set_new_object_defaults();
 
-        entry->set_new_object_defaults();
-        if (entry->prompt_user_for_values())
+        if (node->entry->prompt_user_for_values())
         {
-            db->entries.push_back(entry);
+            db->root.children.push_back(node);
 
             /* save */
             std::auto_ptr<std::ostream> f(new

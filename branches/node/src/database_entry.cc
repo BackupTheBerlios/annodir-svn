@@ -22,7 +22,11 @@
  */
 
 #include "src/database_entry.hh"
+#include "src/node_entry.hh"
+#include "src/database_note_entry.hh"
+#include "src/database_link_entry.hh"
 #include "src/options.hh"
+#include "src/exceptions.hh"
 #include "src/util.hh"
 
     std::string&
@@ -44,12 +48,36 @@ database_entry_keys_T::get_with_default(std::string key,
 database_entry_T::load(std::istream &stream)
 {
     std::string s;
-    while ((std::getline(stream, s)) && (s != "end"))
+    while (std::getline(stream, s))
     {
+        util::debug_msg(s.c_str());
+
         /* strip leading whitespace */
         std::string::size_type start_pos;
         if (std::string::npos != (start_pos = s.find_first_not_of(" \t")))
             s.erase(0, start_pos);
+
+        /* sub entry? */
+        if (s[s.length() - 1] == ':')
+        {
+            s.erase(s.length() - 1);
+            node_entry_T *node = new node_entry_T(mynode);
+            
+            /* try to find a relevant class */
+            if (database_note_entry_T::recognise_item(s))
+                node->entry = new database_note_entry_T(&stream, node);
+            else if (database_link_entry_T::recognise_item(s))
+                node->entry = new database_link_entry_T(&stream, node);
+            else if (recognise_item(s))
+                node->entry = new database_entry_T(&stream, node);
+            else
+                throw item_not_recognised_E();
+
+            mynode->children.push_back(node);
+        }
+
+        if (s == "end")
+            break;
 
         /* split on = */
         std::string::size_type equals_pos;
@@ -61,11 +89,23 @@ database_entry_T::load(std::istream &stream)
 }
 
 /*
- * Create a new item read from the supplied stream.
+ * Create a new entry (belonging to the specified node)
  */
-database_entry_T::database_entry_T(std::istream *stream)
+database_entry_T::database_entry_T(node_entry_T *node)
+{
+   if (node)
+       mynode = node;
+}
+
+/*
+ * Create a new entry (belonging to the specified node)
+ * read from the supplied stream.
+ */
+database_entry_T::database_entry_T(std::istream *stream, node_entry_T *node)
 {
     id = default_id();
+    if (node)
+        mynode = node;
     if (stream)
         load(*stream);
     else
@@ -121,6 +161,13 @@ database_entry_T::dump(std::ostream &stream)
     /* end */
     stream << "end" << std::endl;
 
+    /* loop through children */
+    std::vector<node_entry_T * >::iterator x;
+    for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
+    {
+        if (! (*x)->entry->dump(stream))
+            return false;
+    }
     return true;
 }
 
@@ -139,6 +186,11 @@ database_entry_T::display(std::ostream &stream)
     {
         stream << "  " << i->first << "=" << i->second << std::endl;
     }
+
+    /* loop through children */
+    std::vector<node_entry_T * >::iterator x;
+    for (x = mynode->children.begin() ; x != mynode->children.end() ; ++x)
+        (*x)->entry->display(stream);
 }
 
 /*
@@ -173,6 +225,11 @@ database_entry_T::do_export(std::ostream &stream)
             << keys.get_with_default("priority", "medium");
 
     stream << std::endl << std::endl;
+
+    /* loop through children */
+    std::vector<node_entry_T * >::iterator i;
+    for (i = mynode->children.begin() ; i != mynode->children.end() ; ++i)
+        (*i)->entry->do_export(stream);
 }
 
 /*

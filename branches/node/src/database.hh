@@ -20,13 +20,12 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
+
 #ifndef HAVE_DATABASE_HH
 #define HAVE_DATABASE_HH 1
 
-#include "config.h"
-#include "src/database_entry.hh"
-#include <vector>
 #include <iostream>
+#include "src/node_entry.hh"
 
 class database_T
 {
@@ -36,7 +35,7 @@ class database_T
 
         virtual ~database_T();
 
-        std::vector<database_entry_T * > entries;
+        node_entry_T root;
         virtual void load(std::istream &stream);
         virtual bool dump(std::ostream &stream);
         virtual void display(std::ostream &stream);

@@ -35,6 +35,9 @@ AC_CHECK_FUNCS(strtol,,
 AC_CHECK_FUNCS(asprintf,,
     [AC_CHECK_FUNCS(snprintf,,
     [AC_MSG_ERROR([either asprintf or snprintf is required])])])
+AC_CHECK_FUNCS(vsnprintf,,
+    [AC_CHECK_FUNCS(vsprintf,,
+    [AC_MSG_ERROR([either vsnprintf or vsprintf is required])])])
 
 unset tcap
 AC_CHECK_HEADERS(readline/readline.h, ,

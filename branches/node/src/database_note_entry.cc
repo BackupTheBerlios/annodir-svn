@@ -21,17 +21,27 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#include <vector>
+#include <cstdlib>
+
+#include "src/node_entry.hh"
 #include "src/database_note_entry.hh"
 #include "src/options.hh"
 #include "src/input.hh"
 #include "src/util.hh"
-#include <cstdlib>
+
+database_note_entry_T::database_note_entry_T(node_entry_T *node)
+    : database_entry_T(node)
+{
+    if (node)
+        mynode = node;
+}
 
 /*
  * Create a new item read from the supplied stream.
  */
-database_note_entry_T::database_note_entry_T(std::istream *stream)
-    : database_entry_T(stream)
+database_note_entry_T::database_note_entry_T(std::istream *stream,
+    node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }
@@ -92,6 +102,11 @@ database_note_entry_T::display(std::ostream &stream)
     } /* if !summarise */
 
     stream << std::endl;
+
+    /* loop through children */
+    std::vector<node_entry_T * >::iterator i;
+    for (i = mynode->children.begin() ; i != mynode->children.end() ; ++i)
+        (*i)->entry->display(stream);
 }
 
 /*

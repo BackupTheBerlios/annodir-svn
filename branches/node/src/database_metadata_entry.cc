@@ -21,27 +21,31 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#include "src/database_metadata_entry.hh"
-#include "src/exceptions.hh"
-#include "src/database.hh"
-#include "src/options.hh"
-#include "src/util.hh"
-
 #include <errno.h>
 #include <cstdlib>
 #include <memory>
 #include <fstream>
 #include <unistd.h>
 
-#ifndef PATH_MAX
-# define PATH_MAX 4096
-#endif /* PATH_MAX */
+#include "src/database_metadata_entry.hh"
+#include "src/node_entry.hh"
+#include "src/exceptions.hh"
+#include "src/database.hh"
+#include "src/options.hh"
+#include "src/util.hh"
+
+database_metadata_entry_T::database_metadata_entry_T(node_entry_T *node)
+    : database_entry_T(node)
+{
+    if (node)
+        mynode = node;
+}
 
 /*
  * Create a new item read from the supplied stream.
  */
-database_metadata_entry_T::database_metadata_entry_T(std::istream *stream)
-    : database_entry_T(stream)
+database_metadata_entry_T::database_metadata_entry_T(std::istream *stream,
+    node_entry_T *node) : database_entry_T(stream, node)
 {
     id = default_id();
 }

@@ -1,5 +1,5 @@
 /*
- * annodir -- src/database_entry.hh
+ * annodir -- src/node_entry.cc
  * $Id$
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
@@ -20,34 +20,20 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_DATABASE_NOTE_ENTRY_HH
-#define HAVE_DATABASE_NOTE_ENTRY_HH 1
 
-#include <map>
-#include <string>
-#include <iostream>
-
+#include "config.h"
 #include "src/node_entry.hh"
-#include "src/database_entry.hh"
 
-class database_note_entry_T : public database_entry_T
+node_entry_T::node_entry_T (node_entry_T *parent_node)
 {
-    public:
-        database_note_entry_T(node_entry_T *node = NULL);
-        database_note_entry_T(std::istream *stream = NULL,
-            node_entry_T *node = NULL);
+    if (parent_node)
+        parent = parent_node;
+}
 
-        virtual void display(std::ostream &stream);
-
-        static bool recognise_item(std::string item);
-
-        virtual void set_new_object_defaults();
-        virtual bool prompt_user_for_values();
-
-    protected:
-        virtual std::string default_id();
-};
-
-#endif
+/* Tidy up; delete our entry */
+node_entry_T::~node_entry_T()
+{
+    delete entry;
+}
 
 /* vim: set tw=80 sw=4 et : */

@@ -23,10 +23,11 @@
 #ifndef HAVE_DATABASE_ENTRY_HH
 #define HAVE_DATABASE_ENTRY_HH 1
 
-#include "config.h"
 #include <map>
 #include <string>
 #include <iostream>
+
+#include "src/node_entry.hh"
 
 class database_entry_keys_T : public std::map<std::string, std::string >
 {
@@ -38,7 +39,11 @@ class database_entry_keys_T : public std::map<std::string, std::string >
 class database_entry_T
 {
     public:
-        database_entry_T(std::istream *stream = NULL);
+        friend class node_entry_T;
+
+        database_entry_T(node_entry_T *node = NULL);
+        database_entry_T(std::istream *stream = NULL, 
+            node_entry_T *node = NULL);
         virtual ~database_entry_T() { };
 
         virtual bool dump(std::ostream &stream);
@@ -56,6 +61,7 @@ class database_entry_T
     protected:
         virtual std::string default_id();
         std::string id;
+        node_entry_T *mynode;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
- * annodir -- src/database_entry.hh
+ * annodir -- src/node_entry.hh
  * $Id$
  * Copyright (c) 2004 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2004 Aaron Walker <ka0ttic at gentoo.org>
@@ -20,32 +20,29 @@
  * annodir; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
-#ifndef HAVE_DATABASE_NOTE_ENTRY_HH
-#define HAVE_DATABASE_NOTE_ENTRY_HH 1
 
-#include <map>
-#include <string>
-#include <iostream>
+#ifndef NODE_ENTRY_HH
+#define NODE_ENTRY_HH 1
 
-#include "src/node_entry.hh"
+#include "config.h"
 #include "src/database_entry.hh"
+#include <vector>
+#include <string>
 
-class database_note_entry_T : public database_entry_T
+class node_entry_T
 {
     public:
-        database_note_entry_T(node_entry_T *node = NULL);
-        database_note_entry_T(std::istream *stream = NULL,
-            node_entry_T *node = NULL);
+        friend class database_entry_T;
 
-        virtual void display(std::ostream &stream);
+	node_entry_T(node_entry_T *parent_node = NULL);
+	~node_entry_T();
 
-        static bool recognise_item(std::string item);
+	node_entry_T *parent;
+	std::vector<node_entry_T * > children;
 
-        virtual void set_new_object_defaults();
-        virtual bool prompt_user_for_values();
+	database_entry_T *entry;
 
-    protected:
-        virtual std::string default_id();
+        std::vector<int > index;
 };
 
 #endif
