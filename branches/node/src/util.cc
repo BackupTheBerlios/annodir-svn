@@ -57,12 +57,24 @@ util::format_datestr(std::string& epoch)
     return (date_str.empty() ? "(no date)" : date_str);
 }
 
+/*
+ * Return a string formatted with printf-like format specifier
+ */
     std::string
 util::sprintf(const char *str, ...)
 {
     va_list v;
     va_start(v, str);
+    return util::sprintf(str, v);
+    va_end(v);
+}
 
+/*
+ * Overloaded sprintf that takes a string and va_list
+ */
+    std::string
+util::sprintf(const char *str, va_list v)
+{
 #ifdef HAVE_VASPRINTF
     char *buf;
     vasprintf(&buf, str, v);
@@ -74,7 +86,7 @@ util::sprintf(const char *str, ...)
     vsprintf(buf, str, v);
 # endif
 #endif
-    
+
     std::string s(buf);
 
 #ifdef HAVE_VASPRINTF
@@ -98,23 +110,6 @@ util::debug_msg(const char *msg, ...)
     
     va_list v;
     va_start(v, msg);
-
-#ifdef HAVE_VASPRINTF
-    char *buf;
-    vasprintf(&buf, msg, v);
-#else
-    char buf[4096] = { 0 };
-# ifdef HAVE_VSNPRINTF
-    vsnprintf(buf, sizeof(buf), msg, v);
-# else
-    vsprintf(buf, msg, v);
-# endif
-#endif
-
-    std::cout << buf << std::endl;
-
-#ifdef HAVE_VASPRINTF
-    std::free(buf);
-#endif
+    std::cout << util::sprintf(msg, v) << std::endl;
     va_end(v);
 }
