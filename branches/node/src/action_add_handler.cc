@@ -102,10 +102,11 @@ action_add_handler_T::operator() (void)
 
         node_entry_T *parent;
         /* no index specified, so it will become last top-level child */
-        if (options.get_index().empty())
-        {
+        //if (options.get_index().empty())
+        //{
             parent = &db;
-        }
+        //}
+        /*
         else
         {
             std::string parent_index = options.get_index();   
@@ -115,7 +116,8 @@ action_add_handler_T::operator() (void)
                 
             }
         }
-        
+        */
+    
         /* add a new entry */
         node_entry_T *node = new node_entry_T(parent);
         node->entry = make_new_entry(options.get_type().c_str(), node);
