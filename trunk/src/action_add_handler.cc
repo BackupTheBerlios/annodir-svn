@@ -42,7 +42,7 @@ action_add_handler_T::operator() (void)
         std::auto_ptr<anno_db_T > db(new anno_db_T());
 
         std::auto_ptr<std::istream > f(new 
-                std::ifstream(options.get_filename()));
+                std::ifstream(options.get_filename().c_str()));
         if ((*f))
             db->load(*f);
         else

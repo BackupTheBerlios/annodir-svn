@@ -38,7 +38,7 @@ action_list_handler_T::operator() (void)
     {
         /* load the db */
         std::auto_ptr<std::ifstream > f(new 
-                std::ifstream(options.get_filename()));
+                std::ifstream(options.get_filename().c_str()));
         if (! (*f))
         {
             if (ENOENT == errno)

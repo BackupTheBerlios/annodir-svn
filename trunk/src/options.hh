@@ -62,11 +62,11 @@ class options_T
         void set_action(options_action_T value) { options_T::_action = value; }
         options_action_T action() { return options_T::_action; }
 
-        void set_filename(const char *value) { options_T::_file = value; }
-        const char *get_filename() { return options_T::_file.c_str(); }
+        void set_filename(std::string const &value) { options_T::_file = value; }
+        std::string const &get_filename() { return options_T::_file; }
 
-        void set_user(const char *value) { options_T::_user = value; }
-        const char *get_user() { return options_T::_user.c_str(); }
+        void set_user(std::string const &value) { options_T::_user = value; }
+        std::string const &get_user() { return options_T::_user; }
 };
 
 #endif
