@@ -126,10 +126,12 @@ database_note_entry_T::prompt_user_for_values()
     if (!((input = get_user_input("Title"))))
         return false;
     keys["title"].assign(input);
+    free(input);
 
     if (!((input = get_user_input("Body"))))
         return false;
     keys["body"].assign(input);
+    free(input);
 
     return true;
 }

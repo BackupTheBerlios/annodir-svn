@@ -95,17 +95,20 @@ database_link_entry_T::prompt_user_for_values()
         }
         else
             keys["location"].assign(input);
+        free(input);
     }
     catch (annodir_file_notthere_E)
     {
         std::cout << "Warning: couldn't open " << input << " for read("
             << errno << "): " << strerror(errno) << std::endl;
+        free(input);
         return false;
     }
     catch (annodir_file_unreadable_E)
     {
         std::cout << "Error: couldn't open " << input << " for read ("
             << errno << "): " << strerror(errno) << std::endl;
+        free(input);
         return false;
     }
 

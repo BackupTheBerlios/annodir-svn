@@ -42,7 +42,10 @@ make_new_entry(const char *type)
     {
         char *in = get_user_input("Item Type");
         if (in)
+        {
             return make_new_entry(in);
+            free(in);
+        }
         else
             return NULL;
     }
