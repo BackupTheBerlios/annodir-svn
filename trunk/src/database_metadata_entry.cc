@@ -68,7 +68,7 @@ database_metadata_entry_T::set_new_object_defaults()
 {
     char path[PATH_MAX + 1];
     database_entry_T::set_new_object_defaults();
-    keys["title"].assign(basename(getcwd(path, PATH_MAX)));
+    keys["title"].assign(util::basename(getcwd(path, PATH_MAX)));
 }
 
 /* 

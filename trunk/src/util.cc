@@ -29,7 +29,7 @@
 #include <ctime>
 
     const char *
-basename(char *path)
+util::basename(char *path)
 {
     path = (path += std::strlen(path));
     while(*(--path) != '/');
@@ -37,7 +37,7 @@ basename(char *path)
 }
 
     std::string
-format_datestr(std::string& epoch)
+util::format_datestr(std::string& epoch)
 {
     std::string date_str;
     std::time_t date_time_t = std::strtol(epoch.c_str(), NULL, 10);

@@ -162,7 +162,7 @@ database_entry_T::do_export(std::ostream &stream)
     {
         database_entry_keys_T::iterator pos = keys.find("created_at");
         if (keys.end() != pos)
-            date_str = format_datestr(pos->second);
+            date_str = util::format_datestr(pos->second);
     }
 
     stream << " on: " << date_str;

@@ -24,7 +24,10 @@
 
 #include <string>
 
-const char * basename(char *);
-std::string format_datestr(std::string&);
+namespace util
+{
+    const char * basename(char *);
+    std::string format_datestr(std::string&);
+}
 
 #endif
