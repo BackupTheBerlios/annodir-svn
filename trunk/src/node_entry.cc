@@ -37,7 +37,7 @@
  *  - Construct indentation string of the appropriate width
  */
 node_entry_T::node_entry_T(const node_entry_T *parent_node)
-    : _prev(0), _next(0)
+    : _prev(NULL), _next(NULL)
 {
     _parent = const_cast<node_entry_T * > (parent_node);
 
