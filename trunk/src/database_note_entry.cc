@@ -64,7 +64,6 @@ database_note_entry_T::default_id()
 database_note_entry_T::display(std::ostream &stream)
 {
     options_T options;
-    std::string padding = "   ";
 
     stream << mynode->indent() << mynode->index() << ". "
         << keys.get_with_default("title", "Untitled");

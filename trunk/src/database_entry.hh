@@ -59,6 +59,7 @@ class database_entry_T
     protected:
         virtual std::string default_id();
         std::string id;
+        std::string padding;
         node_entry_T *mynode;
 };
 

@@ -51,10 +51,15 @@ database_T::load(std::istream &stream)
                 throw item_not_parsable_E();
             s.erase(s.length() - 1);
             
-            /* special case - metadata doesn't get its own node */
+            /* special cases - metadata & link don't get their own node */
             if (database_metadata_entry_T::recognise_item(s))
             {
                 entry = new database_metadata_entry_T(&stream, this);
+                continue;
+            }
+            else if (database_link_entry_T::recognise_item(s))
+            {
+                entry = new database_link_entry_T(&stream, this);
                 continue;
             }
 
@@ -63,8 +68,6 @@ database_T::load(std::istream &stream)
             /* try to find a relevant class */
             if (database_note_entry_T::recognise_item(s))
                 node->entry = new database_note_entry_T(&stream, node);
-            else if (database_link_entry_T::recognise_item(s))
-                node->entry = new database_link_entry_T(&stream, node);
             else if (database_entry_T::recognise_item(s))
                 node->entry = new database_entry_T(&stream, node);
             else

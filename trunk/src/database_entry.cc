@@ -50,6 +50,7 @@ database_entry_keys_T::get_with_default(std::string key,
 database_entry_T::database_entry_T(const node_entry_T *node)
 {
     id = default_id();
+    padding = "   ";
     mynode = const_cast<node_entry_T * > (node);
 }
 
@@ -61,6 +62,7 @@ database_entry_T::database_entry_T(std::istream *stream,
     const node_entry_T *node)
 {
     id = default_id();
+    padding = "   ";
     mynode = const_cast<node_entry_T * > (node);
 
     if (stream)
