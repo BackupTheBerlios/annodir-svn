@@ -237,6 +237,9 @@ main(int argc, char *argv[])
 
             if (rcfile.keys.end() != (pos = rcfile.keys.find("file")))
                 options.set_filename(pos->second.c_str());
+
+            if (rcfile.keys.end() != (pos = rcfile.keys.find("type")))
+                options.set_type(pos->second.c_str());
         }
     }
 
