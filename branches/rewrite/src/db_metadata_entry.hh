@@ -1,5 +1,5 @@
 /*
- * annodir -- src/db.hh
+ * annodir -- src/db_metadata_entry.hh
  * $Id$
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
  *
@@ -20,35 +20,32 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#ifndef HAVE_DB_HH
-#define HAVE_DB_HH 1
+#ifndef HAVE_DB_METADATA_ENTRY_HH
+#define HAVE_DB_METADATA_ENTRY_HH 1
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include "common.hh"
 #include "db_entry.hh"
-#include "node.hh"
 
-class db_T : public node_T
+class db_metadata_entry_T : public db_entry_T
 {
     public:
-        typedef db_entry_T entry_type;
-        typedef std::deque<entry_type * > entries_type;
+        db_metadata_entry_T(db_T *node = NULL) : db_entry_T(node) { }
+        db_metadata_entry_T(std::istream *stream = NULL,
+            db_T *node = NULL) : db_entry_T(stream, node) { }
+        virtual ~db_metadata_entry_T() { }
 
-        db_T(db_T *parent = NULL) : node_T(parent) { }
-        db_T(std::istream *stream, db_T *parent = NULL)
-            : node_T(parent) { load(*stream); }
-        virtual ~db_T();
-
-        virtual void load(std::istream &);
         virtual void dump(std::ostream &);
-        virtual void display(std::ostream &);
         virtual void do_export(std::ostream &);
+        virtual void set_new_object_defaults();
 
-        entry_type *entry(const util::string &id = "");
-        entries_type entries;
+        static bool recognise_item(const util::string &id)
+        { return (id == "metadata"); }
+
+    protected:
+        virtual const util::string default_id() const { return "metadata"; }
 };
 
 #endif

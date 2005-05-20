@@ -58,10 +58,11 @@ namespace util
 #endif /* UNICODE */
 
     bool md5check(const util::string &, const util::string &);
-    util::string getcwd();
-    util::string get_user_from_email(const util::string &);
-    util::string current_user();
-    util::string::size_type getcols();
+    const util::string getcwd();
+    const util::string get_user_from_email(const util::string &);
+    const util::string current_user();
+    const util::string format_date(const util::string &);
+    const util::string::size_type getcols();
 
     class color_map_T
     {

@@ -1,5 +1,5 @@
 /*
- * annodir -- src/db.hh
+ * annodir -- src/db_metadata_entry.cc
  * $Id$
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
  *
@@ -20,37 +20,28 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
-#ifndef HAVE_DB_HH
-#define HAVE_DB_HH 1
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include "common.hh"
-#include "db_entry.hh"
-#include "node.hh"
+#include "db_metadata_entry.hh"
 
-class db_T : public node_T
+void
+db_metadata_entry_T::set_new_object_defaults()
 {
-    public:
-        typedef db_entry_T entry_type;
-        typedef std::deque<entry_type * > entries_type;
 
-        db_T(db_T *parent = NULL) : node_T(parent) { }
-        db_T(std::istream *stream, db_T *parent = NULL)
-            : node_T(parent) { load(*stream); }
-        virtual ~db_T();
+}
 
-        virtual void load(std::istream &);
-        virtual void dump(std::ostream &);
-        virtual void display(std::ostream &);
-        virtual void do_export(std::ostream &);
+void
+db_metadata_entry_T::dump(std::ostream &stream)
+{
 
-        entry_type *entry(const util::string &id = "");
-        entries_type entries;
-};
+}
 
-#endif
+void
+db_metadata_entry_T::do_export(std::ostream &stream)
+{
+
+}
 
 /* vim: set tw=80 sw=4 et : */

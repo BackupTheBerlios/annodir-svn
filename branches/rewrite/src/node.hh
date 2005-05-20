@@ -27,38 +27,30 @@
 # include "config.h"
 #endif
 
+#include <deque>
 #include "common.hh"
 
-class node_T : public std::vector<node_T * >
+class node_T : public std::deque<node_T * >
 {
     public:
         node_T(node_T *parent = NULL);
         virtual ~node_T();
 
-        node_T * &parent() const { return this->_parent; }
-        node_T * &next() const { return this->_next; }
-        node_T * &prev() const { return this->_prev; }
+        virtual void load(std::istream &) = 0;
+        virtual void dump(std::ostream &) = 0;
+        virtual void display(std::ostream &) = 0;
+        virtual void do_export(std::ostream &) = 0;
+
+        node_T * parent() const { return this->_parent; }
+        node_T * next() const { return this->_next; }
+        node_T * prev() const { return this->_prev; }
 
         const util::string &indent() const { return this->_indent_str; }
         const util::string &index();
 
         node_T *find(const util::string &);
 
-        /* actions */
-        virtual void do_dump(std::ostream &)    = 0;
-        virtual void do_load(std::istream &)    = 0;
-        virtual void do_display(std::ostream &) = 0;
-        virtual void do_export(std::ostream &)  = 0;
-
     protected:
-        class entry_keys_T : public std::map<util::string, util::string>
-        {
-            public:
-                const util::string &
-                get_with_default(const util::string &, const util::string &);
-        };
-
-        entry_keys_T _keys;
         std::vector<unsigned short> _index;
         node_T *_parent, *_prev, *_next;
         util::string _index_str, _indent_str;

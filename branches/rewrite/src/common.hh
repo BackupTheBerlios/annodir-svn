@@ -35,12 +35,14 @@
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+#include <cassert>
 #include <sys/types.h>
 #include <unistd.h>
 
 #include "util/string.hh"
 #include "util/file.hh"
 #include "util/regex.hh"
+#include "util/misc.hh"
 
 #include "exceptions.hh"
 #include "options.hh"

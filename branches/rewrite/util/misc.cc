@@ -91,7 +91,7 @@ util::md5check(const util::string &file1, const util::string &file2)
     return false;
 }
 /****************************************************************************/
-util::string
+const util::string
 util::getcwd()
 {
     char *pwd = ::getcwd(NULL, 0);
@@ -105,7 +105,7 @@ util::getcwd()
 /****************************************************************************
  * Given an email address, return the username.                             *
  ****************************************************************************/
-util::string
+const util::string
 util::get_user_from_email(const util::string &email)
 {
     util::string::size_type pos = email.find('@');
@@ -120,7 +120,7 @@ util::get_user_from_email(const util::string &email)
  * since a developer might use a different username than what his           *
  * developer username is.                                                   *
  ****************************************************************************/
-util::string
+const util::string
 util::current_user()
 {
     util::string user;
@@ -148,10 +148,29 @@ util::current_user()
     return (user.empty() ? "nobody@gentoo.org" : user);
 }
 /****************************************************************************
+ * Given a time string (in seconds since epoch), return a formatted         *
+ * date string.                                                             *
+ ****************************************************************************/
+const util::string
+util::format_date(const util::string &epoch)
+{
+    util::string date;
+    std::time_t t = std::strtol(epoch.c_str(), NULL, 10);
+
+    if (t != 0)
+    {
+        char buf[255] = { 0 };
+        std::strftime(buf, sizeof(buf) - 1, "%x", std::localtime(&t));
+        date.assign(buf);
+    }
+
+    return (date.empty() ? "(no date)" : date);
+}
+/****************************************************************************
  * Try to determine the columns of the current terminal; use                *
  * a sensible default if we can't get it for some reason.                   *
  ****************************************************************************/
-util::string::size_type
+const util::string::size_type
 util::getcols()
 {
     util::string output;
