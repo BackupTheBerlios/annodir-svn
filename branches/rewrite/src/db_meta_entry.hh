@@ -1,5 +1,5 @@
 /*
- * annodir -- src/db_metadata_entry.hh
+ * annodir -- src/db_meta_entry.hh
  * $Id$
  * Copyright (c) 2005 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
@@ -30,13 +30,13 @@
 
 #include "db_entry.hh"
 
-class db_metadata_entry_T : public db_entry_T
+class db_meta_entry_T : public db_entry_T
 {
     public:
-        db_metadata_entry_T(db_T *node = NULL) : db_entry_T(node) { }
-        db_metadata_entry_T(std::istream *stream = NULL,
+        db_meta_entry_T(db_T *node = NULL) : db_entry_T(node) { }
+        db_meta_entry_T(std::istream *stream = NULL,
             db_T *node = NULL) : db_entry_T(stream, node) { }
-        virtual ~db_metadata_entry_T() { }
+        virtual ~db_meta_entry_T() { }
 
         virtual void dump(std::ostream &);
         virtual void do_export(std::ostream &);

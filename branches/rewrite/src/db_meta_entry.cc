@@ -1,5 +1,5 @@
 /*
- * annodir -- src/db_metadata_entry.cc
+ * annodir -- src/db_meta_entry.cc
  * $Id$
  * Copyright (c) 2005 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
@@ -25,22 +25,22 @@
 # include "config.h"
 #endif
 
-#include "db_metadata_entry.hh"
+#include "db_meta_entry.hh"
 
 void
-db_metadata_entry_T::set_new_object_defaults()
+db_meta_entry_T::set_new_object_defaults()
 {
 
 }
 
 void
-db_metadata_entry_T::dump(std::ostream &stream)
+db_meta_entry_T::dump(std::ostream &stream)
 {
 
 }
 
 void
-db_metadata_entry_T::do_export(std::ostream &stream)
+db_meta_entry_T::do_export(std::ostream &stream)
 {
 
 }

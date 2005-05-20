@@ -8,7 +8,7 @@ annodir_SOURCES = common.hh \
 		  db.hh db.cc \
 		  db_entry.hh db_entry.cc \
 		  db_note_entry.hh db_note_entry.cc \
-		  db_metadata_entry.hh db_metadata_entry.cc \
+		  db_meta_entry.hh db_meta_entry.cc \
 		  db_link_entry.hh db_link_entry.cc \
 		  action_handler.hh \
 		  action_list_handler.hh action_list_handler.cc \

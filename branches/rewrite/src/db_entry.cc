@@ -28,7 +28,7 @@
 #include "db.hh"
 #include "db_note_entry.hh"
 #include "db_link_entry.hh"
-#include "db_metadata_entry.hh"
+#include "db_meta_entry.hh"
 #include "db_entry.hh"
 
 const util::string &

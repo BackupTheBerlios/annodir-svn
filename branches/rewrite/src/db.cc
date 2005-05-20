@@ -31,7 +31,7 @@
 #include "db_entry.hh"
 #include "db_note_entry.hh"
 #include "db_link_entry.hh"
-#include "db_metadata_entry.hh"
+#include "db_meta_entry.hh"
 #include "db.hh"
 
 /*
@@ -61,10 +61,10 @@ db_T::load(std::istream &stream)
             line.erase(line.length() - 1);
 
             /* special case - metadata does not get it's own node */
-            if (db_metadata_entry_T::recognise_item(line))
+            if (db_meta_entry_T::recognise_item(line))
             {
                 this->entries.push_front
-                    (new db_metadata_entry_T(&stream, this));
+                    (new db_meta_entry_T(&stream, this));
                 continue;
             }
 
