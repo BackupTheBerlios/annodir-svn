@@ -1,6 +1,7 @@
 /*
  * annodir -- src/action_list_handler.cc
  * $Id$
+ * Copyright (c) 2005 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
  *
  * This file is part of annodir.
