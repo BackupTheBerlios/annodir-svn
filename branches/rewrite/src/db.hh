@@ -32,7 +32,7 @@
 #include "common.hh"
 #include "db_entry.hh"
 
-class db_T : public std::deque<db_T * >
+class db_T : public std::vector<db_T * >
 {
     public:
         typedef db_entry_T entry_type;
