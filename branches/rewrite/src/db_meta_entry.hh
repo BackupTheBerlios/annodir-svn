@@ -33,11 +33,15 @@
 class db_meta_entry_T : public db_entry_T
 {
     public:
-        db_meta_entry_T(db_T *node = NULL) : db_entry_T(node) { }
+        db_meta_entry_T(db_T *node = NULL) : db_entry_T(node)
+        { this->_id = this->default_id(); }
         db_meta_entry_T(std::istream *stream = NULL,
-            db_T *node = NULL) : db_entry_T(stream, node) { }
+            db_T *node = NULL) : db_entry_T(stream, node)
+        { this->_id = this->default_id(); }
         virtual ~db_meta_entry_T() { }
 
+        virtual void display(std::ostream &stream)
+        { this->_mynode->recurse(&db_entry_T::display, stream); }
         virtual void dump(std::ostream &);
         virtual void do_export(std::ostream &);
         virtual void set_new_object_defaults();

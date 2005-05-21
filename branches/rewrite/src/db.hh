@@ -28,28 +28,44 @@
 # include "config.h"
 #endif
 
+#include <deque>
 #include "common.hh"
 #include "db_entry.hh"
-#include "node.hh"
 
-class db_T : public node_T
+class db_T : public std::deque<db_T * >
 {
     public:
         typedef db_entry_T entry_type;
         typedef std::deque<entry_type * > entries_type;
 
-        db_T(db_T *parent = NULL) : node_T(parent) { }
-        db_T(std::istream *stream, db_T *parent = NULL)
-            : node_T(parent) { load(*stream); }
+        db_T(db_T *parent = NULL) { this->init(parent); }
+        db_T(std::istream &stream, db_T *parent = NULL)
+        { this->init(parent); this->load(stream); }
         virtual ~db_T();
 
+        /* main db interface */
         virtual void load(std::istream &);
-        virtual void dump(std::ostream &);
-        virtual void display(std::ostream &);
-        virtual void do_export(std::ostream &);
+        virtual void dump(std::ostream &stream)
+        { this->entries.front()->dump(stream); }
+        virtual void display(std::ostream &stream)
+        { this->entries.front()->display(stream); }
+        virtual void do_export(std::ostream &stream)
+        { this->entries.front()->do_export(stream); }
 
+        db_T *find(const util::string &);
+        const util::string &index();
+        const util::string indent() const { return this->_indent; }
+        void recurse(void (entry_type::*fp)(std::ostream&), std::ostream &);
         entry_type *entry(const util::string &id = "");
+
+        db_T *parent, *prev, *next;
         entries_type entries;
+
+    protected:
+        virtual void init(db_T *);
+        
+        std::vector<unsigned short> _indexv;
+        util::string _indent, _index;
 };
 
 #endif

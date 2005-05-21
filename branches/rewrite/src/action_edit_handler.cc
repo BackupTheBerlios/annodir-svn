@@ -1,7 +1,6 @@
 /*
- * annodir -- src/action_delete_handler.cc
+ * annodir -- src/action_edit_handler.cc
  * $Id$
- * Copyright (c) 2005 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
  *
  * This file is part of annodir.
@@ -25,13 +24,12 @@
 # include "config.h"
 #endif
 
+#include <memory>
 #include "db.hh"
-#include "db_entry.hh"
-#include "exceptions.hh"
-#include "action_delete_handler.hh"
+#include "action_edit_handler.hh"
 
 int
-action_delete_handler_T::operator() (const opts_type &opts)
+action_edit_handler_T::operator() (const opts_type &opts)
 {
     util::string index;
     const util::string dbfile(optget("dbfile", util::string));
@@ -60,33 +58,24 @@ action_delete_handler_T::operator() (const opts_type &opts)
         index.assign(opts.front());
 
     /* find index */
-    db_T *node = db->find(index);
+    db_T *node = dynamic_cast<db_T*>(db->find(index));
     if (not node)
         throw node_invalid_index_E(index);
 
-    /* we have to call erase from the parent */
-    db_T *parent = node->parent;
+    if (not node->entries.front())
+        return EXIT_FAILURE;
 
-    db_T::iterator i;
-    for (i = parent->begin() ; i != parent->end() ; ++i)
-        if ((*i)->index() == node->index())
-            break;
-
-    parent->erase(i);
-    node = NULL;
-
-    /* save */
+    if (node->entries.front()->prompt_user_for_values())
     {
+        /* save */
         std::auto_ptr<std::ostream> f(new std::ofstream(dbfile.c_str()));
         if (not (*f))
             throw annodir_bad_file_E(dbfile);
 
         db->dump(*f);
     }
-
-    if ((db->empty() and optget("delete on empty", bool)) and
-        (unlink(dbfile.c_str()) != 0))
-        throw annodir_bad_file_E(dbfile);
+    else
+        return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }

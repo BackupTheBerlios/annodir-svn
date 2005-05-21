@@ -31,16 +31,32 @@
 
 #include "common.hh"
 #include "action_list_handler.hh"
+#include "action_add_handler.hh"
+#include "action_edit_handler.hh"
+#include "action_delete_handler.hh"
+#include "action_export_handler.hh"
 
-static const char *short_options = "Vvch";
+static const char *short_options = "VvcsRDht:f:u:ladeE";
 
 #ifdef HAVE_GETOPT_LONG
 static const struct option long_options[] =
 {
-    {"verbose",     no_argument,    0,  'v'},
-    {"compact",     no_argument,    0,  'c'},
-    {"version",     no_argument,    0,  'V'},
-    {"help",        no_argument,    0,  'h'},
+    {"verbose",     no_argument,        0,  'v'},
+    {"compact",     no_argument,        0,  'c'},
+    {"summarise",   no_argument,        0,  's'},
+    {"summarize",   no_argument,        0,  's'},
+    {"recursive",   no_argument,        0,  'R'},
+    {"type",        required_argument,  0,  't'},
+    {"file",        required_argument,  0,  'f'},
+    {"user",        required_argument,  0,  'u'},
+    {"list",        no_argument,        0,  'l'},
+    {"add",         no_argument,        0,  'a'},
+    {"delete",      no_argument,        0,  'd'},
+    {"edit",        no_argument,        0,  'e'},
+    {"export",      no_argument,        0,  'E'},
+    {"debug",       no_argument,        0,  'D'},
+    {"version",     no_argument,        0,  'V'},
+    {"help",        no_argument,        0,  'h'},
     { 0, 0, 0, 0 }
 };
 #endif /* HAVE_GETOPT_LONG */
@@ -104,15 +120,65 @@ handle_options(int argc, char **argv, opts_type *args)
 
         switch (key)
         {
+            /* --list */
+            case 'l':
+                if (optget("action", options_action_T) != action_unspecified)
+                    throw args_one_action_only_E();
+                optset("action", options_action_T, action_list);
+                break;
+            /* --add */
+            case 'a':
+                if (optget("action", options_action_T) != action_unspecified)
+                    throw args_one_action_only_E();
+                optset("action", options_action_T, action_add);
+                break;
+            /* --delete */
+            case 'd':
+                if (optget("action", options_action_T) != action_unspecified)
+                    throw args_one_action_only_E();
+                optset("action", options_action_T, action_delete);
+                break;
+            /* --edit */
+            case 'e':
+                if (optget("action", options_action_T) != action_unspecified)
+                    throw args_one_action_only_E();
+                optset("action", options_action_T, action_edit);
+                break;
+            /* --export */
+            case 'E':
+                if (optget("action", options_action_T) != action_unspecified)
+                    throw args_one_action_only_E();
+                optset("action", options_action_T, action_export);
+                break;
+            /* --type */
+            case 't':
+                optset("type", util::string, optarg);
+                break;
+            /* --debug */
+            case 'D':
+                optset("debug", bool, true);
+                break;
+            /* --summarise */
+            case 's':
+                optset("summarise", bool, true);
+                break;
+            /* --recursive */
+            case 'R':
+                optset("recursive", bool, true);
+                break;
+            /* --verbose */
             case 'v':
                 optset("verbose", bool, true);
                 break;
+            /* --compact */
             case 'c':
                 optset("compact", bool, true);
                 break;
+            /* --version */
             case 'V':
                 throw args_version_E();
                 break;
+            /* --help */
             case 'h':
                 throw args_help_E();
                 break;
@@ -130,8 +196,8 @@ handle_options(int argc, char **argv, opts_type *args)
         while (optind < argc)
             args->push_back(argv[optind++]);
     }
-    else
-        throw args_usage_E();
+//    else
+//        throw args_usage_E();
 
     return 0;
 }
@@ -148,50 +214,37 @@ main(int argc, char **argv)
         if (handle_options(argc, argv, &nonopt_args) != 0)
             throw args_E();
 
-        /* setup output stream */
+        /* save locale name */
+        try
         {
-            util::string outfile(optget("outfile", util::string));
-            std::ostream *outstream = NULL;
-
-            if (outfile != "stdout" and outfile != "stderr")
-            {
-                outstream = new std::ofstream(outfile.c_str());
-                if (not *outstream)
-                    throw util::bad_fileobject_E(outfile);
-            }
-            else
-            {
-                /* save locale name */
-                try
-                {
-                    optset("locale", util::string, std::locale("").name());
-                }
-                catch (const std::runtime_error)
-                {
-                    util::string error("Invalid locale");
-                    char *result = std::getenv("LC_ALL");
-                    if (result)
-                        error += " '" + util::string(result) + "'.";
-                    std::cerr << error << std::endl;
-                    return EXIT_FAILURE;
-                }
-            }
-
-            /* imbue output stream w/locale */
-            optget("outstream", std::ostream *)->imbue
-                (std::locale(optget("locale", util::string).c_str()));
+            optset("locale", util::string, std::locale("").name());
         }
+        catch (const std::runtime_error)
+        {
+            util::string error("Invalid locale");
+            char *result = std::getenv("LC_ALL");
+            if (result)
+                error += " '" + util::string(result) + "'.";
+            std::cerr << error << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        std::cout.imbue(std::locale(optget("locale", util::string).c_str()));
 
         /* dump options */
         if (optget("debug", bool))
-            options.dump(*optget("outstream", std::ostream *));
+            options.dump(std::cerr);
 
         /* set default action if currently unset */
         if (optget("action", options_action_T) == action_unspecified)
             optset("action", options_action_T, action_list);
 
         std::map<options_action_T, action_handler_T * > handlers;
-        handlers[action_list] = new action_list_handler_T();
+        handlers[action_list]   = new action_list_handler_T();
+        handlers[action_add]    = new action_add_handler_T();
+        handlers[action_delete] = new action_delete_handler_T();
+        handlers[action_edit]   = new action_edit_handler_T();
+        handlers[action_export] = new action_export_handler_T();
 
         /* execute action handler */
         action_handler_T *handler = handlers[optget("action", options_action_T)];
@@ -209,6 +262,21 @@ main(int argc, char **argv)
         }
         else
             throw args_unimplemented_E();
+    }
+    catch (const annodir_bad_file_E &e)
+    {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+    catch (const node_only_one_index_E)
+    {
+        std::cerr << "You may only specify one index." << std::endl;
+        return EXIT_FAILURE;
+    }
+    catch (const node_invalid_index_E &e)
+    {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
     catch (const args_help_E)
     {

@@ -1,7 +1,6 @@
 /*
- * annodir -- src/db_meta_entry.cc
+ * annodir -- util/input.cc
  * $Id$
- * Copyright (c) 2005 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
  *
  * This file is part of annodir.
@@ -25,36 +24,39 @@
 # include "config.h"
 #endif
 
-#include "db.hh"
-#include "db_meta_entry.hh"
+#include <cstdlib>
+#include <cstdio>
+#include <readline/readline.h>
+#include "input.hh"
 
-void
-db_meta_entry_T::set_new_object_defaults()
+#define MAXPROMPTLEN    8
+
+static util::string const *rl_buffer;
+
+static int
+init_readline()
 {
-    db_entry_T::set_new_object_defaults();
-    this->keys["title"] = util::basename(util::getcwd());
+    rl_insert_text(const_cast<char *>(rl_buffer->c_str()));
+    return 0;
 }
 
-void
-db_meta_entry_T::dump(std::ostream &stream)
+const util::string
+util::get_user_input(const util::string &prompt,
+                     const util::string &existing)
 {
-    stream << this->_mynode->indent() << this->_id << ":" << std::endl;
+    util::string pretty_prompt(prompt);
+    while (pretty_prompt.length() < MAXPROMPTLEN)
+        pretty_prompt += " ";
+    pretty_prompt += " > ";
 
-    entry_keys_T::iterator i;
-    for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
-        stream << this->_mynode->indent() << "  " << i->first
-            << "=" << i->second << std::endl;
+    rl_startup_hook = (int(*)())init_readline;
+    rl_buffer = &existing;
 
-    stream << this->_mynode->indent() << "end" << std::endl;
+    char *tmp = readline(pretty_prompt.c_str());
+    const util::string result(tmp);
+    std::free(tmp);
 
-    this->_mynode->recurse(&db_entry_T::dump, stream);
-}
-
-void
-db_meta_entry_T::do_export(std::ostream &stream)
-{
-    stream << "[" << this->keys["title"] << "] " << std::endl;
-    db_entry_T::do_export(stream);
+    return result;
 }
 
 /* vim: set tw=80 sw=4 et : */

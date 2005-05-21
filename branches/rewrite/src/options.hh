@@ -40,6 +40,7 @@ enum options_action_T
     action_unspecified,
     action_add,
     action_delete,
+    action_edit,
     action_list,
     action_export
 };

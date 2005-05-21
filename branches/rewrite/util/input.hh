@@ -1,7 +1,6 @@
 /*
- * annodir -- src/db_meta_entry.cc
+ * annodir -- util/input.hh
  * $Id$
- * Copyright (c) 2005 Ciaran McCreesh <ciaranm at gentoo.org>
  * Copyright (c) 2005 Aaron Walker <ka0ttic@gentoo.org>
  *
  * This file is part of annodir.
@@ -21,40 +20,21 @@
  * Place, Suite 325, Boston, MA  02111-1257  USA
  */
 
+#ifndef HAVE_INPUT_HH
+#define HAVE_INPUT_HH 1
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include "db.hh"
-#include "db_meta_entry.hh"
+#include "string.hh"
 
-void
-db_meta_entry_T::set_new_object_defaults()
+namespace util
 {
-    db_entry_T::set_new_object_defaults();
-    this->keys["title"] = util::basename(util::getcwd());
+    const util::string
+    get_user_input(const util::string &, const util::string & = "");
 }
 
-void
-db_meta_entry_T::dump(std::ostream &stream)
-{
-    stream << this->_mynode->indent() << this->_id << ":" << std::endl;
-
-    entry_keys_T::iterator i;
-    for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
-        stream << this->_mynode->indent() << "  " << i->first
-            << "=" << i->second << std::endl;
-
-    stream << this->_mynode->indent() << "end" << std::endl;
-
-    this->_mynode->recurse(&db_entry_T::dump, stream);
-}
-
-void
-db_meta_entry_T::do_export(std::ostream &stream)
-{
-    stream << "[" << this->keys["title"] << "] " << std::endl;
-    db_entry_T::do_export(stream);
-}
+#endif
 
 /* vim: set tw=80 sw=4 et : */

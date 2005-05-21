@@ -44,11 +44,14 @@
 #include "util/file.hh"
 #include "util/regex.hh"
 #include "util/misc.hh"
+#include "util/input.hh"
 
 #include "exceptions.hh"
 #include "options.hh"
 
 typedef std::vector<util::string> opts_type;
+
+void debug_msg(const char *, ...);
 
 #endif
 

@@ -43,8 +43,10 @@ db_entry_T::entry_keys_T::get_with_default(const util::string &key,
 }
 
 db_entry_T::db_entry_T(std::istream *stream, db_T *node)
-    : _id(default_id()), _mynode(node)
+    : _padding("   "), _mynode(node)
 {
+    this->_id = this->default_id();
+
     if (stream)
         this->load(*stream);
     else
@@ -104,7 +106,7 @@ db_entry_T::load(std::istream &stream)
 
         /* split on '=' */
         if ((pos = line.find('=')) != util::string::npos)
-            this->keys[line.substr(0, pos)] = s.substr(pos + 1);
+            this->keys[line.substr(0, pos)] = line.substr(pos + 1);
         else
             this->keys[line] = "undefined";
     }
@@ -121,18 +123,59 @@ db_entry_T::dump(std::ostream &stream)
     for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
         stream << this->_mynode->indent() << "  " << i->first
             << "=" << i->second << std::endl;
+
+    /* recurse through any child nodes */
+    this->_mynode->recurse(&db_entry_T::dump, stream);
+
+    stream << this->_mynode->indent() << "end" << std::endl;
 }
 
 void
 db_entry_T::display(std::ostream &stream)
 {
+    stream << this->_mynode->indent() << this->_id << ":" << std::endl;
 
+    entry_keys_T::iterator i;
+    for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
+        stream << this->_mynode->indent() << i->first << "=" << i->second
+            << std::endl;
+
+    this->_mynode->recurse(&db_entry_T::display, stream);
 }
 
 void
 db_entry_T::do_export(std::ostream &stream)
 {
+    if (this->_id != "metadata")
+        stream << this->_mynode->indent() << "[" << this->_id << "] "
+            << this->keys.get_with_default("title", "Untitled")
+            << std::endl;
 
+    if (not this->keys["body"].empty())
+        stream << this->_mynode->indent()
+            << this->keys.get_with_default("body", "(no text)")
+            << std::endl;
+
+    stream << this->_mynode->indent() << "created by: "
+        << this->keys.get_with_default("created_by", "(anonymous)");
+
+    util::string date("(no date)");
+    {
+        entry_keys_T::iterator pos = this->keys.find("created_at");
+        if (pos != this->keys.end())
+            date.assign(util::format_date(pos->second));
+    }
+
+    stream << " on: " << date;
+
+    if(not this->keys["priority"].empty())
+        stream << " with priority: "
+            << this->keys.get_with_default("priority", "medium");
+
+    stream << std::endl << std::endl;
+
+    /* recurse through child nodes */
+    this->_mynode->recurse(&db_entry_T::do_export, stream);
 }
 
 /* vim: set tw=80 sw=4 et : */

@@ -25,12 +25,36 @@
 # include "config.h"
 #endif
 
+#include <memory>
+#include "db.hh"
+#include "exceptions.hh"
 #include "action_list_handler.hh"
 
 int
 action_list_handler_T::operator() (const opts_type &opts)
 {
-    std::cout << "list handler" << std::endl;
+    const util::string dbfile(optget("dbfile", util::string));
+    
+    try
+    {
+        std::auto_ptr<std::ifstream> f(new std::ifstream(dbfile.c_str()));
+        if (not (*f))
+            throw annodir_bad_file_E(dbfile);
+
+        std::auto_ptr<db_T> db(new db_T(*f));
+        db->display(std::cout);
+    }
+    catch (const annodir_bad_file_E &e)
+    {
+        if (errno == ENOENT and optget("verbose", bool))
+            std::cerr << e.what() << std::endl;
+        else if (errno != ENOENT)
+        {
+            std::cerr << e.what() << std::endl;
+            return EXIT_FAILURE;
+        }
+    }
+
     return EXIT_SUCCESS;
 }
 

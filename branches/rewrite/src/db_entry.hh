@@ -36,8 +36,8 @@ class db_T;
 class db_entry_T
 {
     public:
-        db_entry_T(db_T *node = NULL)
-            : _id(default_id()), _padding("   "), _mynode(node) { }
+        db_entry_T(db_T *node = NULL) : _padding("   "), _mynode(node)
+        { this->_id = this->default_id(); }
         db_entry_T(std::istream *stream = NULL, db_T *node = NULL);
         virtual ~db_entry_T() { }
 
@@ -63,7 +63,7 @@ class db_entry_T
 
     protected:
         virtual const util::string default_id() const { return "item"; }
-        const util::string _id;
+        util::string _id;
         const util::string _padding;
 
         /* pointer to node container the entry instance belongs to */

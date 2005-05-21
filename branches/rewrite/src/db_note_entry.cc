@@ -67,9 +67,13 @@ db_note_entry_T::display(std::ostream &stream)
                     << ", " << date;
             }
         }
-    }
 
-    stream << std::endl;
+        stream << std::endl;
+
+        this->_mynode->recurse(&db_entry_T::display, stream);
+    }
+    else
+        stream << std::endl;
 }
 
 bool
@@ -78,7 +82,10 @@ db_note_entry_T::prompt_user_for_values()
     if (not db_entry_T::prompt_user_for_values())
         return false;
 
-    /* TODO: finish me */
+    this->keys["title"].assign(util::get_user_input("Title",
+        this->keys["title"]));
+    this->keys["body"].assign(util::get_user_input("Body",
+        this->keys["body"]));
 
     return true;
 }

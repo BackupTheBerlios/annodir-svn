@@ -34,6 +34,45 @@
 #include "db_meta_entry.hh"
 #include "db.hh"
 
+void
+db_T::init(db_T *parent)
+{
+    this->parent = parent;
+
+    /* child with siblings */
+    if (this->parent and not this->parent->empty())
+    {
+        this->prev = this->parent->back();
+        this->prev->next = this;
+
+        this->_indexv = this->prev->_indexv;
+        this->_indexv.back()++;
+
+        this->_indent = this->prev->_indent;
+    }
+    /* only child */
+    else if (this->parent)
+    {
+        this->_indexv = this->parent->_indexv;
+        this->_indexv.push_back(1);
+
+        this->_indent = this->parent->_indent;
+
+        /* only indent non-top-level nodes */
+        if (this->parent->parent)
+            this->_indent += "  ";
+    }
+    /* root node */
+    else
+    {
+        this->_indexv.push_back(0);
+        return;
+    }
+
+    /* construct initial index string */
+    this->_index = this->index();
+}
+
 /*
  * Load top-level nodes (which in turn load their children).
  */
@@ -88,46 +127,48 @@ db_T::load(std::istream &stream)
     }
 }
 
-void
-db_T::dump(std::ostream &stream)
+/*
+ * Deduce the node that corresponds to the specified index.
+ * Returns NULL if not found.
+ * FIXME: should we behave like other std containers wrt to
+ * find (ie. return an iterator or end() if not found)?
+ */
+
+db_T *
+db_T::find(const util::string &index)
 {
-    /* dump our entries */
-    entries_type::iterator e;
-    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+    db_T *node_p = NULL;
+
+    for (iterator i = this->begin() ; i != this->end() ; ++i)
     {
-        (*e)->dump(stream);
-        stream << this->_indent_str << "end" << std::endl;
+        node_p = *i;
+        if ((node_p->index() == index) or (node_p = node_p->find(index)))
+            break;
     }
 
-    /* then dump all our child nodes */
-    for (iterator i = this->begin() ; i != this->end() ; ++i)
-        (*i)->dump(stream);
+    return ((node_p ? (node_p->index() == index ? node_p : NULL) : NULL));
+}
+
+const util::string &
+db_T::index()
+{
+    this->_index.clear();
+
+    /* skip first element, as we care less about the root node (index 0) */
+    std::vector<unsigned short>::iterator i;
+    for (i = this->_indexv.begin() + 1 ; i != this->_indexv.end() ; ++i)
+        this->_index += util::sprintf("%d.", *i);
+
+    /* chop trailing '.' */
+    this->_index.erase(this->_index.length() - 1);
+    return this->_index;
 }
 
 void
-db_T::display(std::ostream &stream)
+db_T::recurse(void (db_entry_T::*fp)(std::ostream &), std::ostream &stream)
 {
-    /* display our entries */
-    entries_type::iterator e;
-    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
-        (*e)->display(stream);
-
-    /* then display all our child nodes */
     for (iterator i = this->begin() ; i != this->end() ; ++i)
-        (*i)->display(stream);
-}
-
-void
-db_T::do_export(std::ostream &stream)
-{
-    /* export our entries */
-    entries_type::iterator e;
-    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
-        (*e)->do_export(stream);
-
-    /* then export all our child nodes */
-    for (iterator i = this->begin() ; i != this->end() ; ++i)
-        (*i)->do_export(stream);
+        ((*i)->entries.front()->*fp)(stream);
 }
 
 /*
@@ -154,14 +195,19 @@ db_T::entry(const util::string &id)
 }
 
 /*
- * Tidy up our entries.
+ * Tidy up.
  */
 
 db_T::~db_T()
 {
+    /* entries */
     entries_type::iterator i;
     for (i = this->entries.begin() ; i != this->entries.end() ; ++i)
         delete *i;
+
+    /* child nodes */
+    for (iterator n = this->begin() ; n != this->end() ; ++n)
+        delete *n;
 }
 
 /* vim: set tw=80 sw=4 et : */

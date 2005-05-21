@@ -46,20 +46,20 @@ options_T::option_map_T::set_defaults()
     /* booleans */
     insopt("verbose", false);
     insopt("compact", false);
-    insopt("summarize", false);
+    insopt("summarise", false);
     insopt("debug", false);
     insopt("recursive", false);
+    insopt("delete on empty", false);
 
     /* numerics */
     insopt("maxcol", 78);
 
     /* other */
+    insopt("type", util::string("note"));
     insopt("dbfile", util::string(".annodir"));
     insopt("exportfile", util::string("annotations"));
     insopt("user", util::string("anonymous"));
     insopt("action", static_cast<options_action_T>(action_unspecified));
-    insopt("outfile", util::string("stdout"));
-    insopt("outstream", &std::cout);
 
     insopt("rcfile", util::string(SYSCONFDIR) + "/annodirrc");
     insopt("locale", util::string(std::locale::classic().name()));

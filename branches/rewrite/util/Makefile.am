@@ -7,8 +7,14 @@ libutil_la_SOURCES = exceptions.hh \
 		     regex.hh regex.cc \
 		     file.hh file.cc \
 		     vars.hh vars.cc \
-		     cache.hh
+		     cache.hh \
+		     input.hh input.cc
 
+LIBS = @LIBS@ @READLINE_LIBS@
 AM_CXXFLAGS = -pedantic -ansi -Wall
 
 MAINTAINERCLEANFILES = Makefile.in *.loT *~
+
+srchtml:
+	@source-highlight -c ../src.css -s cpp -f html -t4 -n -i *.{cc,hh} \
+		--output-dir=../html/util

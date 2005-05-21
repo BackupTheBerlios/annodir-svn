@@ -54,6 +54,17 @@ class annodir_base_errno_E          : public util::errno_E,
         annodir_base_errno_E() { }
         annodir_base_errno_E(const util::string &msg)
             : util::errno_E(msg) { }
+        virtual const char *what() const throw()
+        { return util::errno_E::what(); }
+};
+
+/* file exceptions */
+class annodir_bad_file_E            : public annodir_base_errno_E
+{
+    public:
+        annodir_bad_file_E() { }
+        annodir_bad_file_E(const util::string &msg)
+            : annodir_base_errno_E(msg) { }
 };
 
 /* command-line handling exceptions */
@@ -83,8 +94,19 @@ class item_not_parsable_E           : public item_E { };
 
 /* node exceptions */
 class node_E                        : public annodir_base_E { };
-class node_invalid_index_E          : public node_E { };
+class node_invalid_index_E          : public node_E,
+                                      public annodir_base_msg_E
+{
+    public:
+        node_invalid_index_E(const util::string &msg)
+            : annodir_base_msg_E(msg) { }
+        virtual const char *what() const throw()
+        {
+            return util::sprintf("Invalid index '%s'", str).c_str();
+        }
+};
 class node_invalid_parent_E         : public node_E { };
+class node_only_one_index_E         : public node_E { };
 
 #endif
 
