@@ -79,15 +79,16 @@ action_add_handler_T::operator() (const opts_type &opts)
 
     /* load database */
     std::auto_ptr<db_T> db(new db_T());
-
-    std::auto_ptr<std::istream> fin(new std::ifstream(dbfile.c_str()));
-    if ((*fin))
     {
-        exists = true;
-        db->load(*fin);
+        std::auto_ptr<std::istream> fin(new std::ifstream(dbfile.c_str()));
+        if ((*fin))
+        {
+            exists = true;
+            db->load(*fin);
+        }
+        else if (errno != ENOENT)
+            throw annodir_bad_file_E(dbfile);
     }
-    else if (errno != ENOENT)
-        throw annodir_bad_file_E(dbfile);
 
     /* add metadata if the didn't already exist */
     if (not exists)
@@ -131,7 +132,7 @@ action_add_handler_T::operator() (const opts_type &opts)
     db_T *node = new db_T(parent);
     {
         db_entry_T *entry =
-            make_new_entry(optget("type", util::string), node, fin.get());
+            make_new_entry(optget("type", util::string), node);
    
         if (not entry)
             return EXIT_FAILURE;
