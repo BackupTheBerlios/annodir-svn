@@ -32,7 +32,10 @@ void
 db_meta_entry_T::set_new_object_defaults()
 {
     db_entry_T::set_new_object_defaults();
-    this->keys["title"] = util::basename(util::getcwd());
+
+    const util::string pwd(util::getcwd());
+    this->keys["title"] = util::basename(pwd);
+    this->keys["location"] = pwd;
 }
 
 void

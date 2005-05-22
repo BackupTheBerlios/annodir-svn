@@ -165,34 +165,35 @@ db_T::index()
 }
 
 void
+db_T::dump(std::ostream &stream)
+{
+    entries_type::iterator e;
+    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+        (*e)->dump(stream);
+
+    iterator i;
+    for (i = this->begin() ; i != this->end() ; ++i)
+        (*i)->dump(stream);
+}
+
+void
+db_T::display(std::ostream &stream)
+{
+    entries_type::iterator e;
+    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+        (*e)->display(stream);
+
+    iterator i;
+    for (i = this->begin() ; i != this->end() ; ++i)
+        (*i)->display(stream);
+}
+
+void
 db_T::recurse(void (db_entry_T::*fp)(std::ostream &), std::ostream &stream)
 {
     for (iterator i = this->begin() ; i != this->end() ; ++i)
         ((*i)->entries.front()->*fp)(stream);
 }
-
-/*
- * Return the first entry found with the specified id,
- * or the first entry if id is empty.
- */
-
-//static bool
-//entry_is(db_entry_T *e, util::string id) { return e->is(id); }
-
-//db_entry_T *
-//db_T::entry(const util::string &id)
-//{
-//    if (this->entries.empty())
-//        return NULL;
-
-//    if (id.empty())
-//        return this->entries.front();
-
-//    entries_type::iterator i = std::find_if(this->entries.begin(),
-//            this->entries.end(), std::bind2nd(std::ptr_fun(entry_is), id));
-//    
-//    return (i == this->entries.end() ? NULL : *i);
-//}
 
 /*
  * Tidy up.

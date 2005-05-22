@@ -38,7 +38,7 @@ class db_entry_T
     public:
         db_entry_T(db_T *node = NULL) : _padding("   "), _mynode(node)
         { this->_id = this->default_id(); }
-        db_entry_T(std::istream *stream = NULL, db_T *node = NULL);
+        db_entry_T(std::istream *stream, db_T *node = NULL);
         virtual ~db_entry_T() { }
 
         virtual void load(std::istream &stream);

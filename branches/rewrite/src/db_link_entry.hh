@@ -35,9 +35,8 @@ class db_link_entry_T : public db_entry_T
     public:
         db_link_entry_T(db_T *node = NULL) : db_entry_T(node)
         { this->_id = this->default_id(); }
-        db_link_entry_T(std::istream *stream = NULL,
-            db_T *node = NULL) : db_entry_T(stream, node)
-        { this->_id = this->default_id(); }
+        db_link_entry_T(std::istream *stream, db_T *node = NULL)
+            : db_entry_T(stream, node) { this->_id = this->default_id(); }
         virtual ~db_link_entry_T() { }
 
         virtual void load(std::istream &);

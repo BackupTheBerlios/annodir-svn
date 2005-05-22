@@ -99,6 +99,7 @@ action_add_handler_T::operator() (const opts_type &opts)
             return EXIT_FAILURE;
 
         db->entries.push_front(meta);
+        db->entries.front()->set_new_object_defaults();
     }
 
     if (opts.size() > 1)
@@ -114,7 +115,6 @@ action_add_handler_T::operator() (const opts_type &opts)
     if (opts.empty())
     {
         parent = db.get();
-
         debug_msg("Creating new top-level node");
     }
     else
@@ -141,6 +141,8 @@ action_add_handler_T::operator() (const opts_type &opts)
         debug_msg("pusing back entry of type '%s'",
             optget("type", util::string).c_str());
     }
+
+    node->entries.back()->set_new_object_defaults();
 
     if (node->entries.back()->prompt_user_for_values())
     {

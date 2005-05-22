@@ -208,6 +208,18 @@ main(int argc, char **argv)
     options_T options;
     opts_type nonopt_args;
 
+    char *getenv_result;
+    if ((getenv_result = getenv("USER")))
+        optset("user", util::string, getenv_result);
+
+    /* TODO: add rc file stuff */
+
+    if ((getenv_result = getenv("ANNODIR_FILE")))
+        optset("dbfile", util::string, getenv_result);
+
+    if ((getenv_result = getenv("ANNODIR_USER")))
+        optset("user", util::string, getenv_result);
+
     try
     {
         /* process command line arguments */
