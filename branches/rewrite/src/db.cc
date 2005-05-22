@@ -167,10 +167,14 @@ db_T::index()
 void
 db_T::dump(std::ostream &stream)
 {
+    /* dump our entries */
     entries_type::iterator e;
     for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+    {
         (*e)->dump(stream);
+    }
 
+    /* dump our child nodes */
     iterator i;
     for (i = this->begin() ; i != this->end() ; ++i)
         (*i)->dump(stream);
@@ -188,12 +192,12 @@ db_T::display(std::ostream &stream)
         (*i)->display(stream);
 }
 
-void
-db_T::recurse(void (db_entry_T::*fp)(std::ostream &), std::ostream &stream)
-{
-    for (iterator i = this->begin() ; i != this->end() ; ++i)
-        ((*i)->entries.front()->*fp)(stream);
-}
+//void
+//db_T::recurse(void (db_entry_T::*fp)(std::ostream &), std::ostream &stream)
+//{
+//    for (iterator i = this->begin() ; i != this->end() ; ++i)
+//        ((*i)->entries.front()->*fp)(stream);
+//}
 
 /*
  * Tidy up.
