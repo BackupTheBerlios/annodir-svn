@@ -123,11 +123,6 @@ db_entry_T::dump(std::ostream &stream)
     for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
         stream << this->_mynode->indent() << "  " << i->first
             << "=" << i->second << std::endl;
-
-    /* recurse through any child nodes */
-    this->_mynode->recurse(&db_entry_T::dump, stream);
-
-    stream << this->_mynode->indent() << "end" << std::endl;
 }
 
 void
@@ -139,8 +134,6 @@ db_entry_T::display(std::ostream &stream)
     for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
         stream << this->_mynode->indent() << i->first << "=" << i->second
             << std::endl;
-
-    this->_mynode->recurse(&db_entry_T::display, stream);
 }
 
 void
@@ -173,9 +166,6 @@ db_entry_T::do_export(std::ostream &stream)
             << this->keys.get_with_default("priority", "medium");
 
     stream << std::endl << std::endl;
-
-    /* recurse through child nodes */
-    this->_mynode->recurse(&db_entry_T::do_export, stream);
 }
 
 /* vim: set tw=80 sw=4 et : */

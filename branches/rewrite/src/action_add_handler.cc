@@ -80,11 +80,11 @@ action_add_handler_T::operator() (const opts_type &opts)
     /* load database */
     std::auto_ptr<db_T> db(new db_T());
     {
-        std::auto_ptr<std::istream> fin(new std::ifstream(dbfile.c_str()));
-        if ((*fin))
+        std::auto_ptr<std::istream> f(new std::ifstream(dbfile.c_str()));
+        if ((*f))
         {
             exists = true;
-            db->load(*fin);
+            db->load(*f);
         }
         else if (errno != ENOENT)
             throw annodir_bad_file_E(dbfile);
@@ -118,15 +118,11 @@ action_add_handler_T::operator() (const opts_type &opts)
         parent = db.get();
         debug_msg("Creating new top-level node");
     }
+    else if (not (parent = db->find(opts.front())))
+        throw node_invalid_index_E(opts.front());
     else
-    {
-        parent = db->find(opts.front());
-        if (not parent)
-            throw node_invalid_index_E(opts.front());
-
         debug_msg("Creating new sub-node (of index '%s')",
             opts.front().c_str());
-    }
 
     /* add new entry */
     db_T *node = new db_T(parent);
@@ -150,11 +146,11 @@ action_add_handler_T::operator() (const opts_type &opts)
         parent->push_back(node);
 
         /* save */
-        std::auto_ptr<std::ostream> fout(new std::ofstream(dbfile.c_str()));
-        if (not (*fout))
+        std::auto_ptr<std::ostream> f(new std::ofstream(dbfile.c_str()));
+        if (not (*f))
             throw annodir_bad_file_E(dbfile);
 
-        db->dump(*fout);
+        db->dump(*f);
     }
     else
         return EXIT_FAILURE;

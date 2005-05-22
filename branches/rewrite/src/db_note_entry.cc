@@ -70,7 +70,7 @@ db_note_entry_T::display(std::ostream &stream)
 
         stream << std::endl;
 
-        this->_mynode->recurse(&db_entry_T::display, stream);
+//        this->_mynode->recurse(&db_entry_T::display, stream);
     }
     else
         stream << std::endl;
