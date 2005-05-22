@@ -28,6 +28,7 @@
 # include "config.h"
 #endif
 
+#include <memory>
 #include "db_entry.hh"
 
 class db_link_entry_T : public db_entry_T
@@ -35,9 +36,8 @@ class db_link_entry_T : public db_entry_T
     public:
         db_link_entry_T(db_T *node = NULL) : db_entry_T(node)
         { this->_id = this->default_id(); }
-        db_link_entry_T(std::istream *stream, db_T *node = NULL)
-            : db_entry_T(stream, node) { this->_id = this->default_id(); }
-        virtual ~db_link_entry_T() { }
+        db_link_entry_T(std::istream *stream, db_T *node = NULL);
+        virtual ~db_link_entry_T() { if (this->_linkdb) delete this->_linkdb; }
 
         virtual void load(std::istream &);
         virtual void dump(std::ostream &);
@@ -50,6 +50,9 @@ class db_link_entry_T : public db_entry_T
 
     protected:
         virtual const util::string default_id() const { return "link"; }
+
+    private:
+        db_T *_linkdb;
 };
 
 #endif

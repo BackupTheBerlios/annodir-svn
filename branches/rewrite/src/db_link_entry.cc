@@ -29,6 +29,18 @@
 #include "exceptions.hh"
 #include "db_link_entry.hh"
 
+db_link_entry_T::db_link_entry_T(std::istream *stream, db_T *node)
+    : db_entry_T(node)
+{
+    this->_id = this->default_id();
+
+    if (stream)
+        this->load(*stream);
+    else
+        this->set_new_object_defaults();
+}
+
+
 void
 db_link_entry_T::set_new_object_defaults()
 {
@@ -101,7 +113,7 @@ db_link_entry_T::load(std::istream &stream)
     if (not (*f))
         throw annodir_bad_file_E(this->keys["location"]);
 
-    this->_mynode->load(*f);
+    this->_linkdb = new db_T(*f, this->_mynode);
 }
 
 void
@@ -115,8 +127,6 @@ db_link_entry_T::dump(std::ostream &stream)
         stream << this->_mynode->parent->indent() << "  "
             << i->first << "=" << i->second << std::endl;
 
-    stream << this->_mynode->parent->indent() << "end" << std::endl;
-
     try
     {
         /* dump linked db */
@@ -125,7 +135,7 @@ db_link_entry_T::dump(std::ostream &stream)
         if (not (*f))
             throw annodir_bad_file_E(this->keys["location"]);
 
-        this->_mynode->dump(*f);
+        this->_linkdb->dump(*f);
     }
     catch (const annodir_bad_file_E &e)
     {
@@ -167,7 +177,7 @@ db_link_entry_T::display(std::ostream &stream)
 
         stream << std::endl;
 
-        this->_mynode->display(stream);
+        this->_linkdb->display(stream);
     }
     else
         stream << std::endl;
