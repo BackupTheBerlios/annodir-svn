@@ -128,6 +128,65 @@ db_T::load(std::istream &stream)
 }
 
 /*
+ * Dump the database to the specified stream.
+ */
+
+void
+db_T::dump(std::ostream &stream)
+{
+    /* dump our entries */
+    entries_type::iterator e;
+    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+    {
+        (*e)->dump(stream);
+        
+        if (not this->parent or (this->parent and this->empty()))
+            stream << this->_indent << "end" << std::endl;
+    }
+
+    /* dump our child nodes */
+    for (iterator i = this->begin() ; i != this->end() ; ++i)
+        (*i)->dump(stream);
+
+    if (this->parent and not this->empty())
+        stream << this->_indent << "end" << std::endl;
+}
+
+/*
+ * Display the database (pretty-like) on the specified stream.
+ */
+
+void
+db_T::display(std::ostream &stream)
+{
+    /* display our entries */
+    entries_type::iterator e;
+    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+        (*e)->display(stream);
+
+    /* display our child nodes */
+    for (iterator i = this->begin() ; i != this->end() ; ++i)
+        (*i)->display(stream);
+}
+
+/*
+ * Export the database to the specified stream.
+ */
+
+void
+db_T::do_export(std::ostream &stream)
+{
+    /* export our entries */
+    entries_type::iterator e;
+    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
+        (*e)->do_export(stream);
+
+    /* export our child nodes */
+    for (iterator i = this->begin() ; i != this->end() ; ++i)
+        (*i)->do_export(stream);
+}
+
+/*
  * Deduce the node that corresponds to the specified index.
  * Returns NULL if not found.
  * FIXME: should we behave like other std containers wrt to
@@ -149,6 +208,11 @@ db_T::find(const util::string &index)
     return ((node_p ? (node_p->index() == index ? node_p : NULL) : NULL));
 }
 
+/*
+ * Construct an index string from our internal index vector
+ * and return it.
+ */
+
 const util::string &
 db_T::index()
 {
@@ -163,39 +227,6 @@ db_T::index()
     this->_index.erase(this->_index.length() - 1);
     return this->_index;
 }
-
-void
-db_T::dump(std::ostream &stream)
-{
-    /* dump our entries */
-    entries_type::iterator e;
-    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
-        (*e)->dump(stream);
-
-    /* dump our child nodes */
-    iterator i;
-    for (i = this->begin() ; i != this->end() ; ++i)
-        (*i)->dump(stream);
-}
-
-void
-db_T::display(std::ostream &stream)
-{
-    entries_type::iterator e;
-    for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
-        (*e)->display(stream);
-
-    iterator i;
-    for (i = this->begin() ; i != this->end() ; ++i)
-        (*i)->display(stream);
-}
-
-//void
-//db_T::recurse(void (db_entry_T::*fp)(std::ostream &), std::ostream &stream)
-//{
-//    for (iterator i = this->begin() ; i != this->end() ; ++i)
-//        ((*i)->entries.front()->*fp)(stream);
-//}
 
 /*
  * Tidy up.

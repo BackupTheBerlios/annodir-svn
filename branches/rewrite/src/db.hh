@@ -46,15 +46,8 @@ class db_T : public std::vector<db_T * >
         virtual void load(std::istream &);
         virtual void dump(std::ostream &);
         virtual void display(std::ostream &);
-//        virtual void dump(std::ostream &stream)
-//        { this->entries.front()->dump(stream); }
-//        virtual void display(std::ostream &stream)
-//        { this->entries.front()->display(stream); }
-        virtual void do_export(std::ostream &stream)
-        { this->entries.front()->do_export(stream); }
+        virtual void do_export(std::ostream &);
         virtual db_T *find(const util::string &);
-//        virtual void recurse(void (db_entry_T::*fp)(std::ostream&),
-//                std::ostream &);
 
         /* properties */
         const util::string &index();

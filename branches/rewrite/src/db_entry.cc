@@ -112,6 +112,10 @@ db_entry_T::load(std::istream &stream)
     }
 }
 
+/*
+ * Dump database entry.
+ */
+
 void
 db_entry_T::dump(std::ostream &stream)
 {
