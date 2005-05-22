@@ -102,8 +102,7 @@ db_T::load(std::istream &stream)
             /* special case - metadata does not get it's own node */
             if (db_meta_entry_T::recognise_item(line))
             {
-                this->entries.push_front
-                    (new db_meta_entry_T(&stream, this));
+                this->entries.push_front(new db_meta_entry_T(&stream, this));
                 continue;
             }
 
@@ -224,8 +223,27 @@ db_T::index()
         this->_index += util::sprintf("%d.", *i);
 
     /* chop trailing '.' */
-    this->_index.erase(this->_index.length() - 1);
+    if (this->_index.length() > 1)
+        this->_index.erase(this->_index.length() - 1);
+
     return this->_index;
+}
+
+void
+db_T::set_index(const util::string &index)
+{
+    std::vector<util::string> parts = index.split('.');
+
+    if (parts.empty())
+        return;
+
+    this->_indexv.clear();
+
+    std::vector<util::string>::iterator i;
+    for (i = parts.begin() ; i != parts.end() ; ++i)
+        this->_indexv.push_back(std::atoi(i->c_str()));
+
+    this->_index = this->index();
 }
 
 /*

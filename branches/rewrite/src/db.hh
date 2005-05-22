@@ -51,7 +51,9 @@ class db_T : public std::vector<db_T * >
 
         /* properties */
         const util::string &index();
+        void set_index(const util::string &index);
         const util::string indent() const { return this->_indent; }
+        void set_indent(const util::string &indent) { this->_indent = indent; }
         
         db_T *parent, *prev, *next;
         entries_type entries;
