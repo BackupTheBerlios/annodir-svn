@@ -35,15 +35,14 @@
 class db_T : public std::vector<db_T * >
 {
     public:
-        typedef db_entry_T entry_type;
-        typedef std::deque<entry_type * > entries_type;
+        typedef std::deque<db_entry_T * > entries_type;
 
         db_T(db_T *parent = NULL) { this->init(parent); }
         db_T(std::istream &stream, db_T *parent = NULL)
         { this->init(parent); this->load(stream); }
         virtual ~db_T();
 
-        /* main db interface */
+        /* interface */
         virtual void load(std::istream &);
         virtual void dump(std::ostream &stream)
         { this->entries.front()->dump(stream); }
@@ -51,13 +50,14 @@ class db_T : public std::vector<db_T * >
         { this->entries.front()->display(stream); }
         virtual void do_export(std::ostream &stream)
         { this->entries.front()->do_export(stream); }
+        virtual db_T *find(const util::string &);
+        virtual void recurse(void (db_entry_T::*fp)(std::ostream&),
+                std::ostream &);
 
-        db_T *find(const util::string &);
+        /* properties */
         const util::string &index();
         const util::string indent() const { return this->_indent; }
-        void recurse(void (entry_type::*fp)(std::ostream&), std::ostream &);
-        entry_type *entry(const util::string &id = "");
-
+        
         db_T *parent, *prev, *next;
         entries_type entries;
 

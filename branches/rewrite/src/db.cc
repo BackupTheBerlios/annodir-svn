@@ -176,23 +176,23 @@ db_T::recurse(void (db_entry_T::*fp)(std::ostream &), std::ostream &stream)
  * or the first entry if id is empty.
  */
 
-static bool
-entry_is(db_T::entry_type *e, util::string id) { return e->is(id); }
+//static bool
+//entry_is(db_entry_T *e, util::string id) { return e->is(id); }
 
-db_T::entry_type *
-db_T::entry(const util::string &id)
-{
-    if (this->entries.empty())
-        return NULL;
+//db_entry_T *
+//db_T::entry(const util::string &id)
+//{
+//    if (this->entries.empty())
+//        return NULL;
 
-    if (id.empty())
-        return this->entries.front();
+//    if (id.empty())
+//        return this->entries.front();
 
-    entries_type::iterator i = std::find_if(this->entries.begin(),
-            this->entries.end(), std::bind2nd(std::ptr_fun(entry_is), id));
-    
-    return (i == this->entries.end() ? NULL : *i);
-}
+//    entries_type::iterator i = std::find_if(this->entries.begin(),
+//            this->entries.end(), std::bind2nd(std::ptr_fun(entry_is), id));
+//    
+//    return (i == this->entries.end() ? NULL : *i);
+//}
 
 /*
  * Tidy up.
