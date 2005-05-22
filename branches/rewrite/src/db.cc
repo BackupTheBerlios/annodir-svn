@@ -170,9 +170,7 @@ db_T::dump(std::ostream &stream)
     /* dump our entries */
     entries_type::iterator e;
     for (e = this->entries.begin() ; e != this->entries.end() ; ++e)
-    {
         (*e)->dump(stream);
-    }
 
     /* dump our child nodes */
     iterator i;
