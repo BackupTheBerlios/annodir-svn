@@ -15,6 +15,10 @@ AM_CXXFLAGS = -pedantic -ansi -Wall
 
 MAINTAINERCLEANFILES = Makefile.in *.loT *~
 
-srchtml:
-	@source-highlight -c ../src.css -s cpp -f html -t4 -n -i *.{cc,hh} \
-		--output-dir=../html/util
+srchtml: $(foreach f, $(libutil_la_SOURCES), $(f).html)
+%.cc.html: %.cc
+	@echo Generating $@
+	@source-highlight -c ../src.css -s cpp -f html -t4 -n -i $? -o ../html/util/$@
+%.hh.html: %.hh
+	@echo Generating $@
+	@source-highlight -c ../src.css -s cpp -f html -t4 -n -i $? -o ../html/util/$@
