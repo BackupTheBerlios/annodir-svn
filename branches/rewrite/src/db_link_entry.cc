@@ -30,7 +30,7 @@
 #include "db_link_entry.hh"
 
 db_link_entry_T::db_link_entry_T(std::istream *stream, db_T *node)
-    : db_entry_T(node)
+    : db_entry_T(node), _linkdb(new db_T(node))
 {
     this->_id = this->default_id();
 
@@ -112,8 +112,8 @@ db_link_entry_T::load(std::istream &stream)
         f(new std::ifstream(this->keys["location"].c_str()));
     if (not (*f))
         throw annodir_bad_file_E(this->keys["location"]);
-
-    this->_linkdb = new db_T(*f, this->_mynode);
+    
+    this->_linkdb->load(*f);
 }
 
 void
@@ -135,6 +135,7 @@ db_link_entry_T::dump(std::ostream &stream)
         if (not (*f))
             throw annodir_bad_file_E(this->keys["location"]);
 
+//        this->_linkdb->dump(std::cout);
         this->_linkdb->dump(*f);
     }
     catch (const annodir_bad_file_E &e)
