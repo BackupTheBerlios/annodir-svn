@@ -139,7 +139,8 @@ db_T::dump(std::ostream &stream)
     {
         (*e)->dump(stream);
         
-        if (not this->parent or (this->parent and this->empty()))
+        if (not this->parent or (*e)->is("metadata") or
+            (this->parent and this->empty()))
             stream << this->_indent << "end" << std::endl;
     }
 
@@ -147,7 +148,7 @@ db_T::dump(std::ostream &stream)
     for (iterator i = this->begin() ; i != this->end() ; ++i)
         (*i)->dump(stream);
 
-    if (this->parent and not this->empty())
+    if (this->parent and not this->empty() and not this->is_link())
         stream << this->_indent << "end" << std::endl;
 }
 
@@ -229,21 +230,37 @@ db_T::index()
     return this->_index;
 }
 
+/*
+ * Pretend to be our parent node.  This does not modify node data
+ * whatsoever, just the index/indent.  You could say the node is
+ * "pretending" to be it's parent.  This is used in certain special
+ * cases.  For example, if a node is a link to another db_T, it will
+ * have a metadata entry (which gets it's own node).  Without
+ * pretending to be the parent, the first visible child would get
+ * a sub-index of the metadata node, which display-wise is incorrect.
+ */
+
 void
-db_T::set_index(const util::string &index)
+db_T::become_parent()
 {
-    std::vector<util::string> parts = index.split('.');
+    for (iterator i = this->begin() ; i != this->end() ; ++i)
+        (*i)->become_parent();
 
-    if (parts.empty())
-        return;
+    if (this->size() > 1)
+    {
+        for (iterator i = this->begin() + 1 ; i != this->end() ; ++i)
+        {
+            (*i)->_indexv = (*i)->prev->_indexv;
+            ((*i)->_indexv.back())++;
+        }
+    }
 
-    this->_indexv.clear();
-
-    std::vector<util::string>::iterator i;
-    for (i = parts.begin() ; i != parts.end() ; ++i)
-        this->_indexv.push_back(std::atoi(i->c_str()));
-
-    this->_index = this->index();
+    if (this->parent)
+    {
+        this->_indexv = this->parent->_indexv;
+        this->_index  = this->parent->index();
+        this->_indent = this->parent->_indent;
+    }
 }
 
 /*

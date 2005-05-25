@@ -37,8 +37,8 @@ class db_T : public std::vector<db_T * >
     public:
         typedef std::deque<db_entry_T * > entries_type;
 
-        db_T(db_T *parent = NULL) { this->init(parent); }
-        db_T(std::istream &stream, db_T *parent = NULL)
+        db_T(db_T *parent = NULL) : _link(false) { this->init(parent); }
+        db_T(std::istream &stream, db_T *parent = NULL) : _link(false)
         { this->init(parent); this->load(stream); }
         virtual ~db_T();
 
@@ -49,11 +49,15 @@ class db_T : public std::vector<db_T * >
         virtual void do_export(std::ostream &);
         virtual db_T *find(const util::string &);
 
+        void become_parent();
+
         /* properties */
         const util::string &index();
-        void set_index(const util::string &index);
+//        void set_index(const util::string &index);
         const util::string indent() const { return this->_indent; }
         void set_indent(const util::string &indent) { this->_indent = indent; }
+        bool is_link() const { return this->_link; }
+        void set_link(bool v) { this->_link = v; }
         
         db_T *parent, *prev, *next;
         entries_type entries;
@@ -63,6 +67,7 @@ class db_T : public std::vector<db_T * >
         
         std::vector<unsigned short> _indexv;
         util::string _indent, _index;
+        bool _link;
 };
 
 #endif

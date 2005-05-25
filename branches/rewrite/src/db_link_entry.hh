@@ -38,7 +38,7 @@ class db_link_entry_T : public db_entry_T
             : db_entry_T(node), _linkdb(new db_T(node))
         { this->_id = this->default_id(); }
         db_link_entry_T(std::istream *stream, db_T *node = NULL);
-        virtual ~db_link_entry_T() { }//if (this->_linkdb) delete this->_linkdb; }
+        virtual ~db_link_entry_T() { }
 
         virtual void load(std::istream &);
         virtual void dump(std::ostream &);
@@ -53,6 +53,8 @@ class db_link_entry_T : public db_entry_T
         virtual const util::string default_id() const { return "link"; }
 
     private:
+        void load_link();
+
         const std::auto_ptr<db_T> _linkdb;
 };
 

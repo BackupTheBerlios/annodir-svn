@@ -97,9 +97,12 @@ class node_E                        : public annodir_base_E { };
 class node_invalid_index_E          : public node_E,
                                       public annodir_base_msg_E
 {
+    protected:
+        const char *str;
+
     public:
         node_invalid_index_E(const util::string &msg)
-            : annodir_base_msg_E(msg) { }
+            : annodir_base_msg_E(msg), str(msg.c_str()) { }
         virtual const char *what() const throw()
         {
             return util::sprintf("Invalid index '%s'", str).c_str();

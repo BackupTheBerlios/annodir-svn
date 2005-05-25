@@ -78,13 +78,38 @@ db_link_entry_T::prompt_user_for_values()
         return false;
     }
 
+    /* get title */
     util::string def_title(util::dirname(this->keys["location"]));
     util::string title(util::get_user_input("Title", def_title));
     if (title.empty())
         return false;
 
     this->keys["title"] = title;
+
+    this->load_link();
+
     return true;
+}
+
+/*
+ * Load the linked database.
+ */
+
+void
+db_link_entry_T::load_link()
+{
+    /* load database */
+    std::auto_ptr<std::ifstream>
+        f(new std::ifstream(this->keys["location"].c_str()));
+    if (not (*f))
+        throw annodir_bad_file_E(this->keys["location"]);
+
+    this->_linkdb->load(*f);
+    this->_linkdb->set_link(true);
+    
+    /* tell the link database to pretend it is it's parent...
+     * this is so the correct index/indent is displayed */
+    this->_linkdb->become_parent();
 }
 
 void
@@ -104,16 +129,10 @@ db_link_entry_T::load(std::istream &stream)
         if ((pos = line.find('=')) != util::string::npos)
             this->keys[line.substr(0, pos)] = line.substr(pos + 1);
         else
-            this->keys[line] = "Undefined";
+            this->keys[line] = "undefined";
     }
 
-    /* load database */
-    std::auto_ptr<std::ifstream>
-        f(new std::ifstream(this->keys["location"].c_str()));
-    if (not (*f))
-        throw annodir_bad_file_E(this->keys["location"]);
-    
-    this->_linkdb->load(*f);
+    this->load_link();
 }
 
 void
@@ -135,7 +154,6 @@ db_link_entry_T::dump(std::ostream &stream)
         if (not (*f))
             throw annodir_bad_file_E(this->keys["location"]);
 
-//        this->_linkdb->dump(std::cout);
         this->_linkdb->dump(*f);
     }
     catch (const annodir_bad_file_E &e)

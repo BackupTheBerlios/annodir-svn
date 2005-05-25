@@ -99,8 +99,8 @@ action_add_handler_T::operator() (const opts_type &opts)
         if (not meta)
             return EXIT_FAILURE;
 
+        meta->set_new_object_defaults();
         db->entries.push_front(meta);
-        db->entries.front()->set_new_object_defaults();
     }
 
     if (opts.size() > 1)
@@ -124,6 +124,13 @@ action_add_handler_T::operator() (const opts_type &opts)
         debug_msg("Creating new sub-node (of index '%s')",
             opts.front().c_str());
 
+    /* special case - parent node is a link, so we need to add it to
+     * the linked database, not to this one */
+    if (parent->is_link())
+    {
+
+    }
+
     /* add new entry */
     db_T *node = new db_T(parent);
     {
@@ -133,13 +140,12 @@ action_add_handler_T::operator() (const opts_type &opts)
         if (not entry)
             return EXIT_FAILURE;
 
+        entry->set_new_object_defaults();
         node->entries.push_back(entry);
 
         debug_msg("pusing back entry of type '%s'",
             optget("type", util::string).c_str());
     }
-
-    node->entries.back()->set_new_object_defaults();
 
     if (node->entries.back()->prompt_user_for_values())
     {
