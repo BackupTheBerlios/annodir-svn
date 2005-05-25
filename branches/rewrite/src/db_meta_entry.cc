@@ -38,17 +38,6 @@ db_meta_entry_T::set_new_object_defaults()
     this->keys["location"] = pwd;
 }
 
-//void
-//db_meta_entry_T::dump(std::ostream &stream)
-//{
-//    stream << this->_mynode->indent() << this->_id << ":" << std::endl;
-
-//    entry_keys_T::iterator i;
-//    for (i = this->keys.begin() ; i != this->keys.end() ; ++i)
-//        stream << this->_mynode->indent() << "  " << i->first
-//            << "=" << i->second << std::endl;
-//}
-
 void
 db_meta_entry_T::do_export(std::ostream &stream)
 {
